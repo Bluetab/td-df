@@ -3,11 +3,11 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
 
   import TdDfWeb.Authentication, only: :functions
 
+  alias TdDf.AclLoader.MockAclLoaderResolver
+  alias TdDf.Permissions.MockPermissionResolver
   alias TdDf.Templates
   alias TdDf.Templates.TemplateRelation
   alias TdDfWeb.ApiServices.MockTdAuthService
-  alias TdDf.Permissions.MockPermissionResolver
-  alias TdDf.AclLoader.MockAclLoaderResolver
 
   @create_attrs %{id_template: 1, resource_id: 3, resource_type: "some resource_type"}
   @update_attrs %{id_template: 2, resource_id: 4, resource_type: "some updated resource_type"}

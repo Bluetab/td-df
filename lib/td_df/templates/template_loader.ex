@@ -5,8 +5,8 @@ defmodule TdDf.TemplateLoader do
 
   use GenServer
 
-  alias TdPerms.DynamicFormCache
   alias TdDf.Templates
+  alias TdPerms.DynamicFormCache
 
   require Logger
 

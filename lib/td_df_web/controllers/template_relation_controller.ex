@@ -3,6 +3,7 @@ defmodule TdDfWeb.TemplateRelationController do
   use TdDfWeb, :controller
   use PhoenixSwagger
 
+  alias TdDf.TemplatePreprocessor
   alias TdDf.Templates
   alias TdDf.Templates.TemplateRelation
   alias TdDfWeb.SwaggerDefinitions
@@ -36,7 +37,8 @@ defmodule TdDfWeb.TemplateRelationController do
   end
 
   def create(conn, %{"template_relation" => template_relation_params}) do
-    with {:ok, %TemplateRelation{} = template_relation} <- Templates.create_template_relation(template_relation_params) do
+    with {:ok, %TemplateRelation{} = template_relation} <-
+      Templates.create_template_relation(template_relation_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", template_relation_path(conn, :show, template_relation))
@@ -77,7 +79,8 @@ defmodule TdDfWeb.TemplateRelationController do
   def update(conn, %{"id" => id, "template_relation" => template_relation_params}) do
     template_relation = Templates.get_template_relation!(id)
 
-    with {:ok, %TemplateRelation{} = template_relation} <- Templates.update_template_relation(template_relation, template_relation_params) do
+    with {:ok, %TemplateRelation{} = template_relation} <-
+      Templates.update_template_relation(template_relation, template_relation_params) do
       render(conn, "show.json", template_relation: template_relation)
     end
   end
@@ -101,7 +104,6 @@ defmodule TdDfWeb.TemplateRelationController do
     end
   end
 
-
   swagger_path :get_related_templates do
     description("List Object Related Templates")
 
@@ -124,7 +126,7 @@ defmodule TdDfWeb.TemplateRelationController do
     |> Templates.list_related_template_ids(resource_type)
     |> Enum.map(&(&1.id_template))
     |> Templates.list_templates_by_id
-    |> TdDf.TemplatePreprocessor.preprocess_templates(
+    |> TemplatePreprocessor.preprocess_templates(
       %{resource_type: resource_type, resource_id: resource_id, user: user})
 
     templates = case results do
@@ -136,8 +138,6 @@ defmodule TdDfWeb.TemplateRelationController do
         templates -> templates
     end
 
-
-     
     render(conn, "templates.json", templates: templates)
   end
   def get_related_templates(conn, %{}) do

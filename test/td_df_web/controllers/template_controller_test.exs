@@ -5,9 +5,8 @@ defmodule TdDfWeb.TemplateControllerTest do
   import TdDfWeb.Authentication, only: :functions
 
   alias Poison, as: JSON
-  #alias TdDf.Accounts.User
   alias TdDf.Permissions.MockPermissionResolver
-  
+
   alias TdDf.Templates
   alias TdDf.Templates.Template
   alias TdDfWeb.ApiServices.MockTdAuthService

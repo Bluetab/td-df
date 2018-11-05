@@ -1,12 +1,13 @@
 defmodule TdDf.TemplatePreprocessor do
   @moduledoc false
 
+  alias TdDf.AclLoader
   alias TdDf.Permissions
 
   def preprocess_templates(templates, ctx \\ %{})
   def preprocess_templates(templates,
     %{resource_type: resource_type, resource_id: resource_id} = ctx) do
-    user_roles = TdDf.AclLoader.get_roles_and_users(resource_type, resource_id)
+    user_roles = AclLoader.get_roles_and_users(resource_type, resource_id)
     ctx = Map.put(ctx, :user_roles, user_roles)
     change_templates([], templates, ctx)
   end
@@ -65,7 +66,6 @@ defmodule TdDf.TemplatePreprocessor do
   end
   defp is_confidential_field_disabled?(_), do: true
 
-  # TODO: Refactor (roles and ACL entries are now in td_auth)
   defp apply_role_meta(%{} = field, user, role_name, user_roles)
     when not is_nil(user) and
          not is_nil(role_name) do

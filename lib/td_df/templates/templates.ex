@@ -6,8 +6,8 @@ defmodule TdDf.Templates do
   import Ecto.Query, warn: false
   alias TdDf.Repo
 
-  alias TdDf.Templates.Template
   alias TdDf.TemplateLoader
+  alias TdDf.Templates.Template
 
   @doc """
   Returns the list of templates.

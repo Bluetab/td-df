@@ -1,7 +1,8 @@
 defmodule TdDf.Templates.TemplateRelation do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
-
 
   schema "template_relations" do
     field :id_template, :integer

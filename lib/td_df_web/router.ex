@@ -30,7 +30,7 @@ defmodule TdDfWeb.Router do
 
   scope "/api", TdDfWeb do
     pipe_through [:api, :api_secure, :api_authorized]
-    
+
     resources "/templates", TemplateController, except: [:new, :edit]
     get "/templates/load/:id", TemplateController, :load_and_show
 
