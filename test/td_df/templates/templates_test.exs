@@ -2,6 +2,12 @@ defmodule TdDf.TemplatesTest do
   use TdDf.DataCase
 
   alias TdDf.Templates
+  @df_cache Application.get_env(:td_df, :df_cache)
+
+  setup_all do
+    start_supervised(@df_cache)
+    :ok
+  end
 
   describe "templates" do
     alias TdDf.Templates.Template

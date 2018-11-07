@@ -59,6 +59,7 @@ config :td_df, acl_cache_resolver: TdPerms.AclCache
 config :td_df, user_cache_resolver: TdPerms.UserCache
 
 config :td_df, cache_templates_on_startup: true
+config :td_df, df_cache: TdPerms.DynamicFormCache
 
 config :td_perms, permissions: [
   :is_admin

@@ -26,6 +26,7 @@ config :td_df, acl_cache_resolver: TdDf.AclLoader.MockAclLoaderResolver
 config :td_df, user_cache_resolver: TdDf.AclLoader.MockAclLoaderResolver
 
 config :td_df, cache_templates_on_startup: false
+config :td_df, df_cache: TdPerms.MockDynamicFormCache
 
 config :td_perms, redis_uri: "redis://localhost"
 

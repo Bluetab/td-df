@@ -10,6 +10,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   alias TdDf.Templates
   alias TdDf.Templates.Template
   alias TdDfWeb.ApiServices.MockTdAuthService
+  @df_cache Application.get_env(:td_df, :df_cache)
 
   @create_attrs %{content: [], label: "some name", name: "some_name", is_default: false}
   @generic_attrs %{
@@ -47,6 +48,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   setup_all do
     start_supervised(MockPermissionResolver)
     start_supervised(MockTdAuthService)
+    start_supervised(@df_cache)
     :ok
   end
 

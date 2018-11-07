@@ -178,17 +178,6 @@ defmodule TdDfWeb.TemplateController do
 
   def delete(conn, %{"id" => id}) do
     template = Templates.get_template!(id)
-
-    # with {:count, :domain, 0} <- Templates.count_related_domains(String.to_integer(id)),
-    #      {:ok, %Template{}} <- Templates.delete_template(template) do
-    #   send_resp(conn, :no_content, "")
-    # else
-    #   error ->
-    #     Logger.error("While deleting template... #{inspect(error)}")
-    #     conn
-    #     |> put_status(:unprocessable_entity)
-    #     |> render(ErrorView, :"422.json")
-    # end
     with {:ok, %Template{}} <- Templates.delete_template(template) do
       send_resp(conn, :no_content, "")
     else

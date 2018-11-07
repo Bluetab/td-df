@@ -8,6 +8,7 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
   alias TdDf.Templates
   alias TdDf.Templates.TemplateRelation
   alias TdDfWeb.ApiServices.MockTdAuthService
+  @df_cache Application.get_env(:td_df, :df_cache)
 
   @create_attrs %{id_template: 1, resource_id: 3, resource_type: "some resource_type"}
   @update_attrs %{id_template: 2, resource_id: 4, resource_type: "some updated resource_type"}
@@ -22,6 +23,7 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
     start_supervised(MockPermissionResolver)
     start_supervised(MockTdAuthService)
     start_supervised(MockAclLoaderResolver)
+    start_supervised(@df_cache)
     :ok
   end
 

@@ -90,7 +90,7 @@ defmodule TdDf.Templates do
   def update_template(%Template{} = template, attrs) do
     template
     |> Template.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update
     |> refresh_cache
   end
 
@@ -107,7 +107,9 @@ defmodule TdDf.Templates do
 
   """
   def delete_template(%Template{} = template) do
-    Repo.delete(template)
+    template
+    |> Repo.delete
+    |> clean_cache
   end
 
   @doc """
@@ -231,4 +233,10 @@ defmodule TdDf.Templates do
     response
   end
   defp refresh_cache(response), do: response
+
+  defp clean_cache({:ok, %{name: name}} = response) do
+    TemplateLoader.delete(name)
+    response
+  end
+  defp clean_cache(response), do: response
 end

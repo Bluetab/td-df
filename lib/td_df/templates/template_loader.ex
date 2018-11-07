@@ -6,7 +6,7 @@ defmodule TdDf.TemplateLoader do
   use GenServer
 
   alias TdDf.Templates
-  alias TdPerms.DynamicFormCache
+  @df_cache Application.get_env(:td_df, :df_cache)
 
   require Logger
 
@@ -38,13 +38,17 @@ defmodule TdDf.TemplateLoader do
 
   @impl true
   def handle_call({:delete, template_name}, _from, state) do
-    {:ok, _} = DynamicFormCache.delete_template(template_name)
+    {:ok, _} = @df_cache.delete_template(template_name)
     {:reply, :ok, state}
   end
 
   @impl true
   def handle_info(:load_cache, state) do
-    Templates.list_templates |> put_templates
+    IO.puts "Cleaning cache"
+    @df_cache.clean_cache()
+    templates = Templates.list_templates
+    put_templates(templates)
+    IO.puts "Added #{length(templates)} templates."
     {:noreply, state}
   end
 
@@ -54,11 +58,11 @@ defmodule TdDf.TemplateLoader do
 
   defp put_templates(templates) do
     Enum.each(templates, fn template ->
-      DynamicFormCache.put_template(template)
+      @df_cache.put_template(template)
     end)
   end
   defp put_template(template_name) do
     template = Templates.get_template_by_name!(template_name)
-    {:ok, _} = DynamicFormCache.put_template(template)
+    {:ok, _} = @df_cache.put_template(template)
   end
 end
