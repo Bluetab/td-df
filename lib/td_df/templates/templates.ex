@@ -246,7 +246,7 @@ defmodule TdDf.Templates do
   defp clean_cache(response), do: response
 
   @doc """
-  Filter lists by the given params
+  Filter list by the given params
   """
   def filter(params, fields) do
     dynamic = true
