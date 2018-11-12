@@ -18,8 +18,13 @@ defmodule TdDf.Templates do
       [%Template{}, ...]
 
   """
-  def list_templates do
-    Repo.all(Template)
+  def list_templates(attrs \\ %{}) do
+    template_fields = Template.__schema__(:fields)
+    where_clause = filter(attrs, template_fields)
+    Repo.all(
+      from p in Template,
+      where: ^where_clause
+    )
   end
 
   def list_templates_by_id(id_list) do
@@ -239,4 +244,26 @@ defmodule TdDf.Templates do
     response
   end
   defp clean_cache(response), do: response
+
+  @doc """
+  Filter lists by the given params
+  """
+  def filter(params, fields) do
+    dynamic = true
+    Enum.reduce(Map.keys(params), dynamic, fn (key, acc) ->
+       key_as_atom = if is_binary(key), do: String.to_atom(key), else: key
+       case Enum.member?(fields, key_as_atom) do
+         true -> filter_by_type(key_as_atom, params[key], acc)
+         false -> acc
+       end
+    end)
+  end
+
+  defp filter_by_type(atom_key, param_values, acc) when is_list(param_values) do
+    dynamic([p], field(p, ^atom_key) in ^param_values and ^acc)
+  end
+
+  defp filter_by_type(atom_key, param_value, acc) do
+    dynamic([p], field(p, ^atom_key) == ^param_value and ^acc)
+  end
 end

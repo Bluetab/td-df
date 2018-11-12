@@ -12,8 +12,20 @@ defmodule TdDf.TemplatesTest do
   describe "templates" do
     alias TdDf.Templates.Template
 
-    @valid_attrs   %{content: [],  label: "some name", name: "some_name", is_default: false, scope: "bg"}
-    @update_attrs  %{content: [],  label: "some updated name", name: "some_name", is_default: false, scope: "dq"}
+    @valid_attrs %{
+      content: [],
+      label: "some name",
+      name: "some_name",
+      is_default: false,
+      scope: "bg"
+    }
+    @update_attrs %{
+      content: [],
+      label: "some updated name",
+      name: "some_name",
+      is_default: false,
+      scope: "dq"
+    }
     @invalid_attrs %{content: nil, label: nil, name: nil}
 
     def template_fixture(attrs \\ %{}) do
@@ -25,9 +37,40 @@ defmodule TdDf.TemplatesTest do
       template
     end
 
+    def list_templates_fixture do
+      [
+        %{content: [], label: "some name", name: "some_name", is_default: false, scope: "bg"},
+        %{content: [], label: "some name 1", name: "some_name_1", is_default: false, scope: "bg"},
+        %{content: [], label: "some name 2", name: "some_name_2", is_default: false, scope: "dq"},
+        %{content: [], label: "some name 3", name: "some_name_3", is_default: false, scope: "dd"}
+      ]
+      |> Enum.map(&template_fixture(&1))
+    end
+
     test "list_templates/0 returns all templates" do
       template = template_fixture()
       assert Templates.list_templates() == [template]
+    end
+
+    test "list_templates/1 with scope filter returns templates filtered by the given value for the scope" do
+      attrs = %{scope: "bg"}
+      templates_fixture = list_templates_fixture()
+      filtered_templates = Templates.list_templates(attrs)
+      assert length(filtered_templates) == 2
+
+      assert Enum.all?(filtered_templates, fn ft ->
+               Enum.any?(templates_fixture, &(ft.id == &1.id))
+             end)
+    end
+
+    test "list_templates/1 with scope filter returns templates filtered by several scope values" do
+      scope_values = ["bg", "dq"]
+      attrs = %{scope: scope_values}
+      list_templates_fixture()
+      filtered_templates = Templates.list_templates(attrs)
+      assert length(filtered_templates) == 3
+
+      assert Enum.all?(filtered_templates, fn ft -> Enum.any?(scope_values, &(&1 == ft.scope)) end)
     end
 
     test "get_template!/1 returns the template with given id" do
@@ -75,7 +118,6 @@ defmodule TdDf.TemplatesTest do
   end
 
   describe "working with default templates" do
-
     test "get_default_template/1 gets default template" do
       insert(:template, label: "label_1", name: "name_1", is_default: false)
       template_2 = insert(:template, label: "label_2", name: "name_2", is_default: true)
@@ -103,7 +145,6 @@ defmodule TdDf.TemplatesTest do
       assert template_1.is_default
       assert !template_2.is_default
     end
-
   end
 
   describe "template_relations" do
@@ -133,7 +174,9 @@ defmodule TdDf.TemplatesTest do
     end
 
     test "create_template_relation/1 with valid data creates a template_relation" do
-      assert {:ok, %TemplateRelation{} = template_relation} = Templates.create_template_relation(@valid_attrs)
+      assert {:ok, %TemplateRelation{} = template_relation} =
+               Templates.create_template_relation(@valid_attrs)
+
       assert template_relation.id_template == 1
       assert template_relation.resource_id == 3
       assert template_relation.resource_type == "some resource_type"
@@ -145,7 +188,10 @@ defmodule TdDf.TemplatesTest do
 
     test "update_template_relation/2 with valid data updates the template_relation" do
       template_relation = template_relation_fixture()
-      assert {:ok, template_relation} = Templates.update_template_relation(template_relation, @update_attrs)
+
+      assert {:ok, template_relation} =
+               Templates.update_template_relation(template_relation, @update_attrs)
+
       assert %TemplateRelation{} = template_relation
       assert template_relation.id_template == 2
       assert template_relation.resource_id == 4
@@ -154,14 +200,20 @@ defmodule TdDf.TemplatesTest do
 
     test "update_template_relation/2 with invalid data returns error changeset" do
       template_relation = template_relation_fixture()
-      assert {:error, %Ecto.Changeset{}} = Templates.update_template_relation(template_relation, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Templates.update_template_relation(template_relation, @invalid_attrs)
+
       assert template_relation == Templates.get_template_relation!(template_relation.id)
     end
 
     test "delete_template_relation/1 deletes the template_relation" do
       template_relation = template_relation_fixture()
       assert {:ok, %TemplateRelation{}} = Templates.delete_template_relation(template_relation)
-      assert_raise Ecto.NoResultsError, fn -> Templates.get_template_relation!(template_relation.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Templates.get_template_relation!(template_relation.id)
+      end
     end
 
     test "change_template_relation/1 returns a template_relation changeset" do
