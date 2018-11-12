@@ -12,8 +12,8 @@ defmodule TdDf.TemplatesTest do
   describe "templates" do
     alias TdDf.Templates.Template
 
-    @valid_attrs   %{content: [],  label: "some name", name: "some_name", is_default: false}
-    @update_attrs  %{content: [],  label: "some updated name", name: "some_name", is_default: false}
+    @valid_attrs   %{content: [],  label: "some name", name: "some_name", is_default: false, scope: "bg"}
+    @update_attrs  %{content: [],  label: "some updated name", name: "some_name", is_default: false, scope: "dq"}
     @invalid_attrs %{content: nil, label: nil, name: nil}
 
     def template_fixture(attrs \\ %{}) do
@@ -40,6 +40,7 @@ defmodule TdDf.TemplatesTest do
       assert template.content == []
       assert template.label == "some name"
       assert template.name == "some_name"
+      assert template.scope == "bg"
     end
 
     test "create_template/1 with invalid data returns error changeset" do
