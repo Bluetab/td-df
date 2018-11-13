@@ -122,7 +122,8 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
         name: "t1",
         label: "l1",
         is_default: false,
-        content: []
+        content: [],
+        scope: "bg"
       }
 
       {:ok, template} = Templates.create_template(template_args)
@@ -140,7 +141,8 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
       "label" => template.label,
       "name" => template.name,
       "content" => template.content,
-      "is_default" => template.is_default
+      "is_default" => template.is_default,
+      "scope" => "bg"
     }
   end
 

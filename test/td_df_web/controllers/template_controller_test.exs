@@ -12,32 +12,36 @@ defmodule TdDfWeb.TemplateControllerTest do
   alias TdDfWeb.ApiServices.MockTdAuthService
   @df_cache Application.get_env(:td_df, :df_cache)
 
-  @create_attrs %{content: [], label: "some name", name: "some_name", is_default: false}
+  @create_attrs %{content: [], label: "some name", name: "some_name", is_default: false, scope: "bg"}
   @generic_attrs %{
     content: [%{type: "type1", required: true, name: "name1", max_size: 100}],
     label: "generic true",
     name: "generic_true",
-    is_default: false
+    is_default: false,
+    scope: "bg"
   }
   @create_attrs_generic_true %{
     content: [%{includes: ["generic_true"]}, %{other_field: "other_field"}],
     label: "some name",
     name: "some_name",
-    is_default: false
+    is_default: false,
+    scope: "bg"
   }
   @create_attrs_generic_false %{
     content: [%{includes: ["generic_false"]}, %{other_field: "other_field"}],
     label: "some name",
     name: "some_name",
-    is_default: false
+    is_default: false,
+    scope: "bg"
   }
   @others_create_attrs_generic_true %{
     content: [%{includes: ["generic_true", "generic_false"]}, %{other_field: "other_field"}],
     label: "some name",
     name: "some_name",
-    is_default: false
+    is_default: false,
+    scope: "bg"
   }
-  @update_attrs %{content: [], label: "some updated name", name: "some_name", is_default: false}
+  @update_attrs %{content: [], label: "some updated name", name: "some_name", is_default: false, scope: "bg"}
   @invalid_attrs %{content: nil, label: nil,  name: nil}
 
   def fixture(:template) do
@@ -81,7 +85,8 @@ defmodule TdDfWeb.TemplateControllerTest do
                "content" => [],
                "is_default" => false,
                "label" => "some name",
-               "name" => "some_name"
+               "name" => "some_name",
+               "scope" => "bg"
              }
     end
 
@@ -114,7 +119,8 @@ defmodule TdDfWeb.TemplateControllerTest do
                  ],
                  "is_default" => false,
                  "label" => "some name",
-                 "name" => "some_name"
+                 "name" => "some_name",
+                 "scope" => "bg"
                })
     end
 
@@ -138,7 +144,8 @@ defmodule TdDfWeb.TemplateControllerTest do
                  "content" => [%{other_field: "other_field"}],
                  "is_default" => false,
                  "label" => "some name",
-                 "name" => "some_name"
+                 "name" => "some_name",
+                 "scope" => "bg"
                })
     end
 
@@ -165,7 +172,8 @@ defmodule TdDfWeb.TemplateControllerTest do
                  ],
                  "is_default" => false,
                  "label" => "some name",
-                 "name" => "some_name"
+                 "name" => "some_name",
+                 "scope" => "bg"
                })
     end
   end
@@ -192,7 +200,8 @@ defmodule TdDfWeb.TemplateControllerTest do
                "content" => [],
                "is_default" => false,
                "label" => "some updated name",
-               "name" => "some_name"
+               "name" => "some_name",
+               "scope" => "bg"
              }
     end
 
