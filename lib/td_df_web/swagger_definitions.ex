@@ -16,6 +16,7 @@ defmodule TdDfWeb.SwaggerDefinitions do
             name(:string, "Name", required: true)
             content(:array, "Content", required: true)
             is_default(:boolean, "Is Default", required: true)
+            scope(:string, "Scope", required: false)
           end
 
           example(%{
@@ -25,7 +26,8 @@ defmodule TdDfWeb.SwaggerDefinitions do
               %{name: "name1", max_size: 100, type: "type1", required: true},
               %{related_area: "related_area1", max_size: 100, type: "type2", required: false}
             ],
-            is_default: false
+            is_default: false,
+            scope: "bg"
           })
         end,
       TemplateCreateUpdate:
@@ -38,6 +40,7 @@ defmodule TdDfWeb.SwaggerDefinitions do
                   name(:string, "Name", required: true)
                   content(:array, "Content", required: true)
                   is_default(:boolean, "Is Default", required: true)
+                  scope(:string, "Scope", required: false)
                 end
               end
             )
