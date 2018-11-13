@@ -20,8 +20,8 @@ defmodule TdDfWeb.TemplateController do
     response(200, "OK", Schema.ref(:TemplatesResponse))
   end
 
-  def index(conn, _params) do
-    templates = Templates.list_templates()
+  def index(conn, params) do
+    templates = Templates.list_templates(params)
     render(conn, "index.json", templates: templates)
   end
 

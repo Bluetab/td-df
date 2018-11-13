@@ -67,6 +67,24 @@ defmodule TdDfWeb.TemplateControllerTest do
       validate_resp_schema(conn, schema, "TemplatesResponse")
       assert json_response(conn, 200)["data"] == []
     end
+
+    @tag :admin_authenticated
+    test "lists all templates filtered by scope", %{conn: conn, swagger_schema: schema} do
+      conn = post(conn, template_path(conn, :create), template: @generic_attrs)
+      validate_resp_schema(conn, schema, "TemplateResponse")
+
+      conn = recycle_and_put_headers(conn)
+
+      conn = get(conn, template_path(conn, :index), scope: "bg")
+      validate_resp_schema(conn, schema, "TemplatesResponse")
+      assert length(json_response(conn, 200)["data"]) == 1
+
+      conn = recycle_and_put_headers(conn)
+
+      conn = get(conn, template_path(conn, :index), scope: "dd")
+      validate_resp_schema(conn, schema, "TemplatesResponse")
+      assert json_response(conn, 200)["data"] == []
+    end
   end
 
   describe "create template" do
