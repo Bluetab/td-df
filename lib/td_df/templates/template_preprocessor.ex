@@ -28,6 +28,13 @@ defmodule TdDf.TemplatePreprocessor do
     [processed|acc]
   end
 
+  def preprocess_template(template, %{domain_id: domain_id} = ctx) do
+    user_roles = AclLoader.get_roles_and_users("domain", domain_id)
+    ctx = Map.put(ctx, :user_roles, user_roles)
+    content = change_fields([], template.content, ctx)
+    Map.put(template, :content, content)
+  end
+
   defp change_fields(acc, [head|tail], ctx) do
     acc
     |> change_field(head, ctx)

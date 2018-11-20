@@ -3,6 +3,7 @@ defmodule TdDfWeb.TemplateController do
   use TdDfWeb, :controller
   use PhoenixSwagger
 
+  alias TdDf.TemplatePreprocessor
   alias TdDf.Templates
   alias TdDf.Templates.Template
   alias TdDfWeb.ChangesetView
@@ -19,7 +20,6 @@ defmodule TdDfWeb.TemplateController do
     description("List Templates")
     response(200, "OK", Schema.ref(:TemplatesResponse))
   end
-
   def index(conn, params) do
     templates = Templates.list_templates(params)
     render(conn, "index.json", templates: templates)
@@ -67,7 +67,17 @@ defmodule TdDfWeb.TemplateController do
     response(200, "OK", Schema.ref(:TemplateResponse))
     response(400, "Client Error")
   end
+  def show(conn, %{"id" => id, "domain_id" => domain_id} = params) do
+    user = conn.assigns[:current_user]
 
+    template = id
+    |> Templates.get_template!
+    |> TemplatePreprocessor.preprocess_template(%{
+      domain_id: domain_id,
+      user: user
+    })
+    render(conn, "show.json", template: template)
+  end
   def show(conn, %{"id" => id}) do
     template = Templates.get_template!(id)
     render(conn, "show.json", template: template)

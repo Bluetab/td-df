@@ -5,6 +5,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   import TdDfWeb.Authentication, only: :functions
 
   alias Poison, as: JSON
+  alias TdDf.AclLoader.MockAclLoaderResolver
   alias TdDf.Permissions.MockPermissionResolver
 
   alias TdDf.Templates
@@ -50,6 +51,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   end
 
   setup_all do
+    start_supervised(MockAclLoaderResolver)
     start_supervised(MockPermissionResolver)
     start_supervised(MockTdAuthService)
     start_supervised(@df_cache)
@@ -84,6 +86,38 @@ defmodule TdDfWeb.TemplateControllerTest do
       conn = get(conn, template_path(conn, :index), scope: "dd")
       validate_resp_schema(conn, schema, "TemplatesResponse")
       assert json_response(conn, 200)["data"] == []
+    end
+  end
+
+  describe "show" do
+    @tag :admin_authenticated
+    test "renders preprocessed template", %{conn: conn, swagger_schema: schema} do
+      role_name = "test_role"
+      domain_id = "1"
+      user_id = "10"
+      username = "username"
+
+      MockAclLoaderResolver.put_user(user_id, %{full_name: username})
+      MockAclLoaderResolver.set_acl_roles("domain", domain_id, [role_name])
+      MockAclLoaderResolver.set_acl_role_users("domain", domain_id, role_name, [user_id])
+
+      {:ok, template} = Templates.create_template(%{
+        "name" => "template_name",
+        "label" => "template_label",
+        "is_default" => false,
+        "scope" => "bg",
+        "content" => [
+          %{
+            "name" => "name1",
+            "type" => "list",
+            "meta" => %{"role" => role_name}
+          }
+        ]
+      })
+
+      conn = get(conn, template_path(conn, :show, template.id, domain_id: domain_id))
+      validate_resp_schema(conn, schema, "TemplateResponse")
+      assert Enum.at(json_response(conn, 200)["data"]["content"], 0)["values"] == [username]
     end
   end
 
@@ -244,92 +278,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       end)
     end
   end
-
-  # @tag authenticated_user: "user_name"
-  # test "get domain templates. Check role meta", %{conn: conn, swagger_schema: schema} do
-  #   role_name = "role_name"
-
-  #   template =
-  #     insert(
-  #       :template,
-  #       content: [
-  #         %{
-  #           name: "dominio",
-  #           type: "list",
-  #           label: "label",
-  #           values: [],
-  #           required: false,
-  #           form_type: "dropdown",
-  #           description: "description",
-  #           meta: %{role: role_name}
-  #         }
-  #       ]
-  #     )
-
-  #   role = MockTdAuthService.find_or_create_role(role_name)
-
-  #   parent_domain = insert(:domain, templates: [template])
-  #   {:ok, child_domain} = build(:child_domain, parent: parent_domain)
-  #     |> Map.put(:parent_id, parent_domain.id)
-  #     |> Map.take([:name, :description, :parent_id])
-  #     |> Taxonomies.create_domain
-
-  #   group_name = "group_name"
-  #   group = MockTdAuthService.create_group(%{"group" => %{"name" => group_name}})
-  #   group_user_name = "group_user_name"
-
-  #   MockTdAuthService.create_user(%{
-  #     "user" => %{
-  #       "user_name" => group_user_name,
-  #       "full_name" => "#{group_user_name}",
-  #       "is_admin" => false,
-  #       "password" => "password",
-  #       "email" => "nobody@bluetab.net",
-  #       "groups" => [%{"name" => group_name}]
-  #     }
-  #   })
-
-  #   user_name = "user_name"
-
-  #   MockPermissionResolver.create_acl_entry(%{
-  #     principal_id: group.id,
-  #     principal_type: "group",
-  #     resource_id: parent_domain.id,
-  #     resource_type: "domain",
-  #     role_id: role.id
-  #   })
-
-  #   MockPermissionResolver.create_acl_entry(%{
-  #     principal_id: User.gen_id_from_user_name(user_name),
-  #     principal_type: "user",
-  #     resource_id: child_domain.id,
-  #     resource_type: "domain",
-  #     role_id: role.id
-  #   })
-
-  #   conn =
-  #     get(conn, template_path(conn, :get_domain_templates, child_domain.id, preprocess: true))
-
-  #   validate_resp_schema(conn, schema, "TemplatesResponse")
-  #   stored_templates = json_response(conn, 200)["data"]
-
-  #   values =
-  #     stored_templates
-  #     |> Enum.at(0)
-  #     |> Map.get("content")
-  #     |> Enum.at(0)
-  #     |> Map.get("values")
-
-  #   default =
-  #     stored_templates
-  #     |> Enum.at(0)
-  #     |> Map.get("content")
-  #     |> Enum.at(0)
-  #     |> Map.get("default")
-
-  #   assert values |> Enum.sort == [group_user_name, user_name] |> Enum.sort
-  #   assert default == user_name
-  # end
 
   defp create_template(_) do
     template = fixture(:template)
