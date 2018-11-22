@@ -9,7 +9,7 @@ defmodule TdDf.Templates.TemplateRelation do
     field :resource_id, :integer
     field :resource_type, :string
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

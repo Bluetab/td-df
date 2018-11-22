@@ -7,7 +7,7 @@ defmodule TdDf.Repo.Migrations.CreateTemplateRelations do
       add :resource_type, :string, null: false
       add :resource_id, :integer, null: false
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
   end

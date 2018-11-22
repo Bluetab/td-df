@@ -30,4 +30,4 @@ config :td_df, :api_services_login,
   api_username: "${API_USER}",
   api_password: "${API_PASSWORD}"
 
-config :td_perms, redis_uri: "${REDIS_URI}"
+config :td_perms, redis_host: "${REDIS_HOST}"

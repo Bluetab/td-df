@@ -5,7 +5,7 @@ defmodule TdDf.Mixfile do
   def project do
     [
       app: :td_df,
-      version: case System.get_env("APP_VERSION") do nil -> "2.8.0-local"; v -> v end,
+      version: case System.get_env("APP_VERSION") do nil -> "2.8.1-local"; v -> v end,
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -55,7 +55,7 @@ defmodule TdDf.Mixfile do
       {:csv, "~> 2.0.0"},
       {:nimble_csv, "~> 0.3"},
       {:codepagex, "~> 0.1.4"},
-      {:td_perms, git: "https://github.com/Bluetab/td-perms.git"},
+      {:td_perms, git: "https://github.com/Bluetab/td-perms.git", tag: "2.8.1"},
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.0"},
       {:grafana, git: "https://github.com/BoringButGreat/grafana.git"}

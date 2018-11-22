@@ -12,7 +12,7 @@ defmodule TdDf.Templates.Template do
     field :is_default, :boolean
     field :scope, :string
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
