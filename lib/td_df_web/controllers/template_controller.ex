@@ -67,7 +67,7 @@ defmodule TdDfWeb.TemplateController do
     response(200, "OK", Schema.ref(:TemplateResponse))
     response(400, "Client Error")
   end
-  def show(conn, %{"id" => id, "domain_id" => domain_id} = params) do
+  def show(conn, %{"id" => id, "domain_id" => domain_id}) do
     user = conn.assigns[:current_user]
 
     template = id

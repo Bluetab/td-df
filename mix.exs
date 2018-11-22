@@ -5,8 +5,8 @@ defmodule TdDf.Mixfile do
   def project do
     [
       app: :td_df,
-      version: case System.get_env("APP_VERSION") do nil -> "1.0.0-local"; v -> v end,
-      elixir: "~> 1.4",
+      version: case System.get_env("APP_VERSION") do nil -> "2.8.0-local"; v -> v end,
+      elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -72,8 +72,8 @@ defmodule TdDf.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "run priv/repo/seeds.exs", "test"],
-      "compile": ["compile", &pxh_swagger_generate/1]
+      test: ["ecto.create --quiet", "ecto.migrate", "run priv/repo/seeds.exs", "test"],
+      compile: ["compile", &pxh_swagger_generate/1]
     ]
   end
 
