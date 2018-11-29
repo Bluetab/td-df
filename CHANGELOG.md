@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.3] 2018-11-29
+
+### Fixed
+
+- Check for confidential permissions had wrong pattern matching
+
 ## [2.8.1] 2018-11-22
 
 ### Changed

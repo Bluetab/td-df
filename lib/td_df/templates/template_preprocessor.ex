@@ -67,8 +67,7 @@ defmodule TdDf.TemplatePreprocessor do
   defp change_field(acc, %{} = field, _ctx),  do: acc ++ [field]
 
   defp is_confidential_field_disabled?(%{user: %{is_admin: true}}), do: false
-  defp is_confidential_field_disabled?(%{
-    resource_type: "domain", resource_id: domain_id, user: user}) do
+  defp is_confidential_field_disabled?(%{domain_id: domain_id, user: user}) do
     !Permissions.authorized?(user, :manage_confidential_business_concepts, domain_id)
   end
   defp is_confidential_field_disabled?(_), do: true
