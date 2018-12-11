@@ -4,6 +4,7 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
   import TdDfWeb.Authentication, only: :functions
 
   alias TdDf.AclLoader.MockAclLoaderResolver
+  alias TdDf.MockTaxonomyResolver
   alias TdDf.Permissions.MockPermissionResolver
   alias TdDf.Templates
   alias TdDf.Templates.TemplateRelation
@@ -23,6 +24,7 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
     start_supervised(MockPermissionResolver)
     start_supervised(MockTdAuthService)
     start_supervised(MockAclLoaderResolver)
+    start_supervised(MockTaxonomyResolver)
     start_supervised(@df_cache)
     :ok
   end

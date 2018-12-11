@@ -6,6 +6,7 @@ defmodule TdDfWeb.TemplateControllerTest do
 
   alias Poison, as: JSON
   alias TdDf.AclLoader.MockAclLoaderResolver
+  alias TdDf.MockTaxonomyResolver
   alias TdDf.Permissions.MockPermissionResolver
 
   alias TdDf.Templates
@@ -54,6 +55,7 @@ defmodule TdDfWeb.TemplateControllerTest do
     start_supervised(MockAclLoaderResolver)
     start_supervised(MockPermissionResolver)
     start_supervised(MockTdAuthService)
+    start_supervised(MockTaxonomyResolver)
     start_supervised(@df_cache)
     :ok
   end
@@ -100,6 +102,7 @@ defmodule TdDfWeb.TemplateControllerTest do
       MockAclLoaderResolver.put_user(user_id, %{full_name: username})
       MockAclLoaderResolver.set_acl_roles("domain", domain_id, [role_name])
       MockAclLoaderResolver.set_acl_role_users("domain", domain_id, role_name, [user_id])
+      MockTaxonomyResolver.set_domain_parents(domain_id, [])
 
       {:ok, template} = Templates.create_template(%{
         "name" => "template_name",
