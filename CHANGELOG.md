@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.4] 2018-12-11
+
+### Fixed
+
+- Check for parent domain's roles while preprocessing templates
+
 ## [2.8.3] 2018-11-29
 
 ### Fixed
