@@ -21,19 +21,24 @@ defmodule TdDf.AclLoader do
     roles
       |> Enum.map(fn role ->
         users = r_type
-        |> @acl_cache_resolver.get_acl_role_users(d_id, role)
-        |> Enum.map(fn user_id ->
-          case @user_cache_resolver.get_user(user_id) do
-            nil -> nil
-            user ->
-              user
-              |> Map.take([:full_name])
-              |> Map.put(:id, String.to_integer(user_id))
-          end
-        end)
+        |> get_user_by_resource_and_role(d_id, role)
         |> Enum.filter(& !is_nil(&1))
         {role, users}
       end)
+  end
+
+  defp get_user_by_resource_and_role(resource_type, resource_id, role) do
+    resource_type
+    |> @acl_cache_resolver.get_acl_role_users(resource_id, role)
+    |> Enum.map(fn user_id ->
+      case @user_cache_resolver.get_user(user_id) do
+        nil -> nil
+        user ->
+          user
+          |> Map.take([:full_name])
+          |> Map.put(:id, String.to_integer(user_id))
+      end
+    end)
   end
 
   defp flatten_user_list(users) do
