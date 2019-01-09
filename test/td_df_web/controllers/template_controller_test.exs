@@ -14,49 +14,33 @@ defmodule TdDfWeb.TemplateControllerTest do
   alias TdDfWeb.ApiServices.MockTdAuthService
   @df_cache Application.get_env(:td_df, :df_cache)
 
-  @create_attrs %{
-    content: [],
-    label: "some name",
-    name: "some_name",
-    is_default: false,
-    scope: "bg"
-  }
+  @create_attrs %{content: [], label: "some name", name: "some_name", scope: "bg"}
   @generic_attrs %{
     content: [%{type: "type1", required: true, name: "name1", max_size: 100}],
     label: "generic true",
     name: "generic_true",
-    is_default: false,
     scope: "bg"
   }
   @create_attrs_generic_true %{
     content: [%{includes: ["generic_true"]}, %{other_field: "other_field"}],
     label: "some name",
     name: "some_name",
-    is_default: false,
     scope: "bg"
   }
   @create_attrs_generic_false %{
     content: [%{includes: ["generic_false"]}, %{other_field: "other_field"}],
     label: "some name",
     name: "some_name",
-    is_default: false,
     scope: "bg"
   }
   @others_create_attrs_generic_true %{
     content: [%{includes: ["generic_true", "generic_false"]}, %{other_field: "other_field"}],
     label: "some name",
     name: "some_name",
-    is_default: false,
     scope: "bg"
   }
-  @update_attrs %{
-    content: [],
-    label: "some updated name",
-    name: "some_name",
-    is_default: false,
-    scope: "bg"
-  }
-  @invalid_attrs %{content: nil, label: nil, name: nil}
+  @update_attrs %{content: [], label: "some updated name", name: "some_name", scope: "bg"}
+  @invalid_attrs %{content: nil, label: nil,  name: nil}
 
   def fixture(:template) do
     {:ok, template} = Templates.create_template(@create_attrs)
@@ -116,20 +100,18 @@ defmodule TdDfWeb.TemplateControllerTest do
       MockAclLoaderResolver.set_acl_role_users("domain", domain_id, role_name, [user_id])
       MockTaxonomyResolver.set_domain_parents(domain_id, [])
 
-      {:ok, template} =
-        Templates.create_template(%{
-          "name" => "template_name",
-          "label" => "template_label",
-          "is_default" => false,
-          "scope" => "bg",
-          "content" => [
-            %{
-              "name" => "name1",
-              "type" => "list",
-              "meta" => %{"role" => role_name}
-            }
-          ]
-        })
+      {:ok, template} = Templates.create_template(%{
+        "name" => "template_name",
+        "label" => "template_label",
+        "scope" => "bg",
+        "content" => [
+          %{
+            "name" => "name1",
+            "type" => "list",
+            "meta" => %{"role" => role_name}
+          }
+        ]
+      })
 
       conn = get(conn, template_path(conn, :show, template.id, domain_id: domain_id))
       validate_resp_schema(conn, schema, "TemplateResponse")
@@ -151,7 +133,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert json_response(conn, 200)["data"] == %{
                "id" => id,
                "content" => [],
-               "is_default" => false,
                "label" => "some name",
                "name" => "some_name",
                "scope" => "bg"
@@ -185,7 +166,6 @@ defmodule TdDfWeb.TemplateControllerTest do
                    %{other_field: "other_field"},
                    %{type: "type1", required: true, name: "name1", max_size: 100}
                  ],
-                 "is_default" => false,
                  "label" => "some name",
                  "name" => "some_name",
                  "scope" => "bg"
@@ -210,7 +190,6 @@ defmodule TdDfWeb.TemplateControllerTest do
                JSON.encode(%{
                  "id" => id,
                  "content" => [%{other_field: "other_field"}],
-                 "is_default" => false,
                  "label" => "some name",
                  "name" => "some_name",
                  "scope" => "bg"
@@ -238,7 +217,6 @@ defmodule TdDfWeb.TemplateControllerTest do
                    %{other_field: "other_field"},
                    %{type: "type1", required: true, name: "name1", max_size: 100}
                  ],
-                 "is_default" => false,
                  "label" => "some name",
                  "name" => "some_name",
                  "scope" => "bg"
@@ -266,7 +244,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert json_response(conn, 200)["data"] == %{
                "id" => id,
                "content" => [],
-               "is_default" => false,
                "label" => "some updated name",
                "name" => "some_name",
                "scope" => "bg"

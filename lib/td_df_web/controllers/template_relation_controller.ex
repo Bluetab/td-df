@@ -121,22 +121,13 @@ defmodule TdDfWeb.TemplateRelationController do
 
     user = conn.assigns[:current_user]
 
-    results = resource_id
+    templates = resource_id
     |> String.to_integer
     |> Templates.list_related_template_ids(resource_type)
     |> Enum.map(&(&1.id_template))
     |> Templates.list_templates_by_id
     |> Preprocessor.preprocess_templates(
       %{resource_type: resource_type, resource_id: resource_id, user: user})
-
-    templates = case results do
-        [] ->
-          case Templates.get_default_template do
-            nil -> []
-            default_template -> [default_template]
-          end
-        templates -> templates
-    end
 
     render(conn, "templates.json", templates: templates)
   end

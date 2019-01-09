@@ -14,8 +14,7 @@ defmodule TdDf.Factory do
     %TdDf.Templates.Template {
       label: "some type",
       name: "some_type",
-      content: [],
-      is_default: false
+      content: []
     }
   end
 
