@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.0] 2019-01-09
+
+### Change
+
+- [TD-1223] remove id_default field from template
+
 ## [2.8.4] 2018-12-11
 
 ### Fixed
