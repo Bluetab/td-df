@@ -3,8 +3,8 @@ defmodule TdDfWeb.TemplateController do
   use TdDfWeb, :controller
   use PhoenixSwagger
 
-  alias TdDf.TemplatePreprocessor
   alias TdDf.Templates
+  alias TdDf.Templates.Preprocessor
   alias TdDf.Templates.Template
   alias TdDfWeb.ChangesetView
   alias TdDfWeb.ErrorView
@@ -72,7 +72,7 @@ defmodule TdDfWeb.TemplateController do
 
     template = id
     |> Templates.get_template!
-    |> TemplatePreprocessor.preprocess_template(%{
+    |> Preprocessor.preprocess_template(%{
       domain_id: domain_id,
       user: user
     })

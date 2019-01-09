@@ -14,7 +14,13 @@ defmodule TdDfWeb.TemplateControllerTest do
   alias TdDfWeb.ApiServices.MockTdAuthService
   @df_cache Application.get_env(:td_df, :df_cache)
 
-  @create_attrs %{content: [], label: "some name", name: "some_name", is_default: false, scope: "bg"}
+  @create_attrs %{
+    content: [],
+    label: "some name",
+    name: "some_name",
+    is_default: false,
+    scope: "bg"
+  }
   @generic_attrs %{
     content: [%{type: "type1", required: true, name: "name1", max_size: 100}],
     label: "generic true",
@@ -43,8 +49,14 @@ defmodule TdDfWeb.TemplateControllerTest do
     is_default: false,
     scope: "bg"
   }
-  @update_attrs %{content: [], label: "some updated name", name: "some_name", is_default: false, scope: "bg"}
-  @invalid_attrs %{content: nil, label: nil,  name: nil}
+  @update_attrs %{
+    content: [],
+    label: "some updated name",
+    name: "some_name",
+    is_default: false,
+    scope: "bg"
+  }
+  @invalid_attrs %{content: nil, label: nil, name: nil}
 
   def fixture(:template) do
     {:ok, template} = Templates.create_template(@create_attrs)
@@ -104,19 +116,20 @@ defmodule TdDfWeb.TemplateControllerTest do
       MockAclLoaderResolver.set_acl_role_users("domain", domain_id, role_name, [user_id])
       MockTaxonomyResolver.set_domain_parents(domain_id, [])
 
-      {:ok, template} = Templates.create_template(%{
-        "name" => "template_name",
-        "label" => "template_label",
-        "is_default" => false,
-        "scope" => "bg",
-        "content" => [
-          %{
-            "name" => "name1",
-            "type" => "list",
-            "meta" => %{"role" => role_name}
-          }
-        ]
-      })
+      {:ok, template} =
+        Templates.create_template(%{
+          "name" => "template_name",
+          "label" => "template_label",
+          "is_default" => false,
+          "scope" => "bg",
+          "content" => [
+            %{
+              "name" => "name1",
+              "type" => "list",
+              "meta" => %{"role" => role_name}
+            }
+          ]
+        })
 
       conn = get(conn, template_path(conn, :show, template.id, domain_id: domain_id))
       validate_resp_schema(conn, schema, "TemplateResponse")

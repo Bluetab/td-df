@@ -3,8 +3,8 @@ defmodule TdDfWeb.TemplateRelationController do
   use TdDfWeb, :controller
   use PhoenixSwagger
 
-  alias TdDf.TemplatePreprocessor
   alias TdDf.Templates
+  alias TdDf.Templates.Preprocessor
   alias TdDf.Templates.TemplateRelation
   alias TdDfWeb.SwaggerDefinitions
 
@@ -126,7 +126,7 @@ defmodule TdDfWeb.TemplateRelationController do
     |> Templates.list_related_template_ids(resource_type)
     |> Enum.map(&(&1.id_template))
     |> Templates.list_templates_by_id
-    |> TemplatePreprocessor.preprocess_templates(
+    |> Preprocessor.preprocess_templates(
       %{resource_type: resource_type, resource_id: resource_id, user: user})
 
     templates = case results do
