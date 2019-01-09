@@ -123,7 +123,6 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
       template_args = %{
         name: "t1",
         label: "l1",
-        is_default: false,
         content: [],
         scope: "bg"
       }
@@ -143,7 +142,6 @@ defmodule TdDfWeb.TemplateRelationControllerTest do
       "label" => template.label,
       "name" => template.name,
       "content" => template.content,
-      "is_default" => template.is_default,
       "scope" => "bg"
     }
   end

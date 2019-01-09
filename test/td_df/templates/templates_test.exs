@@ -16,14 +16,12 @@ defmodule TdDf.TemplatesTest do
       content: [],
       label: "some name",
       name: "some_name",
-      is_default: false,
       scope: "bg"
     }
     @update_attrs %{
       content: [],
       label: "some updated name",
       name: "some_name",
-      is_default: false,
       scope: "dq"
     }
     @invalid_attrs %{content: nil, label: nil, name: nil}
@@ -39,10 +37,10 @@ defmodule TdDf.TemplatesTest do
 
     def list_templates_fixture do
       [
-        %{content: [], label: "some name", name: "some_name", is_default: false, scope: "bg"},
-        %{content: [], label: "some name 1", name: "some_name_1", is_default: false, scope: "bg"},
-        %{content: [], label: "some name 2", name: "some_name_2", is_default: false, scope: "dq"},
-        %{content: [], label: "some name 3", name: "some_name_3", is_default: false, scope: "dd"}
+        %{content: [], label: "some name", name: "some_name", scope: "bg"},
+        %{content: [], label: "some name 1", name: "some_name_1", scope: "bg"},
+        %{content: [], label: "some name 2", name: "some_name_2", scope: "dq"},
+        %{content: [], label: "some name 3", name: "some_name_3", scope: "dd"}
       ]
       |> Enum.map(&template_fixture(&1))
     end
@@ -114,36 +112,6 @@ defmodule TdDf.TemplatesTest do
     test "change_template/1 returns a template changeset" do
       template = template_fixture()
       assert %Ecto.Changeset{} = Templates.change_template(template)
-    end
-  end
-
-  describe "working with default templates" do
-    test "get_default_template/1 gets default template" do
-      insert(:template, label: "label_1", name: "name_1", is_default: false)
-      template_2 = insert(:template, label: "label_2", name: "name_2", is_default: true)
-
-      default_template = Templates.get_default_template()
-      assert default_template.id == template_2.id
-    end
-
-    test "get_default_template/1 gets nil template when no one is default" do
-      insert(:template, label: "label_1", name: "name_1", is_default: false)
-      insert(:template, label: "label_2", name: "name_2", is_default: false)
-
-      assert Templates.get_default_template() == nil
-    end
-
-    test "update_template/1 avoid taking is_default" do
-      template_1 = insert(:template, label: "label_1", name: "name_1", is_default: true)
-      template_2 = insert(:template, label: "label_2", name: "name_2", is_default: false)
-
-      assert {:ok, _} = Templates.update_template(template_1, %{is_default: true})
-
-      template_1 = Templates.get_template_by_name(template_1.name)
-      template_2 = Templates.get_template_by_name(template_2.name)
-
-      assert template_1.is_default
-      assert !template_2.is_default
     end
   end
 

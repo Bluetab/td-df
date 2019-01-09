@@ -9,7 +9,6 @@ defmodule TdDf.Templates.Template do
     field :content, {:array, :map}
     field :label, :string
     field :name, :string
-    field :is_default, :boolean
     field :scope, :string
 
     timestamps(type: :utc_datetime)
@@ -18,10 +17,9 @@ defmodule TdDf.Templates.Template do
   @doc false
   def changeset(%Template{} = template, attrs) do
     template
-    |> cast(attrs, [:label, :name, :content, :is_default, :scope])
-    |> validate_required([:label, :name, :content, :is_default])
+    |> cast(attrs, [:label, :name, :content, :scope])
+    |> validate_required([:label, :name, :content])
     |> validate_format(:name, ~r/^[A-z0-9]*$/)
     |> unique_constraint(:name)
-    |> unique_constraint(:is_default)
   end
 end

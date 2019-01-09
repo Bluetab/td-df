@@ -16,7 +16,6 @@ alias Ecto.Changeset
 template = Repo.insert!(%Template{
   label: "Empty Tempalte",
   name: "empty",
-  is_default: false,
   content: [
   %{
     name: "dominio",
@@ -35,7 +34,6 @@ template = Repo.insert!(%Template{
 Repo.insert!(%Template{
   label: "Default Template",
   name: "default_template",
-  is_default: true,
   content: [
   %{
     name: "field_1",

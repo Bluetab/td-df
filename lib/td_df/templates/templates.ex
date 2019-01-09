@@ -57,10 +57,6 @@ defmodule TdDf.Templates do
     Repo.one from r in Template, where: r.name == ^name
   end
 
-  def get_default_template do
-    Repo.one from r in Template, where: r.is_default == true, limit: 1
-  end
-
   @doc """
   Creates a template.
 
