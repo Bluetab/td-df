@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.1] 2019-01-09
+
+### Change
+
+- Refactor template preprocessing, include tests
+
 ## [2.11.0] 2019-01-09
 
 ### Change
