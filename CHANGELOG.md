@@ -1,5 +1,11 @@
 # Changelog
 
+## [next_version] 2019-01-?
+
+### Removed
+
+- Removed unused TemplateRelation schema. (Made obsolete by scope property)
+
 ## [2.11.1] 2019-01-09
 
 ### Change

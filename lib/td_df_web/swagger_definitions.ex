@@ -79,69 +79,6 @@ defmodule TdDfWeb.SwaggerDefinitions do
             templates(Schema.ref(:TemplateItems))
           end
         end,
-      TemplateRelation:
-        swagger_schema do
-          title("TemplateRelation")
-          description("A Template Relation")
-
-          properties do
-            id_template(:integer, "Template ID", required: true)
-            resource_id(:integer, "Related Object ID", required: true)
-            resource_type(:string, "Related Object Type", required: true)
-          end
-
-          example(%{
-            id_template: 1,
-            resource_id: 5,
-            resource_type: "domain"
-          })
-        end,
-      TemplateRelationCreateUpdate:
-        swagger_schema do
-          properties do
-            template_relation(
-              Schema.new do
-                properties do
-                  id_template(:integer, "Template ID", required: true)
-                  resource_id(:integer, "Related Object ID", required: true)
-                  resource_type(:string, "Related Object Type", required: true)
-                end
-              end
-            )
-          end
-        end,
-      TemplateRelations:
-        swagger_schema do
-          title("TemplateRelations")
-          description("A collection of Template Relations")
-          type(:array)
-          items(Schema.ref(:TemplateRelation))
-        end,
-      TemplateRelationResponse:
-        swagger_schema do
-          properties do
-            data(Schema.ref(:TemplateRelation))
-          end
-        end,
-      TemplateRelationsResponse:
-        swagger_schema do
-          properties do
-            data(Schema.ref(:TemplateRelations))
-          end
-        end,
-      TemplateRelationItem:
-        swagger_schema do
-          properties do
-            id_template(:integer, "Template ID", required: true)
-            resource_id(:integer, "Related Object ID", required: true)
-            resource_type(:string, "Related Object Type", required: true)
-          end
-        end,
-      TemplateRelationItems:
-        swagger_schema do
-          type(:array)
-          items(Schema.ref(:TemplateRelationItem))
-        end,
       Content:
         swagger_schema do
           properties do

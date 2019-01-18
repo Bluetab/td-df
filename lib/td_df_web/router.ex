@@ -33,9 +33,6 @@ defmodule TdDfWeb.Router do
 
     resources "/templates", TemplateController, except: [:new, :edit]
     get "/templates/load/:id", TemplateController, :load_and_show
-
-    get "/template_relations/related_templates", TemplateRelationController, :get_related_templates
-    resources "/template_relations", TemplateRelationController, except: [:new, :edit]
   end
 
   def swagger_info do
