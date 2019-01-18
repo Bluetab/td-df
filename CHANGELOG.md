@@ -5,6 +5,7 @@
 ### Removed
 
 - Removed unused TemplateRelation schema. (Made obsolete by scope property)
+- Removed unused Hypermedia
 
 ## [2.11.1] 2019-01-09
 
