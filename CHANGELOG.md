@@ -1,11 +1,15 @@
 # Changelog
 
-## [next_version] 2019-01-?
+## [2.12.0] 2019-01-29
 
 ### Removed
 
 - Removed unused TemplateRelation schema. (Made obsolete by scope property)
 - Removed unused Hypermedia
+
+### Changed
+ 
+- [TD-1101] Changed formater and preprocessor to the new template format 
 
 ## [2.11.1] 2019-01-09
 

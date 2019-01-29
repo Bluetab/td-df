@@ -68,9 +68,9 @@ defmodule TdDf.Templates.PreprocessorTest do
   defp sample_template do
     %{
       content: [
-        %{"name" => "_confidential", "foo" => "bar", "meta" => "will be deleted"},
-        %{"name" => "foo1", "type" => "list", "meta" => %{"role" => "owner"}},
-        %{"name" => "foo2", "type" => "type", "meta" => %{"foo" => "bar"}},
+        %{"name" => "_confidential", "foo" => "bar"},
+        %{"name" => "foo1", "type" => "user", "values" => %{"role_users" => "owner"}},
+        %{"name" => "foo2", "type" => "type"},
         %{"foo" => "bar"}
       ],
       foo: "bar"
@@ -84,8 +84,8 @@ defmodule TdDf.Templates.PreprocessorTest do
 
     user_field = %{
       "name" => "foo1",
-      "type" => "list",
-      "values" => user_full_names
+      "type" => "user",
+      "values" => %{"role_users" => user_full_names}
     }
 
     user_field =
@@ -105,9 +105,8 @@ defmodule TdDf.Templates.PreprocessorTest do
           "disabled" => true,
           "foo" => "bar",
           "name" => "_confidential",
-          "required" => false,
-          "type" => "list",
-          "values" => ["Si", "No"],
+          "cardinality" => "?",
+          "type" => "string",
           "widget" => "checkbox"
         },
         user_field,

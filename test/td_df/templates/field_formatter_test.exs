@@ -5,7 +5,7 @@ defmodule TdDf.Templates.FieldFormatterTest do
 
   describe "template preprocessor" do
     test "format/2 formats the _confidential field" do
-      field = %{"name" => "_confidential", "foo" => "bar", "meta" => "will be deleted"}
+      field = %{"name" => "_confidential", "foo" => "bar"}
       ctx = %{}
 
       expected = %{
@@ -13,9 +13,8 @@ defmodule TdDf.Templates.FieldFormatterTest do
         "disabled" => true,
         "foo" => "bar",
         "name" => "_confidential",
-        "required" => false,
-        "type" => "list",
-        "values" => ["Si", "No"],
+        "cardinality" => "?",
+        "type" => "string",
         "widget" => "checkbox"
       }
 
@@ -23,7 +22,7 @@ defmodule TdDf.Templates.FieldFormatterTest do
     end
 
     test "format/2 applies role metadata" do
-      field = %{"name" => "foo", "type" => "list", "meta" => %{"role" => "owner"}}
+      field = %{"name" => "foo", "type" => "user", "values" => %{"role_users" => "owner"}}
       users = [%{id: 1, full_name: "User 1"}, %{id: 2, full_name: "User 2"}]
       user_roles = %{"owner" => users}
       user = %{id: 2}
@@ -32,18 +31,9 @@ defmodule TdDf.Templates.FieldFormatterTest do
       expected = %{
         "default" => "User 2",
         "name" => "foo",
-        "type" => "list",
-        "values" => ["User 1", "User 2"]
+        "type" => "user",
+        "values" => %{"role_users" => ["User 1", "User 2"]}
       }
-
-      assert FieldFormatter.format(field, ctx) == expected
-    end
-
-    test "format/2 removes metadata" do
-      field = %{"name" => "foo", "type" => "type", "meta" => %{"foo" => "bar"}}
-      ctx = %{}
-
-      expected = %{"name" => "foo", "type" => "type"}
 
       assert FieldFormatter.format(field, ctx) == expected
     end

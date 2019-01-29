@@ -95,6 +95,12 @@ defmodule TdDf.Templates do
     |> refresh_cache
   end
 
+  def update_template_no_cache(%Template{} = template, attrs) do
+    template
+    |> Template.changeset(attrs)
+    |> Repo.update
+  end
+
   @doc """
   Deletes a Template.
 

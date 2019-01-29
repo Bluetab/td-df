@@ -6,26 +6,18 @@ defmodule TdDf.Templates.FieldFormatter do
 
   def format(%{"name" => "_confidential"} = field, ctx) do
     field
-    |> Map.put("type", "list")
+    |> Map.put("type", "string")
     |> Map.put("widget", "checkbox")
-    |> Map.put("required", false)
-    |> Map.put("values", ["Si", "No"])
+    |> Map.put("cardinality", "?")
     |> Map.put("default", "No")
     |> Map.put("disabled", is_confidential_field_disabled?(ctx))
-    |> Map.delete("meta")
   end
 
-  def format(%{"type" => "list", "meta" => %{"role" => role_name}} = field, ctx) do
+  def format(%{"type" => "user", "values" => %{"role_users" => role_name}} = field, ctx) do
     user = Map.get(ctx, :user, nil)
     user_roles = Map.get(ctx, :user_roles, [])
     field
     |> apply_role_meta(user, role_name, user_roles)
-    |> Map.delete("meta")
-  end
-
-  def format(%{"type" => _type, "meta" => _meta} = field, _ctx) do
-    field
-    |> Map.delete("meta")
   end
 
   def format(%{} = field, _ctx), do: field
@@ -46,7 +38,7 @@ defmodule TdDf.Templates.FieldFormatter do
       users
       |> Enum.map(& &1.full_name)
 
-    field = Map.put(field, "values", usernames)
+    field = Map.put(field, "values", %{"role_users" => usernames})
 
     case Enum.find(users, &(&1.id == user.id)) do
       nil -> field
