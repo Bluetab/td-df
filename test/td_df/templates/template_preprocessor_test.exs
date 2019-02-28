@@ -1,13 +1,17 @@
 defmodule TdDf.Templates.PreprocessorTest do
   use ExUnit.Case
 
+  alias Poision
+  alias TdDf.Accounts.User
   alias TdDf.AclLoader.MockAclLoaderResolver
   alias TdDf.MockTaxonomyResolver
+  alias TdDf.Permissions.MockPermissionResolver
   alias TdDf.Templates.Preprocessor
 
   setup_all do
     start_supervised(MockAclLoaderResolver)
     start_supervised(MockTaxonomyResolver)
+    start_supervised(MockPermissionResolver)
     :ok
   end
 
@@ -28,24 +32,6 @@ defmodule TdDf.Templates.PreprocessorTest do
       expected = sample_template_preprocessed([user_id], user_id)
 
       assert Preprocessor.preprocess_template(template, ctx) == expected
-    end
-
-    test "preprocess_templates/2 formats the templates content" do
-      ctx = user_roles_context()
-      template = sample_template()
-      expected = sample_template_preprocessed()
-
-      assert Preprocessor.preprocess_templates([template], ctx) == [expected]
-    end
-
-    test "preprocess_templates/2 with resource_type and resource_id uses role data cache to format content" do
-      {domain_id, user_id} = domain_user_role_fixture()
-
-      ctx = resource_type_context("#{domain_id}", user_id)
-      template = sample_template()
-      expected = sample_template_preprocessed([user_id], user_id)
-
-      assert Preprocessor.preprocess_templates([template], ctx) == [expected]
     end
   end
 
@@ -118,11 +104,7 @@ defmodule TdDf.Templates.PreprocessorTest do
   end
 
   defp domain_user_context(domain_id, user_id) do
-    %{domain_id: domain_id, user: %{id: user_id}}
-  end
-
-  defp resource_type_context(domain_id, user_id) do
-    %{resource_type: "domain", resource_id: domain_id, user: %{id: user_id}}
+    %{domain_id: domain_id, user: %User{id: user_id}}
   end
 
   defp user_roles_context do
