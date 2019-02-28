@@ -1,5 +1,15 @@
 # Changelog
 
+## [XXX] 2019-02-28
+
+### Fixed
+
+- Manage confidential field for super admin user
+
+### Changed
+
+- Template is always preprocessed on show
+
 ## [2.12.0] 2019-01-29
 
 ### Removed
