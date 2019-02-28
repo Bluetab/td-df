@@ -20,6 +20,7 @@ defmodule TdDfWeb.TemplateController do
     description("List Templates")
     response(200, "OK", Schema.ref(:TemplatesResponse))
   end
+
   def index(conn, params) do
     templates = Templates.list_templates(params)
     render(conn, "index.json", templates: templates)
@@ -48,8 +49,10 @@ defmodule TdDfWeb.TemplateController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(ChangesetView, "error.json", changeset: changeset)
+
       error ->
         Logger.error("While creating template... #{inspect(error)}")
+
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422.json")
@@ -67,19 +70,23 @@ defmodule TdDfWeb.TemplateController do
     response(200, "OK", Schema.ref(:TemplateResponse))
     response(400, "Client Error")
   end
-  def show(conn, %{"id" => id, "domain_id" => domain_id}) do
+
+  def show(conn, %{"id" => id} = params) do
     user = conn.assigns[:current_user]
 
-    template = id
-    |> Templates.get_template!
-    |> Preprocessor.preprocess_template(%{
-      domain_id: domain_id,
-      user: user
-    })
-    render(conn, "show.json", template: template)
-  end
-  def show(conn, %{"id" => id}) do
-    template = Templates.get_template!(id)
+    domain_id = Map.get(params, "domain_id")
+
+    preprocess_params =
+      format_preprocess_params(%{
+        domain_id: domain_id,
+        user: user
+      })
+
+    template =
+      id
+      |> Templates.get_template!()
+      |> Preprocessor.preprocess_template(preprocess_params)
+
     render(conn, "show.json", template: template)
   end
 
@@ -154,20 +161,21 @@ defmodule TdDfWeb.TemplateController do
   def update(conn, %{"id" => id, "template" => template_params}) do
     template = Templates.get_template!(id)
 
-    update_params = template_params
-    |> Map.drop([:name])
+    update_params =
+      template_params
+      |> Map.drop([:name])
 
-    with {:ok, %Template{} = template} <-
-      Templates.update_template(template, update_params) do
-
+    with {:ok, %Template{} = template} <- Templates.update_template(template, update_params) do
       render(conn, "show.json", template: template)
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(ChangesetView, "error.json", changeset: changeset)
+
       error ->
         Logger.error("While updating template... #{inspect(error)}")
+
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422.json")
@@ -188,14 +196,22 @@ defmodule TdDfWeb.TemplateController do
 
   def delete(conn, %{"id" => id}) do
     template = Templates.get_template!(id)
+
     with {:ok, %Template{}} <- Templates.delete_template(template) do
       send_resp(conn, :no_content, "")
     else
       error ->
         Logger.error("While deleting template... #{inspect(error)}")
+
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422.json")
     end
   end
+
+  defp format_preprocess_params(%{domain_id: nil} = raw_params) do
+    raw_params |> Map.delete(:domain_id)
+  end
+
+  defp format_preprocess_params(raw_params), do: raw_params
 end
