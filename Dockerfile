@@ -1,7 +1,6 @@
 # ---- Copy Files/Build ----
 FROM elixir:1.6.6-alpine AS build
-
-MAINTAINER True-Dat Dev Team
+LABEL maintainer="True-Dat Dev Team"
 
 RUN apk --no-cache update \
     && apk --no-cache add git make g++ \
@@ -27,7 +26,7 @@ RUN mix release --env=${MIX_ENV}
 
 # --- Release with Alpine ----
 ### Minimal run-time image
-FROM alpine:latest
+FROM alpine:3.8
 
 RUN apk --no-cache update && apk --no-cache upgrade && apk --no-cache add ncurses-libs openssl bash ca-certificates
 

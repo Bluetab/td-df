@@ -5,6 +5,7 @@
 ### Fixed
 
 - Manage confidential field for super admin user
+- Updated alpine docker base image to 3.8 instead of latest
 
 ### Changed
 
