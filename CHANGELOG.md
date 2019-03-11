@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] 2019-03-11
+
+- Updated td-perms version to 2.15.0. Writes scope to Redis cache
+
 ## [2.14.0] 2019-03-02
 
 ### Fixed

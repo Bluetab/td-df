@@ -9,8 +9,8 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   alias TdDfWeb.ApiServices.MockTdAuthService
   @df_cache Application.get_env(:td_df, :df_cache)
 
-  @create_attrs %{content: [], label: "some label", name: "some_name"}
-  @update_attrs %{content: [], label: "some updated label", name: "some_name"}
+  @create_attrs %{content: [], label: "some label", name: "some_name", scope: "s1"}
+  @update_attrs %{content: [], label: "some updated label", name: "some_name", scope: "s2"}
 
   def fixture(:template) do
     {:ok, template} = Templates.create_template(@create_attrs)
@@ -39,7 +39,8 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
                id: id,
                content: [],
                label: "some label",
-               name: "some_name"
+               name: "some_name",
+               scope: "s1"
              }
     end
   end
@@ -60,7 +61,8 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
                id: id,
                content: [],
                label: "some updated label",
-               name: "some_name"
+               name: "some_name",
+               scope: "s2"
              }
     end
   end
