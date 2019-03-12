@@ -32,7 +32,10 @@ defmodule TdDf.Templates.FieldFormatterTest do
         "default" => "User 2",
         "name" => "foo",
         "type" => "user",
-        "values" => %{"role_users" => ["User 1", "User 2"]}
+        "values" => %{
+          "role_users" => "owner",
+          "processed_users" => ["User 1", "User 2"]
+        }
       }
 
       assert FieldFormatter.format(field, ctx) == expected

@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased] 2019-03-11
+
+### Changed
+
+- [TD-1548] When preprocessing template, role_users are stored in a different attribute to avoid overwriting the role value, needed for editing the template
+
 ## [2.14.0] 2019-03-02
 
 ### Fixed

@@ -71,7 +71,10 @@ defmodule TdDf.Templates.PreprocessorTest do
     user_field = %{
       "name" => "foo1",
       "type" => "user",
-      "values" => %{"role_users" => user_full_names}
+      "values" => %{
+        "role_users" =>  "owner",
+        "processed_users" => user_full_names
+      }
     }
 
     user_field =
