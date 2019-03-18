@@ -5,6 +5,7 @@
 ### Changed
 
 - [TD-1548] When preprocessing template, role_users are stored in a different attribute to avoid overwriting the role value, needed for editing the template
+- [TD-1468] Updated td-perms version to 2.15.0. Writes scope to Redis cache
 
 ## [2.14.0] 2019-03-02
 
