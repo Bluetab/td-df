@@ -30,7 +30,7 @@ defmodule TdDf.Templates.FieldFormatter do
 
   defp is_confidential_field_disabled?(_), do: true
 
-  defp apply_role_meta(%{} = field, user, role_name, user_roles)
+  defp apply_role_meta(%{"values" => values} = field, user, role_name, user_roles)
        when not is_nil(user) and not is_nil(role_name) do
     users = Map.get(user_roles, role_name, [])
 
@@ -38,7 +38,8 @@ defmodule TdDf.Templates.FieldFormatter do
       users
       |> Enum.map(& &1.full_name)
 
-    field = Map.put(field, "values", %{"role_users" => usernames})
+    values = Map.put(values, "processed_users", usernames)
+    field = Map.put(field, "values", values)
 
     case Enum.find(users, &(&1.id == user.id)) do
       nil -> field

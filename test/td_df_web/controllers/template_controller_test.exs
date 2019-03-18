@@ -115,7 +115,11 @@ defmodule TdDfWeb.TemplateControllerTest do
 
       conn = get(conn, template_path(conn, :show, template.id, domain_id: domain_id))
       validate_resp_schema(conn, schema, "TemplateResponse")
-      assert Enum.at(json_response(conn, 200)["data"]["content"], 0)["values"] == %{"role_users" => [username]}
+      expected_values = %{
+        "role_users" => role_name,
+        "processed_users" => [username]
+      }
+      assert Enum.at(json_response(conn, 200)["data"]["content"], 0)["values"] == expected_values
     end
   end
 
