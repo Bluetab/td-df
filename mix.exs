@@ -7,7 +7,7 @@ defmodule TdDf.Mixfile do
       app: :td_df,
       version:
         case System.get_env("APP_VERSION") do
-          nil -> "2.14.0-local"
+          nil -> "2.15.0-local"
           v -> v
         end,
       elixir: "~> 1.6",
