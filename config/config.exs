@@ -33,8 +33,11 @@ config :td_df, TdDf.Repo,
   pool_size: 10
 
 # Configures Elixir's Logger
+# set EX_LOGGER_FORMAT environment variable to override Elixir's Logger format
+# (without the 'end of line' character)
+# EX_LOGGER_FORMAT='$date $time [$level] $message'
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
+  format: (System.get_env("EX_LOGGER_FORMAT") || "$time $metadata[$level] $message") <> "\n",
   metadata: [:request_id]
 
 config :td_df, TdDf.Auth.Guardian,
