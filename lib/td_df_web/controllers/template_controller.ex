@@ -42,20 +42,22 @@ defmodule TdDfWeb.TemplateController do
     with {:ok, %Template{} = template} <- Templates.create_template(template) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", template_path(conn, :show, template))
+      |> put_resp_header("location", Routes.template_path(conn, :show, template))
       |> render("show.json", template: template)
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(ChangesetView, "error.json", changeset: changeset)
+        |> put_view(ChangesetView)
+        |> render("error.json", changeset: changeset)
 
       error ->
         Logger.error("While creating template... #{inspect(error)}")
 
         conn
         |> put_status(:unprocessable_entity)
-        |> render(ErrorView, :"422.json")
+        |> put_view(ErrorView)
+        |> render("422.json")
     end
   end
 
@@ -171,14 +173,16 @@ defmodule TdDfWeb.TemplateController do
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(ChangesetView, "error.json", changeset: changeset)
+        |> put_view(ChangesetView)
+        |> render("error.json", changeset: changeset)
 
       error ->
         Logger.error("While updating template... #{inspect(error)}")
 
         conn
         |> put_status(:unprocessable_entity)
-        |> render(ErrorView, :"422.json")
+        |> put_view(ErrorView)
+        |> render("422.json")
     end
   end
 
@@ -205,7 +209,8 @@ defmodule TdDfWeb.TemplateController do
 
         conn
         |> put_status(:unprocessable_entity)
-        |> render(ErrorView, :"422.json")
+        |> put_view(ErrorView)
+        |> render("422.json")
     end
   end
 

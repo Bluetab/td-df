@@ -31,10 +31,11 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   describe "create template" do
     @tag :admin_authenticated
     test "writes data to cache when creating", %{conn: conn} do
-      conn = post(conn, template_path(conn, :create), template: @create_attrs)
+      conn = post(conn, Routes.template_path(conn, :create), template: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       template = @df_cache.get_template_by_name("some_name")
+
       assert template == %{
                id: id,
                content: [],
@@ -53,10 +54,11 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
       conn: conn,
       template: %Template{id: id} = template
     } do
-      conn = put(conn, template_path(conn, :update, template), template: @update_attrs)
+      conn = put(conn, Routes.template_path(conn, :update, template), template: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       template = @df_cache.get_template_by_name("some_name")
+
       assert template == %{
                id: id,
                content: [],
@@ -72,7 +74,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
 
     @tag :admin_authenticated
     test "clean cache when template is deleted", %{conn: conn, template: template} do
-      conn = delete(conn, template_path(conn, :delete, template))
+      conn = delete(conn, Routes.template_path(conn, :delete, template))
       assert response(conn, 204)
 
       template = @df_cache.get_template_by_name("some_name")

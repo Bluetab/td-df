@@ -21,22 +21,22 @@ defmodule TdDfWeb do
     quote do
       use Phoenix.Controller, namespace: TdDfWeb
       import Plug.Conn
-      import TdDfWeb.Router.Helpers
       import TdDfWeb.Gettext
+      alias TdDfWeb.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/TdDf_web/templates",
-                        namespace: TdDfWeb
+      use Phoenix.View,
+        root: "lib/TdDf_web/templates",
+        namespace: TdDfWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
-
-      import TdDfWeb.Router.Helpers
       import TdDfWeb.ErrorHelpers
       import TdDfWeb.Gettext
+      alias TdDfWeb.Router.Helpers, as: Routes
     end
   end
 

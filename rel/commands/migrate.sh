@@ -1,3 +1,3 @@
 #!/bin/sh
 
-bin/td_df command Elixir.TdDf.ReleaseTasks seed
+$RELEASE_ROOT_DIR/bin/td_df eval 'Elixir.TdDf.ReleaseTasks.migrate()'

@@ -11,11 +11,10 @@ config :logger, level: :warn
 
 # Configure your database
 config :td_df, TdDf.Repo,
-  adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
   database: "td_df_test",
-  hostname: "localhost",
+  hostname: "postgres",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 1
 
@@ -29,5 +28,4 @@ config :td_df, taxonomy_cache_resolver: TdDf.MockTaxonomyResolver
 config :td_df, cache_templates_on_startup: false
 config :td_df, df_cache: TdPerms.MockDynamicFormCache
 
-config :td_perms, redis_host: "localhost"
-
+config :td_perms, redis_host: "redis"

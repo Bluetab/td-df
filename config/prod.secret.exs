@@ -13,7 +13,6 @@ config :td_df, TdDfWeb.Endpoint,
 
 # Configure your database
 config :td_df, TdDf.Repo,
-  adapter: Ecto.Adapters.Postgres,
   username: "${DB_USER}",
   password: "${DB_PASSWORD}",
   database: "${DB_NAME}",
@@ -21,9 +20,10 @@ config :td_df, TdDf.Repo,
   pool_size: 10
 
 config :td_df, TdDf.Auth.Guardian,
-  allowed_algos: ["HS512"], # optional
+  # optional
+  allowed_algos: ["HS512"],
   issuer: "tdauth",
-  ttl: { 1, :hours },
+  ttl: {1, :hours},
   secret_key: "${GUARDIAN_SECRET_KEY}"
 
 config :td_perms, redis_host: "${REDIS_HOST}"
