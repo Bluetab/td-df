@@ -10,16 +10,18 @@ defmodule TdDfWeb.FeatureCase do
 
   using do
     quote do
-      import TdDfWeb.Router.Helpers
+      alias TdDfWeb.Router.Helpers, as: Routes
       @endpoint TdDfWeb.Endpoint
     end
   end
 
   setup tags do
     :ok = Sandbox.checkout(TdDf.Repo)
+
     unless tags[:async] do
       Sandbox.mode(TdDf.Repo, {:shared, self()})
     end
+
     :ok
   end
 end

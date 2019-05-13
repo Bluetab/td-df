@@ -40,7 +40,7 @@ defmodule TdDfWeb.TemplateControllerTest do
     scope: "bg"
   }
   @update_attrs %{content: [], label: "some updated name", name: "some_name", scope: "bg"}
-  @invalid_attrs %{content: nil, label: nil,  name: nil}
+  @invalid_attrs %{content: nil, label: nil, name: nil}
 
   def fixture(:template) do
     {:ok, template} = Templates.create_template(@create_attrs)
@@ -63,25 +63,25 @@ defmodule TdDfWeb.TemplateControllerTest do
   describe "index" do
     @tag :admin_authenticated
     test "lists all templates", %{conn: conn, swagger_schema: schema} do
-      conn = get(conn, template_path(conn, :index))
+      conn = get(conn, Routes.template_path(conn, :index))
       validate_resp_schema(conn, schema, "TemplatesResponse")
       assert json_response(conn, 200)["data"] == []
     end
 
     @tag :admin_authenticated
     test "lists all templates filtered by scope", %{conn: conn, swagger_schema: schema} do
-      conn = post(conn, template_path(conn, :create), template: @generic_attrs)
+      conn = post(conn, Routes.template_path(conn, :create), template: @generic_attrs)
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       conn = recycle_and_put_headers(conn)
 
-      conn = get(conn, template_path(conn, :index), scope: "bg")
+      conn = get(conn, Routes.template_path(conn, :index), scope: "bg")
       validate_resp_schema(conn, schema, "TemplatesResponse")
       assert length(json_response(conn, 200)["data"]) == 1
 
       conn = recycle_and_put_headers(conn)
 
-      conn = get(conn, template_path(conn, :index), scope: "dd")
+      conn = get(conn, Routes.template_path(conn, :index), scope: "dd")
       validate_resp_schema(conn, schema, "TemplatesResponse")
       assert json_response(conn, 200)["data"] == []
     end
@@ -100,25 +100,28 @@ defmodule TdDfWeb.TemplateControllerTest do
       MockAclLoaderResolver.set_acl_role_users("domain", domain_id, role_name, [user_id])
       MockTaxonomyResolver.set_domain_parents(domain_id, [])
 
-      {:ok, template} = Templates.create_template(%{
-        "name" => "template_name",
-        "label" => "template_label",
-        "scope" => "bg",
-        "content" => [
-          %{
-            "name" => "name1",
-            "type" => "user",
-            "values" => %{"role_users" => role_name}
-          }
-        ]
-      })
+      {:ok, template} =
+        Templates.create_template(%{
+          "name" => "template_name",
+          "label" => "template_label",
+          "scope" => "bg",
+          "content" => [
+            %{
+              "name" => "name1",
+              "type" => "user",
+              "values" => %{"role_users" => role_name}
+            }
+          ]
+        })
 
-      conn = get(conn, template_path(conn, :show, template.id, domain_id: domain_id))
+      conn = get(conn, Routes.template_path(conn, :show, template.id, domain_id: domain_id))
       validate_resp_schema(conn, schema, "TemplateResponse")
+
       expected_values = %{
         "role_users" => role_name,
         "processed_users" => [username]
       }
+
       assert Enum.at(json_response(conn, 200)["data"]["content"], 0)["values"] == expected_values
     end
   end
@@ -126,12 +129,12 @@ defmodule TdDfWeb.TemplateControllerTest do
   describe "create template" do
     @tag :admin_authenticated
     test "renders template when data is valid", %{conn: conn, swagger_schema: schema} do
-      conn = post(conn, template_path(conn, :create), template: @create_attrs)
+      conn = post(conn, Routes.template_path(conn, :create), template: @create_attrs)
       validate_resp_schema(conn, schema, "TemplateResponse")
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = recycle_and_put_headers(conn)
-      conn = get(conn, template_path(conn, :show, id))
+      conn = get(conn, Routes.template_path(conn, :show, id))
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       assert json_response(conn, 200)["data"] == %{
@@ -145,22 +148,22 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :admin_authenticated
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, template_path(conn, :create), template: @invalid_attrs)
+      conn = post(conn, Routes.template_path(conn, :create), template: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
     @tag :admin_authenticated
     test "renders template with valid includes", %{conn: conn, swagger_schema: schema} do
-      conn = post(conn, template_path(conn, :create), template: @generic_attrs)
+      conn = post(conn, Routes.template_path(conn, :create), template: @generic_attrs)
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       conn = recycle_and_put_headers(conn)
-      conn = post(conn, template_path(conn, :create), template: @create_attrs_generic_true)
+      conn = post(conn, Routes.template_path(conn, :create), template: @create_attrs_generic_true)
       validate_resp_schema(conn, schema, "TemplateResponse")
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = recycle_and_put_headers(conn)
-      conn = get(conn, template_path(conn, :load_and_show, id))
+      conn = get(conn, Routes.template_path(conn, :load_and_show, id))
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       assert JSON.encode(json_response(conn, 200)["data"]) ==
@@ -178,16 +181,19 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :admin_authenticated
     test "renders template with invalid includes", %{conn: conn, swagger_schema: schema} do
-      conn = post(conn, template_path(conn, :create), template: @generic_attrs)
+      conn = post(conn, Routes.template_path(conn, :create), template: @generic_attrs)
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       conn = recycle_and_put_headers(conn)
-      conn = post(conn, template_path(conn, :create), template: @create_attrs_generic_false)
+
+      conn =
+        post(conn, Routes.template_path(conn, :create), template: @create_attrs_generic_false)
+
       validate_resp_schema(conn, schema, "TemplateResponse")
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = recycle_and_put_headers(conn)
-      conn = get(conn, template_path(conn, :load_and_show, id))
+      conn = get(conn, Routes.template_path(conn, :load_and_show, id))
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       assert JSON.encode(json_response(conn, 200)["data"]) ==
@@ -202,16 +208,21 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :admin_authenticated
     test "renders template with valid and invalid includes", %{conn: conn, swagger_schema: schema} do
-      conn = post(conn, template_path(conn, :create), template: @generic_attrs)
+      conn = post(conn, Routes.template_path(conn, :create), template: @generic_attrs)
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       conn = recycle_and_put_headers(conn)
-      conn = post(conn, template_path(conn, :create), template: @others_create_attrs_generic_true)
+
+      conn =
+        post(conn, Routes.template_path(conn, :create),
+          template: @others_create_attrs_generic_true
+        )
+
       validate_resp_schema(conn, schema, "TemplateResponse")
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = recycle_and_put_headers(conn)
-      conn = get(conn, template_path(conn, :load_and_show, id))
+      conn = get(conn, Routes.template_path(conn, :load_and_show, id))
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       assert JSON.encode(json_response(conn, 200)["data"]) ==
@@ -237,12 +248,12 @@ defmodule TdDfWeb.TemplateControllerTest do
       swagger_schema: schema,
       template: %Template{id: id} = template
     } do
-      conn = put(conn, template_path(conn, :update, template), template: @update_attrs)
+      conn = put(conn, Routes.template_path(conn, :update, template), template: @update_attrs)
       validate_resp_schema(conn, schema, "TemplateResponse")
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = recycle_and_put_headers(conn)
-      conn = get(conn, template_path(conn, :show, id))
+      conn = get(conn, Routes.template_path(conn, :show, id))
       validate_resp_schema(conn, schema, "TemplateResponse")
 
       assert json_response(conn, 200)["data"] == %{
@@ -256,7 +267,7 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :admin_authenticated
     test "renders errors when data is invalid", %{conn: conn, template: template} do
-      conn = put(conn, template_path(conn, :update, template), template: @invalid_attrs)
+      conn = put(conn, Routes.template_path(conn, :update, template), template: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -266,12 +277,12 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :admin_authenticated
     test "deletes chosen template", %{conn: conn, template: template} do
-      conn = delete(conn, template_path(conn, :delete, template))
+      conn = delete(conn, Routes.template_path(conn, :delete, template))
       assert response(conn, 204)
       conn = recycle_and_put_headers(conn)
 
       assert_error_sent(404, fn ->
-        get(conn, template_path(conn, :show, template))
+        get(conn, Routes.template_path(conn, :show, template))
       end)
     end
   end

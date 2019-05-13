@@ -22,8 +22,8 @@ defmodule TdDfWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import TdDfWeb.Router.Helpers
       import TdDf.Factory
+      alias TdDfWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
       @endpoint TdDfWeb.Endpoint
@@ -34,6 +34,7 @@ defmodule TdDfWeb.ConnCase do
 
   setup tags do
     :ok = Sandbox.checkout(TdDf.Repo)
+
     unless tags[:async] do
       Sandbox.mode(TdDf.Repo, {:shared, self()})
     end
@@ -42,11 +43,13 @@ defmodule TdDfWeb.ConnCase do
       tags[:admin_authenticated] ->
         user = create_user(@admin_user_name, is_admin: true)
         create_user_auth_conn(user)
+
       tags[:authenticated_user] ->
         user = create_user(tags[:authenticated_user])
         create_user_auth_conn(user)
-       true ->
-         {:ok, conn: ConnTest.build_conn()}
+
+      true ->
+        {:ok, conn: ConnTest.build_conn()}
     end
   end
 end
