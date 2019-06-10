@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased] 2019-06-10
+
+### Changed
+
+- [TD-1855] Allow template names to have spaces
+
 ## [2.19.0] 2019-05-14
 
 ### Fixed

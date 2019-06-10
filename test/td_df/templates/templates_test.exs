@@ -84,6 +84,11 @@ defmodule TdDf.TemplatesTest do
       assert template.scope == "bg"
     end
 
+    test "create_template/1 allows to create template name with spaces" do
+      template = template_fixture(%{name: "name with space"})
+      assert template.name == "name with space"
+    end
+
     test "create_template/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Templates.create_template(@invalid_attrs)
     end
