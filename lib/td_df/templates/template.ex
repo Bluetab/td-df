@@ -19,7 +19,7 @@ defmodule TdDf.Templates.Template do
     template
     |> cast(attrs, [:label, :name, :content, :scope])
     |> validate_required([:label, :name, :content])
-    |> validate_format(:name, ~r/^[A-z0-9]*$/)
+    |> validate_format(:name, ~r/^[A-z0-9 ]*$/)
     |> unique_constraint(:name)
   end
 end
