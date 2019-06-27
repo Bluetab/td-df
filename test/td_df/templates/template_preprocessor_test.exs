@@ -2,32 +2,40 @@ defmodule TdDf.Templates.PreprocessorTest do
   use ExUnit.Case
 
   alias Poision
-  alias TdDf.Accounts.User
-  alias TdDf.AclLoader.MockAclLoaderResolver
-  alias TdDf.MockTaxonomyResolver
-  alias TdDf.Permissions.MockPermissionResolver
+  alias TdCache.AclCache
+  alias TdCache.DomainCache
+  alias TdCache.UserCache
   alias TdDf.Templates.Preprocessor
 
-  setup_all do
-    start_supervised(MockAclLoaderResolver)
-    start_supervised(MockTaxonomyResolver)
-    start_supervised(MockPermissionResolver)
-    :ok
+  setup do
+    domain = random_domain()
+    user = random_user()
+
+    {:ok, _} = DomainCache.put(domain)
+    {:ok, _} = UserCache.put(user)
+
+    on_exit(fn ->
+      UserCache.delete(user.id)
+      DomainCache.delete(domain.id)
+    end)
+
+    {:ok, domain: domain, user: user}
   end
 
   describe "template preprocessor" do
     test "preprocess_template/2 formats the template content" do
       ctx = user_roles_context()
       template = sample_template()
-      expected = sample_template_preprocessed()
+      expected = sample_template_preprocessed([1, 2], 2)
 
       assert Preprocessor.preprocess_template(template, ctx) == expected
     end
 
-    test "preprocess_template/2 with domain_id uses role data cache to format content" do
-      {domain_id, user_id} = domain_user_role_fixture()
+    test "preprocess_template/2 with domain_id uses role data cache to format content", context do
+      %{domain: domain, user: user} = context
+      {_domain_id, user_id} = domain_user_role_fixture(domain, user)
 
-      ctx = domain_user_context("#{domain_id}", user_id)
+      ctx = %{domain_id: domain.id, user: user}
       template = sample_template()
       expected = sample_template_preprocessed([user_id], user_id)
 
@@ -35,20 +43,24 @@ defmodule TdDf.Templates.PreprocessorTest do
     end
   end
 
-  defp domain_user_role_fixture do
-    domain_id = :rand.uniform(1000)
-    user_id = :rand.uniform(1000)
-    full_name = "User #{user_id}"
+  defp user_roles_context do
+    users = [%{id: 1, full_name: "user 1"}, %{id: 2, full_name: "user 2"}]
+    user_roles = %{"owner" => users}
+    user = %{id: 2}
+    %{user_roles: user_roles, user: user}
+  end
+
+  defp domain_user_role_fixture(domain, user) do
+    domain_id = domain.id
+    user_id = user.id
     role_name = "owner"
-    setup_cache("#{domain_id}", role_name, "#{user_id}", full_name)
+    setup_cache("#{domain_id}", role_name, "#{user_id}")
     {domain_id, user_id}
   end
 
-  defp setup_cache(domain_id, role_name, user_id, full_name) do
-    MockAclLoaderResolver.put_user(user_id, %{full_name: full_name})
-    MockAclLoaderResolver.set_acl_roles("domain", domain_id, [role_name])
-    MockAclLoaderResolver.set_acl_role_users("domain", domain_id, role_name, [user_id])
-    MockTaxonomyResolver.set_domain_parents(domain_id, [])
+  defp setup_cache(domain_id, role_name, user_id) do
+    AclCache.set_acl_roles("domain", domain_id, [role_name])
+    AclCache.set_acl_role_users("domain", domain_id, role_name, [user_id])
   end
 
   defp sample_template do
@@ -63,16 +75,16 @@ defmodule TdDf.Templates.PreprocessorTest do
     }
   end
 
-  defp sample_template_preprocessed(user_ids \\ [1, 2], default \\ 2) do
+  defp sample_template_preprocessed(user_ids, default) do
     user_full_names =
       user_ids
-      |> Enum.map(fn id -> "User #{id}" end)
+      |> Enum.map(fn id -> "user #{id}" end)
 
     user_field = %{
       "name" => "foo1",
       "type" => "user",
       "values" => %{
-        "role_users" =>  "owner",
+        "role_users" => "owner",
         "processed_users" => user_full_names
       }
     }
@@ -84,7 +96,7 @@ defmodule TdDf.Templates.PreprocessorTest do
 
         n ->
           user_field
-          |> Map.put("default", "User #{n}")
+          |> Map.put("default", "user #{n}")
       end
 
     %{
@@ -106,14 +118,15 @@ defmodule TdDf.Templates.PreprocessorTest do
     }
   end
 
-  defp domain_user_context(domain_id, user_id) do
-    %{domain_id: domain_id, user: %User{id: user_id}}
+  defp random_domain do
+    id = random_id()
+    %{id: id, name: "domain #{id}"}
   end
 
-  defp user_roles_context do
-    users = [%{id: 1, full_name: "User 1"}, %{id: 2, full_name: "User 2"}]
-    user_roles = %{"owner" => users}
-    user = %{id: 2}
-    %{user_roles: user_roles, user: user}
+  defp random_user do
+    id = random_id()
+    %{id: id, full_name: "user #{id}", email: "user#{id}@foo.bar"}
   end
+
+  defp random_id, do: :rand.uniform(100_000_000)
 end

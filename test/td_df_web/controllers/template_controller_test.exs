@@ -5,14 +5,12 @@ defmodule TdDfWeb.TemplateControllerTest do
   import TdDfWeb.Authentication, only: :functions
 
   alias Poison, as: JSON
-  alias TdDf.AclLoader.MockAclLoaderResolver
-  alias TdDf.MockTaxonomyResolver
-  alias TdDf.Permissions.MockPermissionResolver
 
+  alias TdCache.AclCache
+  alias TdCache.UserCache
   alias TdDf.Templates
   alias TdDf.Templates.Template
   alias TdDfWeb.ApiServices.MockTdAuthService
-  @df_cache Application.get_env(:td_df, :df_cache)
 
   @create_attrs %{content: [], label: "some name", name: "some_name", scope: "bg"}
   @generic_attrs %{
@@ -48,11 +46,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   end
 
   setup_all do
-    start_supervised(MockAclLoaderResolver)
-    start_supervised(MockPermissionResolver)
     start_supervised(MockTdAuthService)
-    start_supervised(MockTaxonomyResolver)
-    start_supervised(@df_cache)
     :ok
   end
 
@@ -95,10 +89,9 @@ defmodule TdDfWeb.TemplateControllerTest do
       user_id = "10"
       username = "username"
 
-      MockAclLoaderResolver.put_user(user_id, %{full_name: username})
-      MockAclLoaderResolver.set_acl_roles("domain", domain_id, [role_name])
-      MockAclLoaderResolver.set_acl_role_users("domain", domain_id, role_name, [user_id])
-      MockTaxonomyResolver.set_domain_parents(domain_id, [])
+      UserCache.put(%{id: user_id, full_name: username})
+      AclCache.set_acl_roles("domain", domain_id, [role_name])
+      AclCache.set_acl_role_users("domain", domain_id, role_name, [user_id])
 
       {:ok, template} =
         Templates.create_template(%{

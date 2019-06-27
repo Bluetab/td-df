@@ -24,7 +24,7 @@ defmodule TdDf.Mixfile do
   def application do
     [
       mod: {TdDf.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :td_cache]
     ]
   end
 
@@ -45,7 +45,7 @@ defmodule TdDf.Mixfile do
       {:jason, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:cabbage, git: "https://github.com/Bluetab/cabbage", tag: "v0.3.7-alpha"},
+      {:cabbage, only: [:test], git: "https://github.com/Bluetab/cabbage", tag: "v0.3.7-alpha"},
       {:httpoison, "~> 1.0"},
       {:distillery, "~> 2.0", runtime: false},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
@@ -59,10 +59,10 @@ defmodule TdDf.Mixfile do
       {:csv, "~> 2.0.0"},
       {:nimble_csv, "~> 0.3"},
       {:codepagex, "~> 0.1.4"},
-      {:td_perms, git: "https://github.com/Bluetab/td-perms.git", tag: "2.15.0"},
       {:prometheus_ex, "~> 3.0.2"},
       {:prometheus_plugs, "~> 1.1.5"},
-      {:grafana, git: "https://github.com/BoringButGreat/grafana.git"}
+      {:grafana, git: "https://github.com/BoringButGreat/grafana.git"},
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "3.0.5"}
     ]
   end
 

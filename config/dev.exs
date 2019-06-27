@@ -46,4 +46,4 @@ config :td_df, TdDf.Repo,
   hostname: "localhost",
   pool_size: 10
 
-config :td_perms, redis_host: "localhost"
+config :td_cache, redis_host: "localhost"

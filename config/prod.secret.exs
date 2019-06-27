@@ -26,4 +26,4 @@ config :td_df, TdDf.Auth.Guardian,
   ttl: {1, :hours},
   secret_key: "${GUARDIAN_SECRET_KEY}"
 
-config :td_perms, redis_host: "${REDIS_HOST}"
+config :td_cache, redis_host: "${REDIS_HOST}"
