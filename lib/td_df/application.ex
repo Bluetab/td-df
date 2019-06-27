@@ -14,17 +14,7 @@ defmodule TdDf.Application do
       supervisor(TdDf.Repo, []),
       # Start the endpoint when the application starts
       supervisor(TdDfWeb.Endpoint, []),
-      # Start your own worker by calling:
-      # TdDf.Worker.start_link(arg1, arg2, arg3)
-      # worker(TdDf.Worker, [arg1, arg2, arg3]),
-      worker(TdDf.TemplateLoader, [TdDf.TemplateLoader]),
-      # %{
-      #   id: TdDf.CustomSupervisor,
-      #   start:
-      #     {TdDf.CustomSupervisor, :start_link,
-      #      [%{children: [metrics_worker], strategy: :one_for_one}]},
-      #   type: :supervisor
-      # }
+      worker(TdDf.Cache.TemplateLoader, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

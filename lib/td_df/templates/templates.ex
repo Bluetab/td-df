@@ -4,9 +4,9 @@ defmodule TdDf.Templates do
   """
 
   import Ecto.Query, warn: false
-  alias TdDf.Repo
 
-  alias TdDf.TemplateLoader
+  alias TdDf.Cache.TemplateLoader
+  alias TdDf.Repo
   alias TdDf.Templates.Template
 
   @doc """
@@ -21,16 +21,18 @@ defmodule TdDf.Templates do
   def list_templates(attrs \\ %{}) do
     template_fields = Template.__schema__(:fields)
     where_clause = filter(attrs, template_fields)
+
     Repo.all(
-      from p in Template,
-      where: ^where_clause
+      from(p in Template,
+        where: ^where_clause
+      )
     )
   end
 
   def list_templates_by_id(id_list) do
     Template
     |> where([t], t.id in ^id_list)
-    |> Repo.all
+    |> Repo.all()
   end
 
   @doc """
@@ -50,11 +52,11 @@ defmodule TdDf.Templates do
   def get_template!(id), do: Repo.get!(Template, id)
 
   def get_template_by_name!(name) do
-    Repo.one! from r in Template, where: r.name == ^name
+    Repo.one!(from(r in Template, where: r.name == ^name))
   end
 
   def get_template_by_name(name) do
-    Repo.one from r in Template, where: r.name == ^name
+    Repo.one(from(r in Template, where: r.name == ^name))
   end
 
   @doc """
@@ -91,14 +93,14 @@ defmodule TdDf.Templates do
   def update_template(%Template{} = template, attrs) do
     template
     |> Template.changeset(attrs)
-    |> Repo.update
+    |> Repo.update()
     |> refresh_cache
   end
 
   def update_template_no_cache(%Template{} = template, attrs) do
     template
     |> Template.changeset(attrs)
-    |> Repo.update
+    |> Repo.update()
   end
 
   @doc """
@@ -115,7 +117,7 @@ defmodule TdDf.Templates do
   """
   def delete_template(%Template{} = template) do
     template
-    |> Repo.delete
+    |> Repo.delete()
     |> clean_cache
   end
 
@@ -132,16 +134,18 @@ defmodule TdDf.Templates do
     Template.changeset(template, %{})
   end
 
-  defp refresh_cache({:ok, %{name: name}} = response) do
-    TemplateLoader.refresh(name)
+  defp refresh_cache({:ok, %{id: id}} = response) do
+    TemplateLoader.refresh(id)
     response
   end
+
   defp refresh_cache(response), do: response
 
-  defp clean_cache({:ok, %{name: name}} = response) do
-    TemplateLoader.delete(name)
+  defp clean_cache({:ok, %{id: id}} = response) do
+    TemplateLoader.delete(id)
     response
   end
+
   defp clean_cache(response), do: response
 
   @doc """
@@ -149,12 +153,14 @@ defmodule TdDf.Templates do
   """
   def filter(params, fields) do
     dynamic = true
-    Enum.reduce(Map.keys(params), dynamic, fn (key, acc) ->
-       key_as_atom = if is_binary(key), do: String.to_atom(key), else: key
-       case Enum.member?(fields, key_as_atom) do
-         true -> filter_by_type(key_as_atom, params[key], acc)
-         false -> acc
-       end
+
+    Enum.reduce(Map.keys(params), dynamic, fn key, acc ->
+      key_as_atom = if is_binary(key), do: String.to_atom(key), else: key
+
+      case Enum.member?(fields, key_as_atom) do
+        true -> filter_by_type(key_as_atom, params[key], acc)
+        false -> acc
+      end
     end)
   end
 

@@ -2,12 +2,11 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   use TdDfWeb.ConnCase
   use PhoenixSwagger.SchemaTest, "priv/static/swagger.json"
 
+  alias TdCache.TemplateCache
   alias TdDf.Permissions.MockPermissionResolver
-
   alias TdDf.Templates
   alias TdDf.Templates.Template
   alias TdDfWeb.ApiServices.MockTdAuthService
-  @df_cache Application.get_env(:td_df, :df_cache)
 
   @create_attrs %{content: [], label: "some label", name: "some_name", scope: "s1"}
   @update_attrs %{content: [], label: "some updated label", name: "some_name", scope: "s2"}
@@ -20,7 +19,6 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   setup_all do
     start_supervised(MockPermissionResolver)
     start_supervised(MockTdAuthService)
-    start_supervised(@df_cache)
     :ok
   end
 
@@ -34,7 +32,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
       conn = post(conn, Routes.template_path(conn, :create), template: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      template = @df_cache.get_template_by_name("some_name")
+      template = TemplateCache.get_by_name!("some_name")
 
       assert template == %{
                id: id,
@@ -57,7 +55,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
       conn = put(conn, Routes.template_path(conn, :update, template), template: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      template = @df_cache.get_template_by_name("some_name")
+      template = TemplateCache.get_by_name!("some_name")
 
       assert template == %{
                id: id,
@@ -77,7 +75,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
       conn = delete(conn, Routes.template_path(conn, :delete, template))
       assert response(conn, 204)
 
-      template = @df_cache.get_template_by_name("some_name")
+      template = TemplateCache.get_by_name!("some_name")
       assert template == nil
     end
   end

@@ -5,6 +5,9 @@
 # is restricted to this project.
 use Mix.Config
 
+# Environment
+config :td_df, :env, Mix.env()
+
 # General application configuration
 config :td_df,
   ecto_repos: [TdDf.Repo]
@@ -55,15 +58,10 @@ config :td_df, :phoenix_swagger,
     "priv/static/swagger.json" => [router: TdDfWeb.Router]
   }
 
-config :td_df, permission_resolver: TdPerms.Permissions
-config :td_df, acl_cache_resolver: TdPerms.AclCache
-config :td_df, user_cache_resolver: TdPerms.UserCache
-config :td_df, taxonomy_cache_resolver: TdPerms.TaxonomyCache
+config :td_df, permission_resolver: TdCache.Permissions
+config :td_df, acl_cache: TdCache.AclCache
 
-config :td_df, cache_templates_on_startup: true
-config :td_df, df_cache: TdPerms.DynamicFormCache
-
-config :td_perms,
+config :td_cache,
   permissions: [
     :is_admin,
     :create_acl_entry,
@@ -106,7 +104,10 @@ config :td_perms,
     :view_published_ingests,
     :view_versioned_ingests,
     :view_rejected_ingests,
-    :view_deprecated_ingests
+    :view_deprecated_ingests,
+    :manage_confidential_structures,
+    :manage_ingest_relations,
+    :view_data_structures_profile
   ]
 
 # Import environment specific config. This must remain at the bottom

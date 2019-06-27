@@ -3,11 +3,13 @@ defmodule TdDfWeb.Authentication do
   This module defines the functions required to
   add auth headers to requests
   """
+
+  import Plug.Conn
+
   alias Phoenix.ConnTest
   alias TdDf.Accounts.User
   alias TdDf.Auth.Guardian
-  alias TdDf.Permissions.MockPermissionResolver
-  import Plug.Conn
+
   @headers {"Content-type", "application/json"}
   @td_auth_api Application.get_env(:td_df, :auth_service)[:api_service]
 
@@ -107,15 +109,16 @@ defmodule TdDfWeb.Authentication do
 
   def get_user_token(user_name) do
     user_name
-      |> build_user_token(is_admin: user_name == "app-admin")
-      |> register_token
+    |> build_user_token(is_admin: user_name == "app-admin")
+    |> register_token
   end
 
   defp register_token(token) do
     case Guardian.decode_and_verify(token) do
-      {:ok, resource} -> MockPermissionResolver.register_token(resource)
+      {:ok, _} -> :ok
       _ -> raise "Problems decoding and verifying token"
     end
+
     token
   end
 end

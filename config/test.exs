@@ -19,13 +19,6 @@ config :td_df, TdDf.Repo,
   pool_size: 1
 
 config :td_df, :auth_service, api_service: TdDfWeb.ApiServices.MockTdAuthService
-
 config :td_df, permission_resolver: TdDf.Permissions.MockPermissionResolver
-config :td_df, acl_cache_resolver: TdDf.AclLoader.MockAclLoaderResolver
-config :td_df, user_cache_resolver: TdDf.AclLoader.MockAclLoaderResolver
-config :td_df, taxonomy_cache_resolver: TdDf.MockTaxonomyResolver
 
-config :td_df, cache_templates_on_startup: false
-config :td_df, df_cache: TdPerms.MockDynamicFormCache
-
-config :td_perms, redis_host: "redis"
+config :td_cache, redis_host: "redis"

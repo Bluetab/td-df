@@ -35,4 +35,6 @@
     @permission_resolver.has_permission?(jti, permission, "domain", domain_id)
   end
 
+  def authorized?(_, _, _), do: false
+
 end

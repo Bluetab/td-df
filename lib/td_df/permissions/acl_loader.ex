@@ -3,14 +3,14 @@ defmodule TdDf.AclLoader do
   The Permissions context.
   """
 
-  @acl_cache_resolver Application.get_env(:td_df, :acl_cache_resolver)
-  @user_cache_resolver Application.get_env(:td_df, :user_cache_resolver)
-  @taxonomy_cache_resolver Application.get_env(:td_df, :taxonomy_cache_resolver)
+  alias TdCache.AclCache
+  alias TdCache.TaxonomyCache
+  alias TdCache.UserCache
 
   def get_roles_and_users(r_type, r_id) do
     r_id
-    |> @taxonomy_cache_resolver.get_parent_ids(true)
-    |> Enum.map(fn d_id -> {d_id, @acl_cache_resolver.get_acl_roles(r_type, d_id)} end)
+    |> TaxonomyCache.get_parent_ids()
+    |> Enum.map(fn d_id -> {d_id, AclCache.get_acl_roles(r_type, d_id)} end)
     |> Enum.reduce([], fn {d_id, roles}, acc ->
       acc ++ fetch_users_by_role(d_id, r_type, roles)
     end)
@@ -32,16 +32,15 @@ defmodule TdDf.AclLoader do
 
   defp get_user_by_resource_and_role(resource_type, resource_id, role) do
     resource_type
-    |> @acl_cache_resolver.get_acl_role_users(resource_id, role)
+    |> AclCache.get_acl_role_users(resource_id, role)
     |> Enum.map(fn user_id ->
-      case @user_cache_resolver.get_user(user_id) do
-        nil ->
+      case UserCache.get(user_id) do
+        {:ok, nil} ->
           nil
 
-        user ->
+        {:ok, user} ->
           user
-          |> Map.take([:full_name])
-          |> Map.put(:id, String.to_integer(user_id))
+          |> Map.take([:id, :full_name])
       end
     end)
   end
