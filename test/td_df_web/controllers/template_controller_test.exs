@@ -4,8 +4,7 @@ defmodule TdDfWeb.TemplateControllerTest do
 
   import TdDfWeb.Authentication, only: :functions
 
-  alias Poison, as: JSON
-
+  alias Jason, as: JSON
   alias TdCache.AclCache
   alias TdCache.UserCache
   alias TdDf.Templates
