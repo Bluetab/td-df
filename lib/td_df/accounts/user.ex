@@ -1,7 +1,7 @@
 defmodule TdDf.Accounts.User do
   @moduledoc false
 
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, only: [:id, :user_name, :is_admin]}
   defstruct id: 0,
             user_name: nil,
             password: nil,
