@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [3.2.0] 2019-07-24
 
 ### Changed
 
@@ -57,8 +57,8 @@
 - Removed unused Hypermedia
 
 ### Changed
- 
-- [TD-1101] Changed formater and preprocessor to the new template format 
+
+- [TD-1101] Changed formater and preprocessor to the new template format
 
 ## [2.11.1] 2019-01-09
 
