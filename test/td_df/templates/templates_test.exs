@@ -87,6 +87,24 @@ defmodule TdDf.TemplatesTest do
       assert {:error, %Ecto.Changeset{}} = Templates.create_template(@invalid_attrs)
     end
 
+    test "create_template/1 with repeated name field in content returns error changeset" do
+      content = [
+        %{"name" => "my repeated name"},
+        %{"name" => "my name"},
+        %{"name" => "my repeated name"}
+      ]
+
+      attrs = Map.put(@valid_attrs, :content, content)
+      assert {:error, %Ecto.Changeset{errors: errors}} = Templates.create_template(attrs)
+
+      error =
+        errors
+        |> Keyword.get(:content)
+        |> elem(0)
+
+      assert error == "repeated.field"
+    end
+
     test "update_template/2 with valid data updates the template" do
       template = template_fixture()
       assert {:ok, template} = Templates.update_template(template, @update_attrs)
