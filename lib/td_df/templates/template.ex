@@ -28,6 +28,7 @@ defmodule TdDf.Templates.Template do
     changeset
     |> get_field(:content)
     |> Enum.group_by(&Map.get(&1, "name"))
+    |> Enum.filter(&elem(&1, 0))
     |> Enum.filter(fn {_key, values} -> Enum.count(values) > 1 end)
     |> case do
       [] ->
