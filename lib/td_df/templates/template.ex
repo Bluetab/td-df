@@ -46,8 +46,7 @@ defmodule TdDf.Templates.Template do
 
   defp validate_name_and_types(%{valid?: true} = changeset, %{id: id}) do
     templates =
-      Templates.list_templates()
-      |> Enum.filter(fn template -> Map.get(template, :id) != id end)
+      Enum.filter(Templates.list_templates(), fn template -> Map.get(template, :id) != id end)
 
     changeset
     |> get_field(:content)
