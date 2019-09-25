@@ -68,6 +68,12 @@ defmodule TdDfWeb.ChangesetSupport do
   defp translate_msgid({"is invalid", [type: type, validation: validation]}) do
     [Atom.to_string(validation), Atom.to_string(type)]
   end
+  defp translate_msgid({"repeated.field", [name: name]}) do
+    [String.split("repeated.field", "."), name]
+  end
+  defp translate_msgid({"invalid.type", [name: name, type: type]}) do
+    [String.split("invalid.type", "."), name, type]
+  end
   defp translate_msgid({msgid , [validation: validation]}) when msgid in @msgids do
     [Atom.to_string(validation)]
   end
