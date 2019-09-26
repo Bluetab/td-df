@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- [TD-1993] Validate template names and types on creation/update 
+
 ## [3.5.0] 2019-09-03
 
 ### Changed
