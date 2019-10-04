@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- [TD-1721] Cache 3.7.2 with template events
+
 ## [3.7.0] 2019-09-31
 
 ### Added
