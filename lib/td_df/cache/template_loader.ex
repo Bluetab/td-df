@@ -46,8 +46,8 @@ defmodule TdDf.Cache.TemplateLoader do
   @impl true
   def handle_info(:load_cache, state) do
     templates = Templates.list_templates()
-    put_templates(templates)
-    Logger.info("Put #{length(templates)} templates")
+    count = put_templates(templates)
+    Logger.info("Put #{count} templates")
     {:noreply, state}
   end
 
@@ -64,6 +64,8 @@ defmodule TdDf.Cache.TemplateLoader do
 
   defp put_templates(templates) do
     templates
-    |> Enum.each(&TemplateCache.put/1)
+    |> Enum.map(&TemplateCache.put/1)
+    |> Enum.filter(& &1 != {:ok, []})
+    |> Enum.count()
   end
 end

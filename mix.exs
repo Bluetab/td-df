@@ -62,7 +62,7 @@ defmodule TdDf.Mixfile do
       {:prometheus_ex, "~> 3.0.2"},
       {:prometheus_plugs, "~> 1.1.5"},
       {:grafana, git: "https://github.com/BoringButGreat/grafana.git"},
-      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "3.7.2"}
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "3.7.3"}
     ]
   end
 
