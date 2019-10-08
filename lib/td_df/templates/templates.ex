@@ -134,12 +134,12 @@ defmodule TdDf.Templates do
     Template.changeset(template, %{})
   end
 
-  defp refresh_cache({:ok, %{id: id}} = response) do
+  def refresh_cache({:ok, %{id: id}} = response) do
     TemplateLoader.refresh(id)
     response
   end
 
-  defp refresh_cache(response), do: response
+  def refresh_cache(response), do: response
 
   defp clean_cache({:ok, %{id: id}} = response) do
     TemplateLoader.delete(id)

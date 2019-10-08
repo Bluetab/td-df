@@ -32,14 +32,16 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
       conn = post(conn, Routes.template_path(conn, :create), template: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      template = TemplateCache.get_by_name!("some_name")
+      template_cache = TemplateCache.get_by_name!("some_name")
+      template = Templates.get_template!(id)
 
-      assert template == %{
+      assert template_cache == %{
                id: id,
                content: [],
                label: "some label",
                name: "some_name",
-               scope: "s1"
+               scope: "s1",
+               updated_at: to_string(template.updated_at)
              }
     end
   end
@@ -52,17 +54,19 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
       conn: conn,
       template: %Template{id: id} = template
     } do
+      :timer.sleep(1000)
       conn = put(conn, Routes.template_path(conn, :update, template), template: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      template_cache = TemplateCache.get_by_name!("some_name")
+      template = Templates.get_template!(id)
 
-      template = TemplateCache.get_by_name!("some_name")
-
-      assert template == %{
+      assert template_cache == %{
                id: id,
                content: [],
                label: "some updated label",
                name: "some_name",
-               scope: "s2"
+               scope: "s2",
+               updated_at: to_string(template.updated_at)
              }
     end
   end
