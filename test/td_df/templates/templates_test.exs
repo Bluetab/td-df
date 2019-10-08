@@ -1,9 +1,12 @@
 defmodule TdDf.TemplatesTest do
   use TdDf.DataCase
+  import Ecto.Changeset
 
   alias TdDf.Templates
 
   describe "templates" do
+    alias TdCache.TemplateCache
+    alias TdDf.Repo
     alias TdDf.Templates.Template
 
     @valid_attrs %{
@@ -76,6 +79,12 @@ defmodule TdDf.TemplatesTest do
       assert template.label == "some name"
       assert template.name == "some_name"
       assert template.scope == "bg"
+
+      template_cache = TemplateCache.get_by_name!("some_name")
+      assert template.content == template_cache.content
+      assert template.label == template_cache.label
+      assert template.scope == template_cache.scope
+      assert to_string(template.updated_at) == template_cache.updated_at
     end
 
     test "create_template/1 allows to create template name with spaces" do
@@ -145,6 +154,29 @@ defmodule TdDf.TemplatesTest do
       assert template.content == []
       assert template.label == "some updated name"
       assert template.name == "some_name"
+    end
+
+    test "refresh_cache updates cache information when a template is updated" do
+      template = template_fixture()
+      {:ok, updated_at} = DateTime.from_unix(DateTime.to_unix(DateTime.utc_now()) + 60)
+
+      attrs =
+        @update_attrs
+        |> Map.put(:updated_at, updated_at)
+        |> Map.put(:content, [%{"name" => "name"}])
+
+      {:ok, template} =
+        template
+        |> cast(attrs, [:label, :name, :content, :scope, :updated_at])
+        |> Repo.update()
+
+      Templates.refresh_cache({:ok, template})
+      template_cache = TemplateCache.get_by_name!("some_name")
+
+      assert template.content == template_cache.content
+      assert template.label == template_cache.label
+      assert template.scope == template_cache.scope
+      assert to_string(template.updated_at) == template_cache.updated_at
     end
 
     test "update_template/2 with invalid data returns error changeset" do
