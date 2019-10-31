@@ -20,7 +20,7 @@ defmodule TdDf.Templates.Template do
   def changeset(%Template{} = template, attrs) do
     template
     |> cast(attrs, [:label, :name, :content, :scope])
-    |> validate_required([:label, :name, :content])
+    |> validate_required([:label, :name, :content, :scope])
     |> validate_format(:name, ~r/^[A-z0-9 ]*$/)
     |> validate_repeated_names()
     |> validate_name_and_types(template)

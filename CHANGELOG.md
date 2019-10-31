@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- [TD-2137] Template scope set as required
+
 ## [3.8.0] 2019-10-14
 
 ### Changed
