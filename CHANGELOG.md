@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unrelased]
+
+### Changed
+
+- [TD-2255] Migrate fields in content having `depends` key
+
 ## [3.10.0] 2019-11-11
 
 ### Changed
