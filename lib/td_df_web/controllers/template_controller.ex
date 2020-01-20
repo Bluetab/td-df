@@ -92,60 +92,61 @@ defmodule TdDfWeb.TemplateController do
     render(conn, "show.json", template: template)
   end
 
-  swagger_path :load_and_show do
-    description("Load and show Template")
-    produces("application/json")
+  # Functionality not used
+  # swagger_path :load_and_show do
+  #   description("Load and show Template")
+  #   produces("application/json")
 
-    parameters do
-      id(:path, :integer, "Template ID", required: true)
-    end
+  #   parameters do
+  #     id(:path, :integer, "Template ID", required: true)
+  #   end
 
-    response(200, "OK", Schema.ref(:TemplateResponse))
-    response(400, "Client Error")
-  end
+  #   response(200, "OK", Schema.ref(:TemplateResponse))
+  #   response(400, "Client Error")
+  # end
 
-  def load_and_show(conn, %{"id" => id}) do
-    {:ok, template} = load_template(Templates.get_template!(id))
-    render(conn, "show.json", template: template)
-  end
+  # def load_and_show(conn, %{"id" => id}) do
+  #   {:ok, template} = load_template(Templates.get_template!(id))
+  #   render(conn, "show.json", template: template)
+  # end
 
-  defp load_template(template) do
-    includes =
-      List.first(Enum.filter(Map.get(template, :content), fn field -> field["includes"] end))[
-        "includes"
-      ]
+  # defp load_template(template) do
+  #   includes =
+  #     List.first(Enum.filter(Map.get(template, :content), fn field -> field["includes"] end))[
+  #       "includes"
+  #     ]
 
-    case includes do
-      nil -> {:ok, template}
-      _ -> load_template(template, includes)
-    end
-  end
+  #   case includes do
+  #     nil -> {:ok, template}
+  #     _ -> load_template(template, includes)
+  #   end
+  # end
 
-  defp load_template(template, includes) do
-    includes =
-      Enum.reduce(includes, [], fn name, acc ->
-        case Templates.get_template_by_name(name) do
-          nil -> acc
-          _ -> [name] ++ acc
-        end
-      end)
+  # defp load_template(template, includes) do
+  #   includes =
+  #     Enum.reduce(includes, [], fn name, acc ->
+  #       case Templates.get_template_by_name(name) do
+  #         nil -> acc
+  #         _ -> [name] ++ acc
+  #       end
+  #     end)
 
-    my_fields = Enum.reject(Map.get(template, :content), fn field -> field["includes"] end)
+  #   my_fields = Enum.reject(Map.get(template, :content), fn field -> field["includes"] end)
 
-    case length(includes) do
-      0 ->
-        {:ok, Map.put(template, :content, my_fields)}
+  #   case length(includes) do
+  #     0 ->
+  #       {:ok, Map.put(template, :content, my_fields)}
 
-      _ ->
-        final_fields =
-          my_fields ++
-            Enum.reduce(includes, [], fn templ, acc ->
-              Map.get(Templates.get_template_by_name(templ), :content) ++ acc
-            end)
+  #     _ ->
+  #       final_fields =
+  #         my_fields ++
+  #           Enum.reduce(includes, [], fn templ, acc ->
+  #             Map.get(Templates.get_template_by_name(templ), :content) ++ acc
+  #           end)
 
-        {:ok, Map.put(template, :content, final_fields)}
-    end
-  end
+  #       {:ok, Map.put(template, :content, final_fields)}
+  #   end
+  # end
 
   swagger_path :update do
     description("Updates Template")
