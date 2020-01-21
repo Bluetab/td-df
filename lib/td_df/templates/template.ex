@@ -21,7 +21,6 @@ defmodule TdDf.Templates.Template do
     template
     |> cast(attrs, [:label, :name, :content, :scope])
     |> validate_required([:label, :name, :content, :scope])
-    |> validate_format(:name, ~r/^[A-z0-9 ]*$/)
     |> validate_repeated_group_names()
     |> validate_repeated_names()
     |> validate_name_and_types(template)
