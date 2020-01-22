@@ -18,13 +18,21 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
   defp group_content_by_group(%{content: content} = template) do
     new_content = content
       |> Enum.chunk_by(&(Map.get(&1, "group")))
-      |> Enum.map(fn [%{"group" => name} | _] = fields ->
-        %{
-          "name" => name,
-          "fields" => clean_fields(fields)
-        }
-      end)
+      |> Enum.map(&map_group_name/1)
     {template, new_content}
+  end
+
+  defp map_group_name([%{"group" => name} | _] = fields) do
+    %{
+      "name" => name,
+      "fields" => clean_fields(fields)
+    }
+  end
+  defp map_group_name(fields) do
+    %{
+      "name" => "",
+      "fields" => clean_fields(fields)
+    }
   end
 
   @doc false
