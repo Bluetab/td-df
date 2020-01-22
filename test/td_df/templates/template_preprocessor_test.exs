@@ -66,10 +66,12 @@ defmodule TdDf.Templates.PreprocessorTest do
   defp sample_template do
     %{
       content: [
-        %{"name" => "_confidential", "foo" => "bar"},
-        %{"name" => "foo1", "type" => "user", "values" => %{"role_users" => "owner"}},
-        %{"name" => "foo2", "type" => "type"},
-        %{"foo" => "bar"}
+        %{"name" => "test-group", "fields" => [
+          %{"name" => "_confidential", "foo" => "bar"},
+          %{"name" => "foo2", "type" => "type"},
+          %{"name" => "foo1", "type" => "user", "values" => %{"role_users" => "owner"}},
+          %{"foo" => "bar"}
+        ]}
       ],
       foo: "bar"
     }
@@ -100,20 +102,23 @@ defmodule TdDf.Templates.PreprocessorTest do
       end
 
     %{
-      content: [
-        %{
-          "default" => "No",
-          "disabled" => true,
-          "foo" => "bar",
-          "name" => "_confidential",
-          "cardinality" => "?",
-          "type" => "string",
-          "widget" => "checkbox"
-        },
-        user_field,
-        %{"name" => "foo2", "type" => "type"},
-        %{"foo" => "bar"}
-      ],
+      content: [%{
+        "name" => "test-group",
+        "fields" => [
+          %{
+            "default" => "No",
+            "disabled" => true,
+            "foo" => "bar",
+            "name" => "_confidential",
+            "cardinality" => "?",
+            "type" => "string",
+            "widget" => "checkbox"
+          },
+          %{"name" => "foo2", "type" => "type"},
+          user_field,
+          %{"foo" => "bar"}
+        ]
+      }],
       foo: "bar"
     }
   end

@@ -21,9 +21,12 @@ defmodule TdDf.Templates.Preprocessor do
   end
 
   defp preprocess_template_content(%{content: content} = template, context) do
-    content =
-      content
-      |> Enum.map(&FieldFormatter.format(&1, context))
+    content = Enum.map(content, fn group ->
+      fields = group
+        |> Map.get("fields")
+        |> Enum.map(&FieldFormatter.format(&1, context))
+      Map.put(group, "fields", fields)
+    end)
 
     template
     |> Map.put(:content, content)

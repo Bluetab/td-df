@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- [TD-2269] New template format for groups 
+
 ## [3.13.0] 2020-12-13
 
 ### Changed
