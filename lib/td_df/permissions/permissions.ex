@@ -1,4 +1,4 @@
-  defmodule TdDf.Permissions do
+defmodule TdDf.Permissions do
   @moduledoc """
   The Permissions context.
   """
@@ -16,10 +16,10 @@
 
   def has_any_permission_on_resource_type?(%User{} = user, permissions, Domain) do
     user
-      |> get_domain_permissions
-      |> Enum.flat_map(&(&1.permissions))
-      |> Enum.uniq
-      |> Enum.any?(&(Enum.member?(permissions, &1)))
+    |> get_domain_permissions
+    |> Enum.flat_map(& &1.permissions)
+    |> Enum.uniq()
+    |> Enum.any?(&Enum.member?(permissions, &1))
   end
 
   @doc """
@@ -36,5 +36,4 @@
   end
 
   def authorized?(_, _, _), do: false
-
 end

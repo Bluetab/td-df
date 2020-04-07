@@ -1,8 +1,6 @@
 defmodule TdDfWeb.Router do
   use TdDfWeb, :router
 
-  @endpoint_url "#{Application.get_env(:td_df, TdDfWeb.Endpoint)[:url][:host]}:#{Application.get_env(:td_df, TdDfWeb.Endpoint)[:url][:port]}"
-
   pipeline :api do
     plug TdDf.Auth.Pipeline.Unsecure
     plug TdDfWeb.Locale
@@ -24,7 +22,7 @@ defmodule TdDfWeb.Router do
 
   scope "/api", TdDfWeb do
     pipe_through :api
-    get  "/ping", PingController, :ping
+    get "/ping", PingController, :ping
     post "/echo", EchoController, :echo
   end
 
@@ -32,33 +30,28 @@ defmodule TdDfWeb.Router do
     pipe_through [:api, :api_secure, :api_authorized]
 
     resources "/templates", TemplateController, except: [:new, :edit]
-    #get "/templates/load/:id", TemplateController, :load_and_show
+    # get "/templates/load/:id", TemplateController, :load_and_show
   end
 
   def swagger_info do
     %{
-      schemes: ["http"],
+      schemes: ["http", "https"],
       info: %{
-        version: "1.0",
-        title: "TdDf"
+        version: "3.10",
+        title: "Truedat Dynamic Forms Service"
       },
-      host: @endpoint_url,
-      #"basePath": "/api",
-      securityDefinitions:
-        %{
-          bearer:
-          %{
-            type: "apiKey",
-            name: "Authorization",
-            in: "header",
-          }
+      securityDefinitions: %{
+        bearer: %{
+          type: "apiKey",
+          name: "Authorization",
+          in: "header"
+        }
       },
       security: [
         %{
-         bearer: []
+          bearer: []
         }
       ]
     }
   end
-
 end

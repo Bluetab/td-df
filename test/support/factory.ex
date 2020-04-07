@@ -3,7 +3,7 @@ defmodule TdDf.Factory do
   use ExMachina.Ecto, repo: TdDf.Repo
 
   def user_factory do
-    %TdDf.Accounts.User {
+    %TdDf.Accounts.User{
       id: 0,
       user_name: "bufoncillo",
       is_admin: false
@@ -11,11 +11,10 @@ defmodule TdDf.Factory do
   end
 
   def template_factory do
-    %TdDf.Templates.Template {
+    %TdDf.Templates.Template{
       label: "some type",
       name: "some_type",
       content: []
     }
   end
-
 end

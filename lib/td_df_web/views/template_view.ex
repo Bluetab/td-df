@@ -11,7 +11,8 @@ defmodule TdDfWeb.TemplateView do
   end
 
   def render("template.json", %{template: template}) do
-    %{id: template.id,
+    %{
+      id: template.id,
       label: template.label,
       name: template.name,
       content: template.content,

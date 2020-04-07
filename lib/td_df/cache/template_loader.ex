@@ -65,7 +65,7 @@ defmodule TdDf.Cache.TemplateLoader do
   defp put_templates(templates) do
     templates
     |> Enum.map(&TemplateCache.put/1)
-    |> Enum.filter(& &1 != {:ok, []})
+    |> Enum.filter(&(&1 != {:ok, []}))
     |> Enum.count()
   end
 end

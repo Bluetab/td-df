@@ -16,6 +16,7 @@ defmodule TdDf.Templates.FieldFormatter do
   def format(%{"type" => "user", "values" => %{"role_users" => role_name}} = field, ctx) do
     user = Map.get(ctx, :user, nil)
     user_roles = Map.get(ctx, :user_roles, %{})
+
     field
     |> apply_role_meta(user, role_name, user_roles)
   end

@@ -9,9 +9,9 @@ defmodule TdDfWeb.Authentication do
   alias Phoenix.ConnTest
   alias TdDf.Accounts.User
   alias TdDf.Auth.Guardian
+  alias TdDfWeb.ApiServices.MockTdAuthService
 
   @headers {"Content-type", "application/json"}
-  @td_auth_api Application.get_env(:td_df, :auth_service)[:api_service]
 
   def put_auth_headers(conn, jwt) do
     conn
@@ -28,7 +28,7 @@ defmodule TdDfWeb.Authentication do
   end
 
   def create_user_auth_conn(user) do
-    {:ok, jwt, full_claims} = Guardian.encode_and_sign(user, %{gids: []})
+    {:ok, jwt, full_claims} = Guardian.encode_and_sign(user, %{})
     register_token(jwt)
     conn = ConnTest.build_conn()
     conn = put_auth_headers(conn, jwt)
@@ -43,17 +43,15 @@ defmodule TdDfWeb.Authentication do
     is_admin = Keyword.get(opts, :is_admin, false)
     password = Keyword.get(opts, :password, "secret")
     email = Keyword.get(opts, :email, "some@email.com")
-    groups = Keyword.get(opts, :groups, [])
 
     user =
-      @td_auth_api.create_user(%{
+      MockTdAuthService.create_user(%{
         "user" => %{
           "user_name" => user_name,
           "full_name" => user_name,
           "is_admin" => is_admin,
           "password" => password,
-          "email" => email,
-          "groups" => groups
+          "email" => email
         }
       })
 
@@ -67,16 +65,14 @@ defmodule TdDfWeb.Authentication do
           is_admin = Keyword.get(opts, :is_admin, false)
           password = Keyword.get(opts, :password, "secret")
           email = Keyword.get(opts, :email, "some@email.com")
-          groups = Keyword.get(opts, :groups, [])
 
-          @td_auth_api.create_user(%{
+          MockTdAuthService.create_user(%{
             "user" => %{
               "user_name" => user_name,
               "full_name" => user_name,
               "is_admin" => is_admin,
               "password" => password,
-              "email" => email,
-              "groups" => groups
+              "email" => email
             }
           })
 
@@ -88,15 +84,15 @@ defmodule TdDfWeb.Authentication do
   end
 
   def get_user_by_name(user_name) do
-    @td_auth_api.get_user_by_name(user_name)
+    MockTdAuthService.get_user_by_name(user_name)
   end
 
   def get_users do
-    @td_auth_api.index()
+    MockTdAuthService.index()
   end
 
   def build_user_token(%User{} = user) do
-    case Guardian.encode_and_sign(user, %{gids: []}) do
+    case Guardian.encode_and_sign(user, %{}) do
       {:ok, jwt, _full_claims} -> jwt |> register_token
       _ -> raise "Problems encoding and signing a user"
     end

@@ -41,6 +41,7 @@ defmodule TdDf.Templates.Template do
         add_error(changeset, :content, "repeated.group", name: elem(repeated, 0))
     end
   end
+
   defp validate_repeated_group_names(changeset), do: changeset
 
   defp validate_repeated_names(%{valid?: true} = changeset) do
@@ -59,6 +60,7 @@ defmodule TdDf.Templates.Template do
         add_error(changeset, :content, "repeated.field", name: elem(repeated, 0))
     end
   end
+
   defp validate_repeated_names(changeset), do: changeset
 
   defp validate_name_and_types(%{valid?: true} = changeset, %{id: id}) do
@@ -82,6 +84,7 @@ defmodule TdDf.Templates.Template do
         add_error(changeset, :content, "invalid.type", name: name, type: type)
     end
   end
+
   defp validate_name_and_types(changeset, _), do: changeset
 
   defp validate_content(content, templates) do
@@ -108,5 +111,6 @@ defmodule TdDf.Templates.Template do
         {:error, [name: name, type: type]}
     end
   end
+
   defp fields_against_content([], _), do: :ok
 end

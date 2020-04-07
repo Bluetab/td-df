@@ -12,14 +12,9 @@ config :td_df, :env, Mix.env()
 config :td_df,
   ecto_repos: [TdDf.Repo]
 
-config :codepagex, :encodings, [
-  :ascii,
-  ~r[iso8859]i,
-  "VENDORS/MICSFT/WINDOWS/CP1252"
-]
-
 # Configures the endpoint
 config :td_df, TdDfWeb.Endpoint,
+  http: [port: 4013],
   url: [host: "localhost"],
   secret_key_base: "tOxTkbz1LLqsEmoRRhSorwFZm35yQbVPP/gdU3cFUYV5IdcoIRNroCeADl4ysBBg",
   render_errors: [view: TdDfWeb.ErrorView, accepts: ~w(json)],
@@ -30,18 +25,23 @@ config :td_df, TdDf.Repo,
   password: "postgres",
   database: "td_df_dev",
   hostname: "localhost",
-  pool_size: 10
+  pool_size: 4
 
 # Configures Elixir's Logger
 # set EX_LOGGER_FORMAT environment variable to override Elixir's Logger format
 # (without the 'end of line' character)
 # EX_LOGGER_FORMAT='$date $time [$level] $message'
 config :logger, :console,
-  format: (System.get_env("EX_LOGGER_FORMAT") || "$time $metadata[$level] $message") <> "\n",
-  metadata: [:request_id]
+  format:
+    (System.get_env("EX_LOGGER_FORMAT") || "$date\T$time\Z [$level]$levelpad $metadata$message") <>
+      "\n",
+  level: :info,
+  metadata: [:pid, :module],
+  utc_log: true
 
 # Configuration for Phoenix
 config :phoenix, :json_library, Jason
+config :phoenix_swagger, :json_library, Jason
 
 config :td_df, TdDf.Auth.Guardian,
   # optional
@@ -49,12 +49,6 @@ config :td_df, TdDf.Auth.Guardian,
   issuer: "tdauth",
   ttl: {1, :hours},
   secret_key: "SuperSecretTruedat"
-
-config :td_df, :auth_service,
-  protocol: "http",
-  users_path: "/api/users/",
-  sessions_path: "/api/sessions/",
-  groups_path: "/api/groups"
 
 config :td_df, :phoenix_swagger,
   swagger_files: %{
@@ -67,4 +61,3 @@ config :td_df, acl_cache: TdCache.AclCache
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
-"#{Mix.env()}.exs"

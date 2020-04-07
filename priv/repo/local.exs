@@ -13,52 +13,52 @@ alias TdDf.Templates.Template
 alias TdDf.Repo
 alias Ecto.Changeset
 
-template = Repo.insert!(%Template{
-  label: "Empty Tempalte",
-  name: "empty",
-  content: [
-  %{
-    name: "dominio",
-    type: "list",
-    label: "Dominio Información de Gestión",
-    values: [],
-    required: false,
-    "form_type": "dropdown",
-    description: "Indicar si el término pertenece al dominio de Información de Gestión",
-    meta: %{ role: "rolename"}
-  }
-]
-
-})
+template =
+  Repo.insert!(%Template{
+    label: "Empty Tempalte",
+    name: "empty",
+    content: [
+      %{
+        name: "dominio",
+        type: "list",
+        label: "Dominio Información de Gestión",
+        values: [],
+        required: false,
+        form_type: "dropdown",
+        description: "Indicar si el término pertenece al dominio de Información de Gestión",
+        meta: %{role: "rolename"}
+      }
+    ]
+  })
 
 Repo.insert!(%Template{
   label: "Default Template",
   name: "default_template",
   content: [
-  %{
-    name: "field_1",
-    type: "string",
-    label: "Field 1",
-  },
-  %{
-    name: "field_2",
-    type: "string",
-    label: "Field 2",
-  },
-  %{
-    name: "field_3",
-    type: "string",
-    label: "Field 3",
-  },
-  %{
-    name: "dominio",
-    type: "list",
-    label: "Dominio Información de Gestión",
-    values: [],
-    required: false,
-    "form_type": "dropdown",
-    description: "Indicar si el término pertenece al dominio de Información de Gestión",
-    meta: %{ role: "rolename"}
-  }
-]
+    %{
+      name: "field_1",
+      type: "string",
+      label: "Field 1"
+    },
+    %{
+      name: "field_2",
+      type: "string",
+      label: "Field 2"
+    },
+    %{
+      name: "field_3",
+      type: "string",
+      label: "Field 3"
+    },
+    %{
+      name: "dominio",
+      type: "list",
+      label: "Dominio Información de Gestión",
+      values: [],
+      required: false,
+      form_type: "dropdown",
+      description: "Indicar si el término pertenece al dominio de Información de Gestión",
+      meta: %{role: "rolename"}
+    }
+  ]
 })
