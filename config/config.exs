@@ -16,9 +16,7 @@ config :td_df,
 config :td_df, TdDfWeb.Endpoint,
   http: [port: 4013],
   url: [host: "localhost"],
-  secret_key_base: "tOxTkbz1LLqsEmoRRhSorwFZm35yQbVPP/gdU3cFUYV5IdcoIRNroCeADl4ysBBg",
-  render_errors: [view: TdDfWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: TdDf.PubSub, adapter: Phoenix.PubSub.PG2]
+  render_errors: [view: TdDfWeb.ErrorView, accepts: ~w(json)]
 
 config :td_df, TdDf.Repo,
   username: "postgres",
