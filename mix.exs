@@ -65,7 +65,7 @@ defmodule TdDf.Mixfile do
       {:phoenix_swagger, "~> 0.8.2"},
       {:ex_json_schema, "~> 0.7.3"},
       {:json_diff, "~> 0.1.0"},
-      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "3.19.2"}
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "3.20.0"}
     ]
   end
 
