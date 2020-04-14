@@ -16,9 +16,11 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
   end
 
   defp group_content_by_group(%{content: content} = template) do
-    new_content = content
-      |> Enum.chunk_by(&(Map.get(&1, "group")))
+    new_content =
+      content
+      |> Enum.chunk_by(&Map.get(&1, "group"))
       |> Enum.map(&map_group_name/1)
+
     {template, new_content}
   end
 
@@ -28,6 +30,7 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
       "fields" => clean_fields(fields)
     }
   end
+
   defp map_group_name(fields) do
     %{
       "name" => "",
@@ -38,7 +41,9 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
   @doc false
 
   defp clean_fields(fields) do
-    Enum.map(fields, &(Map.take(&1, [
+    Enum.map(
+      fields,
+      &Map.take(&1, [
         "cardinality",
         "default",
         "label",
@@ -46,8 +51,9 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
         "type",
         "values",
         "widget",
-        "depends",
-    ])))
+        "depends"
+      ])
+    )
   end
 
   def down do
@@ -59,11 +65,13 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
   end
 
   defp unwind_content_by_group(%{content: content} = template) do
-    old_content = content
+    old_content =
+      content
       |> Enum.map(fn %{"name" => name, "fields" => fields} ->
-        Enum.map(fields, &(Map.put(&1, "group", name)))
+        Enum.map(fields, &Map.put(&1, "group", name))
       end)
-      |> Enum.concat
+      |> Enum.concat()
+
     {template, old_content}
   end
 

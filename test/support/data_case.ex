@@ -33,7 +33,7 @@ defmodule TdDf.DataCase do
 
     unless tags[:async] do
       Sandbox.mode(TdDf.Repo, {:shared, self()})
-      #parent = self()
+      # parent = self()
       # case Process.whereis(TdDf.DomainLoader) do
       #   nil -> nil
       #   pid -> Sandbox.allow(TdDf.Repo, parent, pid)

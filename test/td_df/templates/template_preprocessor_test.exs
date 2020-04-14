@@ -66,12 +66,15 @@ defmodule TdDf.Templates.PreprocessorTest do
   defp sample_template do
     %{
       content: [
-        %{"name" => "test-group", "fields" => [
-          %{"name" => "_confidential", "foo" => "bar"},
-          %{"name" => "foo2", "type" => "type"},
-          %{"name" => "foo1", "type" => "user", "values" => %{"role_users" => "owner"}},
-          %{"foo" => "bar"}
-        ]}
+        %{
+          "name" => "test-group",
+          "fields" => [
+            %{"name" => "_confidential", "foo" => "bar"},
+            %{"name" => "foo2", "type" => "type"},
+            %{"name" => "foo1", "type" => "user", "values" => %{"role_users" => "owner"}},
+            %{"foo" => "bar"}
+          ]
+        }
       ],
       foo: "bar"
     }
@@ -102,30 +105,32 @@ defmodule TdDf.Templates.PreprocessorTest do
       end
 
     %{
-      content: [%{
-        "name" => "test-group",
-        "fields" => [
-          %{
-            "default" => "No",
-            "disabled" => true,
-            "foo" => "bar",
-            "name" => "_confidential",
-            "cardinality" => "?",
-            "type" => "string",
-            "widget" => "checkbox"
-          },
-          %{"name" => "foo2", "type" => "type"},
-          user_field,
-          %{"foo" => "bar"}
-        ]
-      }],
+      content: [
+        %{
+          "name" => "test-group",
+          "fields" => [
+            %{
+              "default" => "No",
+              "disabled" => true,
+              "foo" => "bar",
+              "name" => "_confidential",
+              "cardinality" => "?",
+              "type" => "string",
+              "widget" => "checkbox"
+            },
+            %{"name" => "foo2", "type" => "type"},
+            user_field,
+            %{"foo" => "bar"}
+          ]
+        }
+      ],
       foo: "bar"
     }
   end
 
   defp random_domain do
     id = random_id()
-    %{id: id, name: "domain #{id}"}
+    %{id: id, name: "domain #{id}", updated_at: DateTime.utc_now()}
   end
 
   defp random_user do

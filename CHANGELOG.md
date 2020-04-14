@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- [TD-2508] Update to Elixir 1.10
+
 ## [3.14.0] 2020-01-27
 
 ### Changed

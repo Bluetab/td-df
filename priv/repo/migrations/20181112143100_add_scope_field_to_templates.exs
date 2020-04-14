@@ -7,13 +7,13 @@ defmodule TdDf.Repo.Migrations.AddScopeFieldToTemplates do
 
   def up do
     alter table(:templates) do
-      add :scope, :string, null: true
+      add(:scope, :string, null: true)
     end
   end
 
   def down do
     alter table(:templates) do
-      remove :scope
+      remove(:scope)
     end
   end
 end

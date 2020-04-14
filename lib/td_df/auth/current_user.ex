@@ -16,5 +16,4 @@ defmodule TdDf.Auth.CurrentUser do
 
     conn |> assign(:current_user, current_user)
   end
-
 end

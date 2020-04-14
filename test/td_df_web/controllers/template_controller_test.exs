@@ -12,10 +12,12 @@ defmodule TdDfWeb.TemplateControllerTest do
 
   @create_attrs %{content: [], label: "some name", name: "some_name", scope: "bg"}
   @generic_attrs %{
-    content: [%{
-      "name" => "test-group",
-      "fields" => [%{type: "type1", required: true, name: "name1", max_size: 100}]
-    }],
+    content: [
+      %{
+        "name" => "test-group",
+        "fields" => [%{type: "type1", required: true, name: "name1", max_size: 100}]
+      }
+    ],
     label: "generic true",
     name: "generic_true",
     scope: "bg"
@@ -81,14 +83,18 @@ defmodule TdDfWeb.TemplateControllerTest do
           "name" => "template_name",
           "label" => "template_label",
           "scope" => "bg",
-          "content" => [%{
-            "name" => "test-group",
-            "fields" => [%{
-              "name" => "name1",
-              "type" => "user",
-              "values" => %{"role_users" => role_name}
-            }]
-          }]
+          "content" => [
+            %{
+              "name" => "test-group",
+              "fields" => [
+                %{
+                  "name" => "name1",
+                  "type" => "user",
+                  "values" => %{"role_users" => role_name}
+                }
+              ]
+            }
+          ]
         })
 
       conn = get(conn, Routes.template_path(conn, :show, template.id, domain_id: domain_id))
@@ -98,14 +104,17 @@ defmodule TdDfWeb.TemplateControllerTest do
         "role_users" => role_name,
         "processed_users" => [username]
       }
-      values = conn
-      |> json_response(200)
-      |> Map.get("data")
-      |> Map.get("content")
-      |> Enum.at(0)
-      |> Map.get("fields")
-      |> Enum.at(0)
-      |> Map.get("values")
+
+      values =
+        conn
+        |> json_response(200)
+        |> Map.get("data")
+        |> Map.get("content")
+        |> Enum.at(0)
+        |> Map.get("fields")
+        |> Enum.at(0)
+        |> Map.get("values")
+
       assert values == expected_values
     end
   end

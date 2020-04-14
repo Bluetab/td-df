@@ -97,14 +97,16 @@ defmodule TdDf.TemplatesTest do
     end
 
     test "create_template/1 with repeated name field in content returns error changeset" do
-      content = [%{
-        "name" => "test-group",
-        "fields" => [
-          %{"name" => "my repeated name"},
-          %{"name" => "my name"},
-          %{"name" => "my repeated name"}
-        ]
-      }]
+      content = [
+        %{
+          "name" => "test-group",
+          "fields" => [
+            %{"name" => "my repeated name"},
+            %{"name" => "my name"},
+            %{"name" => "my repeated name"}
+          ]
+        }
+      ]
 
       attrs = Map.put(@valid_attrs, :content, content)
       assert {:error, %Ecto.Changeset{errors: errors}} = Templates.create_template(attrs)
@@ -118,18 +120,24 @@ defmodule TdDf.TemplatesTest do
     end
 
     test "create_template/1 with with existing fields and different type in another template returns error changeset" do
-      insert(:template, content: [%{
-        "name" => "test-group",
-        "fields" => [%{"name" => "field1", "type" => "type1"}]
-      }])
-
-      content = [%{
-        "name" => "test-group",
-        "fields" => [
-          %{"name" => "field1", "type" => "typex"},
-          %{"name" => "field2", "type" => "type1"}
+      insert(:template,
+        content: [
+          %{
+            "name" => "test-group",
+            "fields" => [%{"name" => "field1", "type" => "type1"}]
+          }
         ]
-      }]
+      )
+
+      content = [
+        %{
+          "name" => "test-group",
+          "fields" => [
+            %{"name" => "field1", "type" => "typex"},
+            %{"name" => "field2", "type" => "type1"}
+          ]
+        }
+      ]
 
       attrs = Map.put(@valid_attrs, :content, content)
       assert {:error, %Ecto.Changeset{errors: errors}} = Templates.create_template(attrs)
@@ -143,18 +151,24 @@ defmodule TdDf.TemplatesTest do
     end
 
     test "create_template/1 with with existing fields and same type in another template creates the template" do
-      insert(:template, content: [%{
-        "name" => "test-group",
-        "fields" => [%{"name" => "field1", "type" => "type1"}]
-      }])
-
-      content = [%{
-        "name" => "test-group",
-        "fields" => [
-          %{"name" => "field1", "type" => "type1"},
-          %{"name" => "field2", "type" => "type1"}
+      insert(:template,
+        content: [
+          %{
+            "name" => "test-group",
+            "fields" => [%{"name" => "field1", "type" => "type1"}]
+          }
         ]
-      }]
+      )
+
+      content = [
+        %{
+          "name" => "test-group",
+          "fields" => [
+            %{"name" => "field1", "type" => "type1"},
+            %{"name" => "field2", "type" => "type1"}
+          ]
+        }
+      ]
 
       attrs = Map.put(@valid_attrs, :content, content)
       assert {:ok, %Template{} = template} = Templates.create_template(attrs)
