@@ -13,7 +13,7 @@ defmodule TdDf.Factory do
   def template_factory do
     %TdDf.Templates.Template{
       label: "some type",
-      name: "some_type",
+      name: sequence("template_name"),
       content: []
     }
   end

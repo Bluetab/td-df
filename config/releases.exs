@@ -9,4 +9,6 @@ config :td_df, TdDf.Repo,
 
 config :td_df, TdDf.Auth.Guardian, secret_key: System.fetch_env!("GUARDIAN_SECRET_KEY")
 
-config :td_cache, redis_host: System.fetch_env!("REDIS_HOST")
+config :td_cache,
+  redis_host: System.fetch_env!("REDIS_HOST"),
+  port: System.get_env("REDIS_PORT", "6379") |> String.to_integer()
