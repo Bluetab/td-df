@@ -18,4 +18,4 @@ config :td_df, TdDf.Repo,
 
 config :td_df, permission_resolver: TdDf.Permissions.MockPermissionResolver
 
-config :td_cache, redis_host: "redis"
+config :td_cache, redis_host: "redis", port: 6380
