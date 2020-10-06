@@ -31,7 +31,12 @@ defmodule TdDfWeb.TemplateControllerTest do
     test "lists all templates", %{conn: conn, swagger_schema: schema} do
       conn = get(conn, Routes.template_path(conn, :index))
       validate_resp_schema(conn, schema, "TemplatesResponse")
-      assert json_response(conn, 200)["data"] == []
+      assert [_ | _] = templates = json_response(conn, 200)["data"]
+
+      assert Enum.any?(
+               templates,
+               &(Map.get(&1, "name") == "config_metabase" and Map.get(&1, "scope") == "ca")
+             )
     end
 
     @tag :admin_authenticated
