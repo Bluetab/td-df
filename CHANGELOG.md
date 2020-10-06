@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased] 
+
+### Added
+
+- [TD-2955] Migration inserting the template `config_metabase`
+
 ## [4.0.0] 2020-07-01
 
 ### Changed
