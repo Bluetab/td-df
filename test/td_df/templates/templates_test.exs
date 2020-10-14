@@ -44,7 +44,9 @@ defmodule TdDf.TemplatesTest do
 
     test "list_templates/0 returns all templates" do
       template = template_fixture()
-      assert Templates.list_templates() == [template]
+      assert [_ | _] = templates = Templates.list_templates()
+      assert Enum.any?(templates, &(&1 == template))
+      assert Enum.any?(templates, &(&1.scope == "ca" and &1.name == "config_metabase"))
     end
 
     test "list_templates/1 with scope filter returns templates filtered by the given value for the scope" do
