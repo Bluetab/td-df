@@ -8,7 +8,7 @@ defmodule TdDf.Permissions do
   alias TdDf.Accounts.User
   alias TdDf.Taxonomies.Domain
 
-  @permission_resolver Application.get_env(:td_df, :permission_resolver)
+  @permission_resolver Application.compile_env(:td_df, :permission_resolver)
 
   def get_domain_permissions(%User{jti: jti}) do
     @permission_resolver.get_acls_by_resource_type(jti, "domain")
