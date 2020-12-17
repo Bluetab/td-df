@@ -37,7 +37,7 @@ defmodule TdDfWeb.Router do
     %{
       schemes: ["http", "https"],
       info: %{
-        version: "3.10",
+        version: Application.spec(:td_df, :vsn),
         title: "Truedat Dynamic Forms Service"
       },
       securityDefinitions: %{
