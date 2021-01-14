@@ -25,8 +25,8 @@ defmodule TdDf.Templates.FieldFormatterTest do
       field = %{"name" => "foo", "type" => "user", "values" => %{"role_users" => "owner"}}
       users = [%{id: 1, full_name: "User 1"}, %{id: 2, full_name: "User 2"}]
       user_roles = %{"owner" => users}
-      user = %{id: 2}
-      ctx = %{user_roles: user_roles, user: user}
+      claims = %{user_id: 2}
+      ctx = %{user_roles: user_roles, claims: claims}
 
       expected = %{
         "default" => "User 2",

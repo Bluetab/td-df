@@ -35,12 +35,8 @@ defmodule TdDf.AclLoader do
     |> AclCache.get_acl_role_users(resource_id, role)
     |> Enum.map(fn user_id ->
       case UserCache.get(user_id) do
-        {:ok, nil} ->
-          nil
-
-        {:ok, user} ->
-          user
-          |> Map.take([:id, :full_name])
+        {:ok, nil} -> nil
+        {:ok, user} -> Map.take(user, [:id, :full_name])
       end
     end)
   end

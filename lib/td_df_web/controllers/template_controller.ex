@@ -59,10 +59,10 @@ defmodule TdDfWeb.TemplateController do
   end
 
   def show(conn, %{"id" => id} = params) do
-    user = conn.assigns[:current_user]
+    claims = conn.assigns[:current_resource]
 
     domain_id = Map.get(params, "domain_id")
-    preprocess_params = format_preprocess_params(%{domain_id: domain_id, user: user})
+    preprocess_params = format_preprocess_params(%{domain_id: domain_id, claims: claims})
 
     template =
       id

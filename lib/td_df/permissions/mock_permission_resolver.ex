@@ -5,7 +5,6 @@ defmodule TdDf.Permissions.MockPermissionResolver do
   """
   use Agent
 
-  alias Jason, as: JSON
   alias TdCache.TaxonomyCache
 
   @role_permissions %{
@@ -112,7 +111,7 @@ defmodule TdDf.Permissions.MockPermissionResolver do
 
   def register_token(resource) do
     %{"sub" => sub, "jti" => jti} = resource |> Map.take(["sub", "jti"])
-    %{"id" => user_id} = sub |> JSON.decode!()
+    %{"id" => user_id} = Jason.decode!(sub)
     Agent.update(:MockSessions, &Map.put(&1, jti, user_id))
   end
 

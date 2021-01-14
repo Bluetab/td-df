@@ -8,18 +8,19 @@ defmodule TdDf.Templates.PreprocessorTest do
   alias TdDf.Templates.Preprocessor
 
   setup do
-    domain = random_domain()
-    user = random_user()
+    %{id: domain_id} = domain = random_domain()
+    %{id: user_id} = user = random_user()
+    claims = %{user_id: user_id}
 
     {:ok, _} = DomainCache.put(domain)
     {:ok, _} = UserCache.put(user)
 
     on_exit(fn ->
-      UserCache.delete(user.id)
-      DomainCache.delete(domain.id)
+      UserCache.delete(user_id)
+      DomainCache.delete(domain_id)
     end)
 
-    {:ok, domain: domain, user: user}
+    {:ok, domain: domain, claims: claims}
   end
 
   describe "template preprocessor" do
@@ -32,10 +33,10 @@ defmodule TdDf.Templates.PreprocessorTest do
     end
 
     test "preprocess_template/2 with domain_id uses role data cache to format content", context do
-      %{domain: domain, user: user} = context
-      {_domain_id, user_id} = domain_user_role_fixture(domain, user)
+      %{domain: domain, claims: claims} = context
+      {_domain_id, user_id} = domain_user_role_fixture(domain, claims)
 
-      ctx = %{domain_id: domain.id, user: user}
+      ctx = %{domain_id: domain.id, claims: %{user_id: user_id}}
       template = sample_template()
       expected = sample_template_preprocessed([user_id], user_id)
 
@@ -46,13 +47,13 @@ defmodule TdDf.Templates.PreprocessorTest do
   defp user_roles_context do
     users = [%{id: 1, full_name: "user 1"}, %{id: 2, full_name: "user 2"}]
     user_roles = %{"owner" => users}
-    user = %{id: 2}
-    %{user_roles: user_roles, user: user}
+    claims = %{user_id: 2}
+    %{user_roles: user_roles, claims: claims}
   end
 
-  defp domain_user_role_fixture(domain, user) do
+  defp domain_user_role_fixture(domain, claims) do
     domain_id = domain.id
-    user_id = user.id
+    %{user_id: user_id} = claims
     role_name = "owner"
     setup_cache("#{domain_id}", role_name, "#{user_id}")
     {domain_id, user_id}
@@ -81,9 +82,7 @@ defmodule TdDf.Templates.PreprocessorTest do
   end
 
   defp sample_template_preprocessed(user_ids, default) do
-    user_full_names =
-      user_ids
-      |> Enum.map(fn id -> "user #{id}" end)
+    user_full_names = Enum.map(user_ids, &"user #{&1}")
 
     user_field = %{
       "name" => "foo1",
@@ -96,12 +95,8 @@ defmodule TdDf.Templates.PreprocessorTest do
 
     user_field =
       case default do
-        nil ->
-          user_field
-
-        n ->
-          user_field
-          |> Map.put("default", "user #{n}")
+        nil -> user_field
+        n -> Map.put(user_field, "default", "user #{n}")
       end
 
     %{

@@ -4,6 +4,7 @@
 
 ### Changed
 
+- [TD-3163] Auth tokens now include `role` claim instead of `is_admin` flag
 - [TD-3182] Allow to use redis with password
 
 ## [4.11.0] 2021-01-11
@@ -34,7 +35,7 @@
 
 ### Changed
 
-- [TD-2269] New template format for groups 
+- [TD-2269] New template format for groups
 
 ## [3.13.0] 2020-12-13
 
@@ -58,7 +59,7 @@
 
 ### Added
 
-- [TD-1993] Validate template names and types on creation/update 
+- [TD-1993] Validate template names and types on creation/update
 
 ## [3.5.0] 2019-09-03
 
