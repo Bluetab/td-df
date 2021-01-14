@@ -6,7 +6,6 @@ defmodule TdDfWeb.TemplateControllerTest do
   alias TdCache.UserCache
   alias TdDf.Templates
   alias TdDf.Templates.Template
-  alias TdDfWeb.ApiServices.MockTdAuthService
 
   @create_attrs %{content: [], label: "some name", name: "some_name", scope: "bg"}
   @update_attrs %{content: [], label: "some updated name", name: "some_name", scope: "bg"}
@@ -15,11 +14,6 @@ defmodule TdDfWeb.TemplateControllerTest do
   def fixture(:template) do
     {:ok, template} = Templates.create_template(@create_attrs)
     template
-  end
-
-  setup_all do
-    start_supervised(MockTdAuthService)
-    :ok
   end
 
   setup %{conn: conn} do

@@ -6,7 +6,6 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   alias TdDf.Permissions.MockPermissionResolver
   alias TdDf.Templates
   alias TdDf.Templates.Template
-  alias TdDfWeb.ApiServices.MockTdAuthService
 
   @create_attrs %{content: [], label: "some label", name: "some_name", scope: "s1"}
   @update_attrs %{content: [], label: "some updated label", name: "some_name", scope: "s2"}
@@ -18,7 +17,6 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
 
   setup_all do
     start_supervised(MockPermissionResolver)
-    start_supervised(MockTdAuthService)
     :ok
   end
 

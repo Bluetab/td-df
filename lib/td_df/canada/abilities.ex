@@ -1,10 +1,10 @@
 defmodule TdDf.Canada.Abilities do
   @moduledoc false
-  alias TdDf.Accounts.User
+  alias TdDf.Auth.Claims
 
-  defimpl Canada.Can, for: User do
-    def can?(%User{is_admin: true}, _action, _domain), do: true
+  defimpl Canada.Can, for: Claims do
+    def can?(%Claims{is_admin: true}, _action, _domain), do: true
 
-    def can?(%User{}, _action, _domain), do: false
+    def can?(%Claims{}, _action, _domain), do: false
   end
 end
