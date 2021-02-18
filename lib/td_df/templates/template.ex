@@ -24,6 +24,7 @@ defmodule TdDf.Templates.Template do
     |> validate_repeated_group_names()
     |> validate_repeated_names()
     |> validate_name_and_types(template)
+    |> validate_subscribable()
     |> unique_constraint(:name)
   end
 
@@ -46,9 +47,7 @@ defmodule TdDf.Templates.Template do
 
   defp validate_repeated_names(%{valid?: true} = changeset) do
     changeset
-    |> get_field(:content)
-    |> Enum.map(&Map.get(&1, "fields"))
-    |> List.flatten()
+    |> flatten_content_fields()
     |> Enum.group_by(&Map.get(&1, "name"))
     |> Enum.filter(&elem(&1, 0))
     |> Enum.filter(fn {_key, values} -> Enum.count(values) > 1 end)
@@ -68,9 +67,7 @@ defmodule TdDf.Templates.Template do
       Enum.filter(Templates.list_templates(), fn template -> Map.get(template, :id) != id end)
 
     changeset
-    |> get_field(:content)
-    |> Enum.map(&Map.get(&1, "fields"))
-    |> List.flatten()
+    |> flatten_content_fields()
     |> Enum.filter(fn field -> Map.has_key?(field, "name") && Map.has_key?(field, "type") end)
     |> Enum.into(Map.new(), fn field -> {Map.get(field, "name"), Map.get(field, "type")} end)
     |> validate_content(templates)
@@ -86,6 +83,29 @@ defmodule TdDf.Templates.Template do
   end
 
   defp validate_name_and_types(changeset, _), do: changeset
+
+  defp validate_subscribable(%{valid?: true} = changeset) do
+    changeset
+    |> flatten_content_fields()
+    |> Enum.filter(&Map.get(&1, "subscribable"))
+    |> Enum.reject(&fixed_values/1)
+    |> case do
+      [] ->
+        changeset
+
+      [field | _] ->
+        add_error(changeset, :content, "invalid.subscribable", name: Map.get(field, "name"))
+    end
+  end
+
+  defp validate_subscribable(changeset), do: changeset
+
+  defp flatten_content_fields(changeset) do
+    changeset
+    |> get_field(:content)
+    |> Enum.map(&Map.get(&1, "fields"))
+    |> List.flatten()
+  end
 
   defp validate_content(content, templates) do
     templates
@@ -113,4 +133,8 @@ defmodule TdDf.Templates.Template do
   end
 
   defp fields_against_content([], _), do: :ok
+
+  defp fixed_values(%{"values" => %{"fixed" => _}}), do: true
+
+  defp fixed_values(_), do: false
 end
