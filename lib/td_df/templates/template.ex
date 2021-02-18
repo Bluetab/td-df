@@ -103,8 +103,7 @@ defmodule TdDf.Templates.Template do
   defp flatten_content_fields(changeset) do
     changeset
     |> get_field(:content)
-    |> Enum.map(&Map.get(&1, "fields"))
-    |> List.flatten()
+    |> Enum.flat_map(&Map.get(&1, "fields"))
   end
 
   defp validate_content(content, templates) do
