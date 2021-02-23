@@ -134,6 +134,6 @@ defmodule TdDf.Templates.Template do
   defp fields_against_content([], _), do: :ok
 
   defp fixed_values(%{"values" => %{"fixed" => _}}), do: true
-
+  defp fixed_values(%{"values" => %{"fixed_tuple" => _}}), do: true
   defp fixed_values(_), do: false
 end

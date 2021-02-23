@@ -190,7 +190,13 @@ defmodule TdDf.TemplatesTest do
               "subscribable" => true
             },
             %{"name" => "bar", "type" => "bar"},
-            %{"name" => "baz", "type" => "baz", "subscribable" => false}
+            %{"name" => "baz", "type" => "baz", "subscribable" => false},
+            %{
+              "name" => "xyz",
+              "type" => "xyz",
+              "values" => %{"fixed_tuple" => []},
+              "subscribable" => true
+            }
           ]
         }
       ]
