@@ -54,7 +54,6 @@ config :td_df, :phoenix_swagger,
   }
 
 config :td_df, permission_resolver: TdCache.Permissions
-config :td_df, acl_cache: TdCache.AclCache
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
