@@ -121,7 +121,7 @@ defmodule TdDf.TemplatesTest do
       assert error == "repeated.field"
     end
 
-    test "create_template/1 with with existing fields and different type in another template returns error changeset" do
+    test "create_template/1 with existing fields and different type in another template returns error changeset" do
       insert(:template,
         content: [
           %{
@@ -152,7 +152,7 @@ defmodule TdDf.TemplatesTest do
       assert error == "invalid.type"
     end
 
-    test "create_template/1 with with existing fields and same type in another template creates the template" do
+    test "create_template/1 with existing fields and same type in another template creates the template" do
       insert(:template,
         content: [
           %{
@@ -176,6 +176,58 @@ defmodule TdDf.TemplatesTest do
       assert {:ok, %Template{} = template} = Templates.create_template(attrs)
 
       assert template.content == content
+    end
+
+    test "create_template/1 with subscribable fields format validation" do
+      content = [
+        %{
+          "name" => "foo",
+          "fields" => [
+            %{
+              "name" => "foo",
+              "type" => "foo",
+              "values" => %{"fixed" => []},
+              "subscribable" => true
+            },
+            %{"name" => "bar", "type" => "bar"},
+            %{"name" => "baz", "type" => "baz", "subscribable" => false},
+            %{
+              "name" => "xyz",
+              "type" => "xyz",
+              "values" => %{"fixed_tuple" => []},
+              "subscribable" => true
+            }
+          ]
+        }
+      ]
+
+      attrs = Map.put(@valid_attrs, :content, content)
+      assert {:ok, %Template{} = template} = Templates.create_template(attrs)
+      assert template.content == content
+
+      content = [
+        %{
+          "name" => "foo",
+          "fields" => [
+            %{
+              "name" => "foo",
+              "type" => "foo",
+              "values" => %{"fixed" => []},
+              "subscribable" => true
+            },
+            %{"name" => "bar", "type" => "bar"},
+            %{"name" => "baz", "type" => "baz", "subscribable" => true}
+          ]
+        }
+      ]
+
+      attrs = Map.put(@valid_attrs, :content, content)
+
+      assert {:error,
+              %Ecto.Changeset{
+                errors: [content: {"invalid.subscribable", [name: "baz"]}],
+                valid?: false
+              }} = Templates.create_template(attrs)
     end
 
     test "update_template/2 with valid data updates the template" do

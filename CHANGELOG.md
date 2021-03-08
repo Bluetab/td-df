@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased] 
+
+### Added
+
+- [TD-3063] Store subscribable fields
+
 ## [4.14.0] 2021-2-22
 
 ### Changed
