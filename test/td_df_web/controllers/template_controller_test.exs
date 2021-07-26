@@ -135,7 +135,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   end
 
   describe "update template" do
-    setup [:create_template]
+    setup :create_template
 
     @tag :admin_authenticated
     test "renders template when data is valid", %{
@@ -174,7 +174,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   end
 
   describe "delete template" do
-    setup [:create_template]
+    setup :create_template
 
     @tag :admin_authenticated
     test "deletes chosen template", %{conn: conn, template: template} do
