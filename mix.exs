@@ -6,10 +6,10 @@ defmodule TdDf.Mixfile do
       app: :td_df,
       version:
         case System.get_env("APP_VERSION") do
-          nil -> "4.21.0-local"
+          nil -> "4.25.0-local"
           v -> v
         end,
-      elixir: "~> 1.10",
+      elixir: "~> 1.11",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers() ++ [:phoenix_swagger],
       start_permanent: Mix.env() == :prod,
@@ -57,7 +57,7 @@ defmodule TdDf.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:httpoison, "~> 1.6"},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:guardian, "~> 2.0"},
       {:canada, "~> 2.0"},
       {:ex_machina, "~> 2.3", only: :test},
@@ -65,7 +65,7 @@ defmodule TdDf.Mixfile do
       {:phoenix_swagger, "~> 0.8"},
       {:ex_json_schema, "~> 0.7.3"},
       {:json_diff, "~> 0.1.0"},
-      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "4.15.0"}
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "4.25.4"}
     ]
   end
 

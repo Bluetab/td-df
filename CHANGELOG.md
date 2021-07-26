@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.25.0] 2021-07-26
+
+### Changed
+
+- Updated dependencies
+
 ## [4.21.0] 2021-05-31
 
 ### Changed
@@ -138,13 +144,15 @@
 
 ### Added
 
-- [TD-1571] Elixir's Logger config will check for EX_LOGGER_FORMAT variable to override format
+- [TD-1571] Elixir's Logger config will check for EX_LOGGER_FORMAT variable to
+  override format
 
 ## [2.15.0] 2019-03-18
 
 ### Changed
 
-- [TD-1548] When preprocessing template, role_users are stored in a different attribute to avoid overwriting the role value, needed for editing the template
+- [TD-1548] When preprocessing template, role_users are stored in a different
+  attribute to avoid overwriting the role value, needed for editing the template
 - [TD-1468] Updated td-perms version to 2.15.0. Writes scope to Redis cache
 
 ## [2.14.0] 2019-03-02

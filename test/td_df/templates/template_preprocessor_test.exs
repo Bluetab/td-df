@@ -124,14 +124,12 @@ defmodule TdDf.Templates.PreprocessorTest do
   end
 
   defp random_domain do
-    id = random_id()
+    id = System.unique_integer([:positive])
     %{id: id, name: "domain #{id}", updated_at: DateTime.utc_now()}
   end
 
   defp random_user do
-    id = random_id()
+    id = System.unique_integer([:positive])
     %{id: id, full_name: "user #{id}", email: "user#{id}@foo.bar"}
   end
-
-  defp random_id, do: :rand.uniform(100_000_000)
 end

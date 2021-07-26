@@ -45,7 +45,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   end
 
   describe "update template" do
-    setup [:create_template]
+    setup :create_template
 
     @tag :admin_authenticated
     test "refreshes cache data when updates", %{
@@ -70,7 +70,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   end
 
   describe "delete template" do
-    setup [:create_template]
+    setup :create_template
 
     @tag :admin_authenticated
     test "clean cache when template is deleted", %{conn: conn, template: template} do
