@@ -3,25 +3,14 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   use PhoenixSwagger.SchemaTest, "priv/static/swagger.json"
 
   alias TdCache.TemplateCache
-  alias TdDf.Permissions.MockPermissionResolver
   alias TdDf.Templates
   alias TdDf.Templates.Template
 
   @create_attrs %{content: [], label: "some label", name: "some_name", scope: "s1"}
   @update_attrs %{content: [], label: "some updated label", name: "some_name", scope: "s2"}
 
-  def fixture(:template) do
-    {:ok, template} = Templates.create_template(@create_attrs)
-    template
-  end
-
-  setup_all do
-    start_supervised(MockPermissionResolver)
-    :ok
-  end
-
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    [conn: put_req_header(conn, "accept", "application/json")]
   end
 
   describe "create template" do
@@ -83,7 +72,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   end
 
   defp create_template(_) do
-    template = fixture(:template)
-    {:ok, template: template}
+    {:ok, template} = Templates.create_template(@create_attrs)
+    [template: template]
   end
 end

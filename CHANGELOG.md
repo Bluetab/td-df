@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- [TD-4491] Compatibility with new permissions cache model
+
 ## [4.25.0] 2021-07-26
 
 ### Changed

@@ -16,6 +16,4 @@ config :td_df, TdDf.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 1
 
-config :td_df, permission_resolver: TdDf.Permissions.MockPermissionResolver
-
 config :td_cache, redis_host: "redis", port: 6380

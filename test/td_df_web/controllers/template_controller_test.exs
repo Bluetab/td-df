@@ -2,8 +2,6 @@ defmodule TdDfWeb.TemplateControllerTest do
   use TdDfWeb.ConnCase
   use PhoenixSwagger.SchemaTest, "priv/static/swagger.json"
 
-  alias TdCache.AclCache
-  alias TdCache.UserCache
   alias TdDf.Templates
   alias TdDf.Templates.Template
 
@@ -52,13 +50,10 @@ defmodule TdDfWeb.TemplateControllerTest do
     @tag :admin_authenticated
     test "renders preprocessed template", %{conn: conn, swagger_schema: schema} do
       role_name = "test_role"
-      domain_id = "1"
-      user_id = "10"
-      username = "username"
 
-      UserCache.put(%{id: user_id, full_name: username})
-      AclCache.set_acl_roles("domain", domain_id, [role_name])
-      AclCache.set_acl_role_users("domain", domain_id, role_name, [user_id])
+      %{id: domain_id} = CacheHelpers.put_domain()
+      %{id: user_id, full_name: full_name} = CacheHelpers.put_user()
+      CacheHelpers.put_acl_role_users(domain_id, role_name, [user_id])
 
       {:ok, template} =
         Templates.create_template(%{
@@ -79,25 +74,14 @@ defmodule TdDfWeb.TemplateControllerTest do
           ]
         })
 
-      conn = get(conn, Routes.template_path(conn, :show, template.id, domain_id: domain_id))
-      validate_resp_schema(conn, schema, "TemplateResponse")
+      assert %{"data" => data} =
+               conn
+               |> get(Routes.template_path(conn, :show, template.id, domain_id: domain_id))
+               |> validate_resp_schema(schema, "TemplateResponse")
+               |> json_response(:ok)
 
-      expected_values = %{
-        "role_users" => role_name,
-        "processed_users" => [username]
-      }
-
-      values =
-        conn
-        |> json_response(200)
-        |> Map.get("data")
-        |> Map.get("content")
-        |> Enum.at(0)
-        |> Map.get("fields")
-        |> Enum.at(0)
-        |> Map.get("values")
-
-      assert values == expected_values
+      assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
+      assert values == %{"role_users" => role_name, "processed_users" => [full_name]}
     end
   end
 
