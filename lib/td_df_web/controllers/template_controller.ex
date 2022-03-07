@@ -118,5 +118,7 @@ defmodule TdDfWeb.TemplateController do
     Map.delete(params, :domain_id)
   end
 
-  defp format_preprocess_params(params), do: params
+  defp format_preprocess_params(%{} = params) do
+    Map.update(params, :domain_id, nil, &String.to_integer/1)
+  end
 end

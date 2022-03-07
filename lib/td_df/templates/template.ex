@@ -31,15 +31,11 @@ defmodule TdDf.Templates.Template do
   defp validate_repeated_group_names(%{valid?: true} = changeset) do
     changeset
     |> get_field(:content)
-    |> Enum.group_by(&Map.get(&1, "name"))
-    |> Enum.filter(&elem(&1, 0))
-    |> Enum.filter(fn {_key, values} -> Enum.count(values) > 1 end)
+    |> Enum.frequencies_by(&Map.get(&1, "name"))
+    |> Enum.max_by(fn {_, count} -> count end, fn -> {:none, 0} end)
     |> case do
-      [] ->
-        changeset
-
-      [repeated | _] ->
-        add_error(changeset, :content, "repeated.group", name: elem(repeated, 0))
+      {name, count} when count > 1 -> add_error(changeset, :content, "repeated.group", name: name)
+      _ -> changeset
     end
   end
 
@@ -48,15 +44,11 @@ defmodule TdDf.Templates.Template do
   defp validate_repeated_names(%{valid?: true} = changeset) do
     changeset
     |> flatten_content_fields()
-    |> Enum.group_by(&Map.get(&1, "name"))
-    |> Enum.filter(&elem(&1, 0))
-    |> Enum.filter(fn {_key, values} -> Enum.count(values) > 1 end)
+    |> Enum.frequencies_by(&Map.get(&1, "name"))
+    |> Enum.max_by(fn {_, count} -> count end, fn -> {:none, 0} end)
     |> case do
-      [] ->
-        changeset
-
-      [repeated | _] ->
-        add_error(changeset, :content, "repeated.field", name: elem(repeated, 0))
+      {name, count} when count > 1 -> add_error(changeset, :content, "repeated.field", name: name)
+      _ -> changeset
     end
   end
 

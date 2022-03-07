@@ -18,12 +18,7 @@ config :td_df, TdDfWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: TdDfWeb.ErrorView, accepts: ~w(json)]
 
-config :td_df, TdDf.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "td_df_dev",
-  hostname: "localhost",
-  pool_size: 4
+config :td_df, TdDf.Repo, pool_size: 4
 
 # Configures Elixir's Logger
 # set EX_LOGGER_FORMAT environment variable to override Elixir's Logger format
@@ -52,8 +47,6 @@ config :td_df, :phoenix_swagger,
   swagger_files: %{
     "priv/static/swagger.json" => [router: TdDfWeb.Router]
   }
-
-config :td_df, permission_resolver: TdCache.Permissions
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

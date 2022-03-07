@@ -21,7 +21,7 @@ config :td_df, TdDf.Repo,
   username: "postgres",
   password: "postgres",
   database: "td_df_dev",
-  hostname: "localhost",
+  hostname: "postgres",
   pool_size: 10
 
-config :td_cache, redis_host: "localhost"
+config :td_cache, redis_host: "redis"

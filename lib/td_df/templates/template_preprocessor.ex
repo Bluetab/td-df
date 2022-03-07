@@ -7,7 +7,7 @@ defmodule TdDf.Templates.Preprocessor do
   def preprocess_template(template, context \\ %{})
 
   def preprocess_template(template, %{domain_id: domain_id} = context) do
-    user_roles = AclLoader.get_roles_and_users("domain", domain_id)
+    user_roles = AclLoader.get_roles_and_users(domain_id)
 
     context = Map.put(context, :user_roles, user_roles)
 
@@ -20,16 +20,11 @@ defmodule TdDf.Templates.Preprocessor do
 
   defp preprocess_template_content(%{content: content} = template, context) do
     content =
-      Enum.map(content, fn group ->
-        fields =
-          group
-          |> Map.get("fields")
-          |> Enum.map(&FieldFormatter.format(&1, context))
-
-        Map.put(group, "fields", fields)
+      Enum.map(content, fn %{"fields" => fields} = group ->
+        fields = Enum.map(fields, &FieldFormatter.format(&1, context))
+        %{group | "fields" => fields}
       end)
 
-    template
-    |> Map.put(:content, content)
+    %{template | content: content}
   end
 end

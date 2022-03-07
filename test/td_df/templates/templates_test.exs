@@ -1,46 +1,28 @@
 defmodule TdDf.TemplatesTest do
   use TdDf.DataCase
+
   import Ecto.Changeset
 
+  alias TdCache.TemplateCache
+  alias TdDf.Repo
   alias TdDf.Templates
+  alias TdDf.Templates.Template
+
+  @valid_attrs %{
+    content: [],
+    label: "some name",
+    name: "some_name",
+    scope: "bg"
+  }
+  @update_attrs %{
+    content: [],
+    label: "some updated name",
+    name: "some_name",
+    scope: "dq"
+  }
+  @invalid_attrs %{content: nil, label: nil, name: nil}
 
   describe "templates" do
-    alias TdCache.TemplateCache
-    alias TdDf.Repo
-    alias TdDf.Templates.Template
-
-    @valid_attrs %{
-      content: [],
-      label: "some name",
-      name: "some_name",
-      scope: "bg"
-    }
-    @update_attrs %{
-      content: [],
-      label: "some updated name",
-      name: "some_name",
-      scope: "dq"
-    }
-    @invalid_attrs %{content: nil, label: nil, name: nil}
-
-    def template_fixture(attrs \\ %{}) do
-      {:ok, template} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Templates.create_template()
-
-      template
-    end
-
-    def list_templates_fixture do
-      [
-        %{content: [], label: "some name", name: "some_name", scope: "bg"},
-        %{content: [], label: "some name 1", name: "some_name_1", scope: "bg"},
-        %{content: [], label: "some name 2", name: "some_name_2", scope: "dq"},
-        %{content: [], label: "some name 3", name: "some_name_3", scope: "dd"}
-      ]
-      |> Enum.map(&template_fixture(&1))
-    end
 
     test "list_templates/0 returns all templates" do
       template = template_fixture()
@@ -98,27 +80,38 @@ defmodule TdDf.TemplatesTest do
       assert {:error, %Ecto.Changeset{}} = Templates.create_template(@invalid_attrs)
     end
 
-    test "create_template/1 with repeated name field in content returns error changeset" do
+    test "create_template/1 with repeated group name in content returns error changeset" do
       content = [
         %{
-          "name" => "test-group",
-          "fields" => [
-            %{"name" => "my repeated name"},
-            %{"name" => "my name"},
-            %{"name" => "my repeated name"}
-          ]
+          "name" => "group1",
+          "fields" => [%{"name" => "f1"}]
+        },
+        %{
+          "name" => "group1",
+          "fields" => [%{"name" => "f2"}]
         }
       ]
 
       attrs = Map.put(@valid_attrs, :content, content)
       assert {:error, %Ecto.Changeset{errors: errors}} = Templates.create_template(attrs)
+      assert errors[:content] == {"repeated.group", [name: "group1"]}
+    end
 
-      error =
-        errors
-        |> Keyword.get(:content)
-        |> elem(0)
+    test "create_template/1 with repeated name field in content returns error changeset" do
+      content = [
+        %{
+          "name" => "group1",
+          "fields" => [%{"name" => "repeated_field"}, %{"name" => "my name"}]
+        },
+        %{
+          "name" => "group2",
+          "fields" => [%{"name" => "repeated_field"}]
+        }
+      ]
 
-      assert error == "repeated.field"
+      attrs = Map.put(@valid_attrs, :content, content)
+      assert {:error, %Ecto.Changeset{errors: errors}} = Templates.create_template(attrs)
+      assert errors[:content] == {"repeated.field", [name: "repeated_field"]}
     end
 
     test "create_template/1 with existing fields and different type in another template returns error changeset" do
@@ -279,4 +272,24 @@ defmodule TdDf.TemplatesTest do
       assert %Ecto.Changeset{} = Templates.change_template(template)
     end
   end
+
+  defp template_fixture(attrs \\ %{}) do
+    {:ok, template} =
+      attrs
+      |> Enum.into(@valid_attrs)
+      |> Templates.create_template()
+
+    template
+  end
+
+  defp list_templates_fixture do
+    [
+      %{content: [], label: "some name", name: "some_name", scope: "bg"},
+      %{content: [], label: "some name 1", name: "some_name_1", scope: "bg"},
+      %{content: [], label: "some name 2", name: "some_name_2", scope: "dq"},
+      %{content: [], label: "some name 3", name: "some_name_3", scope: "dd"}
+    ]
+    |> Enum.map(&template_fixture/1)
+  end
+
 end
