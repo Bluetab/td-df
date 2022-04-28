@@ -19,7 +19,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   end
 
   describe "index" do
-    @tag :admin_authenticated
+    @tag :user_authenticated
     test "lists all templates", %{conn: conn, swagger_schema: schema} do
       conn = get(conn, Routes.template_path(conn, :index))
       validate_resp_schema(conn, schema, "TemplatesResponse")
@@ -31,7 +31,7 @@ defmodule TdDfWeb.TemplateControllerTest do
              )
     end
 
-    @tag :admin_authenticated
+    @tag :user_authenticated
     test "lists all templates filtered by scope", %{conn: conn, swagger_schema: schema} do
       insert(:template, scope: "bg")
       insert(:template, scope: "dd")
@@ -111,6 +111,25 @@ defmodule TdDfWeb.TemplateControllerTest do
              }
     end
 
+    @tag :service_authenticated
+    test "can create templates when data is valid", %{conn: conn, swagger_schema: schema} do
+      conn
+      |> post(Routes.template_path(conn, :create), template: @create_attrs)
+      |> validate_resp_schema(schema, "TemplateResponse")
+      |> json_response(:created)
+    end
+
+    @tag :user_authenticated
+    test "can not create new templates even with valid data", %{
+      conn: conn,
+      swagger_schema: schema
+    } do
+      conn
+      |> post(Routes.template_path(conn, :create), template: @create_attrs)
+      |> validate_resp_schema(schema, "TemplateResponse")
+      |> json_response(:forbidden)
+    end
+
     @tag :admin_authenticated
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.template_path(conn, :create), template: @invalid_attrs)
@@ -150,6 +169,31 @@ defmodule TdDfWeb.TemplateControllerTest do
              }
     end
 
+    @tag :service_authenticated
+    test "can update templates when data is valid", %{
+      conn: conn,
+      swagger_schema: schema,
+      template: %Template{id: id} = template
+    } do
+      assert %{"data" => %{"id" => ^id}} =
+               conn
+               |> put(Routes.template_path(conn, :update, template), template: @update_attrs)
+               |> validate_resp_schema(schema, "TemplateResponse")
+               |> json_response(:ok)
+    end
+
+    @tag :user_authenticated
+    test "can not udate templates even with valid data", %{
+      conn: conn,
+      swagger_schema: schema,
+      template: %Template{id: _id} = template
+    } do
+      conn
+      |> put(Routes.template_path(conn, :update, template), template: @update_attrs)
+      |> validate_resp_schema(schema, "TemplateResponse")
+      |> json_response(:forbidden)
+    end
+
     @tag :admin_authenticated
     test "renders errors when data is invalid", %{conn: conn, template: template} do
       conn = put(conn, Routes.template_path(conn, :update, template), template: @invalid_attrs)
@@ -169,6 +213,35 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert_error_sent :not_found, fn ->
         get(conn, Routes.template_path(conn, :show, template))
       end
+    end
+
+    @tag :service_authenticated
+    test "can update templates when data is valid", %{
+      conn: conn,
+      template: template
+    } do
+      assert conn
+             |> delete(Routes.template_path(conn, :delete, template))
+             |> response(:no_content)
+
+      assert_error_sent :not_found, fn ->
+        get(conn, Routes.template_path(conn, :show, template))
+      end
+    end
+
+    @tag :user_authenticated
+    test "can not udate templates even with valid data", %{
+      conn: conn,
+      template: %{id: id} = template
+    } do
+      conn
+      |> delete(Routes.template_path(conn, :delete, template))
+      |> json_response(:forbidden)
+
+      assert %{"data" => %{"id" => ^id}} =
+               conn
+               |> get(Routes.template_path(conn, :show, id))
+               |> json_response(:ok)
     end
   end
 

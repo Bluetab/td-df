@@ -32,7 +32,7 @@ defmodule TdDfWeb.ConnCase do
     end
   end
 
-  @admin_user_name "app-admin"
+  @user_name "app-admin"
 
   setup tags do
     :ok = Sandbox.checkout(TdDf.Repo)
@@ -43,17 +43,22 @@ defmodule TdDfWeb.ConnCase do
 
     cond do
       tags[:admin_authenticated] ->
-        @admin_user_name
-        |> create_claims(role: "admin")
-        |> create_user_auth_conn()
+        authenticate_as("admin")
 
-      tags[:authenticated_user] ->
-        tags[:authenticated_user]
-        |> create_claims()
-        |> create_user_auth_conn()
+      tags[:service_authenticated] ->
+        authenticate_as("service")
+
+      tags[:user_authenticated] ->
+        authenticate_as("user")
 
       true ->
         {:ok, conn: ConnTest.build_conn()}
     end
+  end
+
+  defp authenticate_as(role) do
+    @user_name
+    |> create_claims(role: role)
+    |> create_user_auth_conn()
   end
 end

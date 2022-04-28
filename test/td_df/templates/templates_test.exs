@@ -23,7 +23,6 @@ defmodule TdDf.TemplatesTest do
   @invalid_attrs %{content: nil, label: nil, name: nil}
 
   describe "templates" do
-
     test "list_templates/0 returns all templates" do
       template = template_fixture()
       assert [_ | _] = templates = Templates.list_templates()
@@ -266,11 +265,6 @@ defmodule TdDf.TemplatesTest do
       assert {:ok, %Template{}} = Templates.delete_template(template)
       assert_raise Ecto.NoResultsError, fn -> Templates.get_template!(template.id) end
     end
-
-    test "change_template/1 returns a template changeset" do
-      template = template_fixture()
-      assert %Ecto.Changeset{} = Templates.change_template(template)
-    end
   end
 
   defp template_fixture(attrs \\ %{}) do
@@ -291,5 +285,4 @@ defmodule TdDf.TemplatesTest do
     ]
     |> Enum.map(&template_fixture/1)
   end
-
 end
