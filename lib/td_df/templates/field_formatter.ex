@@ -21,7 +21,7 @@ defmodule TdDf.Templates.FieldFormatter do
 
   def format(%{} = field, _ctx), do: field
 
-  defp is_confidential_field_disabled?(%{claims: %{is_admin: true}}), do: false
+  defp is_confidential_field_disabled?(%{claims: %{role: "admin"}}), do: false
 
   defp is_confidential_field_disabled?(%{domain_id: domain_id, claims: claims}) do
     !Permissions.authorized?(claims, :manage_confidential_business_concepts, domain_id)

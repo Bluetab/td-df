@@ -9,18 +9,9 @@ defmodule TdDf.Templates do
   alias TdDf.Repo
   alias TdDf.Templates.Template
 
-  @doc """
-  Returns the list of templates.
-
-  ## Examples
-
-      iex> list_templates()
-      [%Template{}, ...]
-
-  """
-  def list_templates(attrs \\ %{}) do
+  def list_templates(params \\ %{}) do
     template_fields = Template.__schema__(:fields)
-    where_clause = filter(attrs, template_fields)
+    where_clause = filter(params, template_fields)
 
     Repo.all(
       from(p in Template,
@@ -29,109 +20,26 @@ defmodule TdDf.Templates do
     )
   end
 
-  def list_templates_by_id(id_list) do
-    Template
-    |> where([t], t.id in ^id_list)
-    |> Repo.all()
-  end
-
-  @doc """
-  Gets a single template.
-
-  Raises `Ecto.NoResultsError` if the Template does not exist.
-
-  ## Examples
-
-      iex> get_template!(123)
-      %Template{}
-
-      iex> get_template!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_template!(id), do: Repo.get!(Template, id)
 
-  def get_template_by_name!(name) do
-    Repo.one!(from(r in Template, where: r.name == ^name))
-  end
-
-  def get_template_by_name(name) do
-    Repo.one(from(r in Template, where: r.name == ^name))
-  end
-
-  @doc """
-  Creates a template.
-
-  ## Examples
-
-      iex> create_template(%{field: value})
-      {:ok, %Template{}}
-
-      iex> create_template(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_template(attrs \\ %{}) do
+  def create_template(params \\ %{}) do
     %Template{}
-    |> Template.changeset(attrs)
+    |> Template.changeset(params)
     |> Repo.insert()
-    |> refresh_cache
+    |> refresh_cache()
   end
 
-  @doc """
-  Updates a template.
-
-  ## Examples
-
-      iex> update_template(template, %{field: new_value})
-      {:ok, %Template{}}
-
-      iex> update_template(template, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_template(%Template{} = template, attrs) do
+  def update_template(%Template{} = template, params) do
     template
-    |> Template.changeset(attrs)
+    |> Template.update_changeset(params)
     |> Repo.update()
-    |> refresh_cache
+    |> refresh_cache()
   end
 
-  def update_template_no_cache(%Template{} = template, attrs) do
-    template
-    |> Template.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a Template.
-
-  ## Examples
-
-      iex> delete_template(template)
-      {:ok, %Template{}}
-
-      iex> delete_template(template)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_template(%Template{} = template) do
     template
     |> Repo.delete()
-    |> clean_cache
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking template changes.
-
-  ## Examples
-
-      iex> change_template(template)
-      %Ecto.Changeset{source: %Template{}}
-
-  """
-  def change_template(%Template{} = template) do
-    Template.changeset(template, %{})
+    |> clean_cache()
   end
 
   def refresh_cache({:ok, %{id: id}} = response) do

@@ -31,13 +31,11 @@ defmodule TdDfWeb.Authentication do
   def create_claims(user_name, opts \\ []) do
     user_id = Integer.mod(:binary.decode_unsigned(user_name), 100_000)
     role = Keyword.get(opts, :role, "user")
-    is_admin = role === "admin"
 
     %Claims{
       user_id: user_id,
       user_name: user_name,
       role: role,
-      is_admin: is_admin
     }
   end
 
@@ -56,7 +54,7 @@ defmodule TdDfWeb.Authentication do
 
   def get_user_token(user_name) do
     user_name
-    |> build_user_token(is_admin: user_name == "app-admin")
+    |> build_user_token()
     |> register_token
   end
 

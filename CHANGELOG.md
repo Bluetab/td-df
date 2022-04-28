@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- [TD-3569] Only admin and service users can manage templates
+
 ## [4.40.0] 2022-03-14
 
 ### Changed

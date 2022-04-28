@@ -1,11 +1,11 @@
 defmodule TdDf.Templates.Template do
-  @moduledoc false
+  @moduledoc "Ecto Schema module for templates"
 
   use Ecto.Schema
+
   import Ecto.Changeset
 
   alias TdDf.Templates
-  alias TdDf.Templates.Template
 
   schema "templates" do
     field(:content, {:array, :map})
@@ -16,14 +16,25 @@ defmodule TdDf.Templates.Template do
     timestamps(type: :utc_datetime)
   end
 
-  @doc false
-  def changeset(%Template{} = template, attrs) do
-    template
-    |> cast(attrs, [:label, :name, :content, :scope])
-    |> validate_required([:label, :name, :content, :scope])
+  def changeset(%__MODULE__{} = struct, params) do
+    do_changeset(struct, params)
+  end
+
+  def update_changeset(%__MODULE__{} = struct, %{} = params) do
+    do_changeset(struct, params, [:label, :content, :scope])
+  end
+
+  defp do_changeset(
+         %__MODULE__{} = struct,
+         %{} = params,
+         attrs \\ [:label, :name, :content, :scope]
+       ) do
+    struct
+    |> cast(params, attrs)
+    |> validate_required(attrs)
     |> validate_repeated_group_names()
     |> validate_repeated_names()
-    |> validate_name_and_types(template)
+    |> validate_name_and_types(struct)
     |> validate_subscribable()
     |> unique_constraint(:name)
   end

@@ -6,7 +6,8 @@ defmodule TdDf.Templates.Preprocessor do
 
   def preprocess_template(template, context \\ %{})
 
-  def preprocess_template(template, %{domain_id: domain_id} = context) do
+  def preprocess_template(template, %{domain_id: domain_id} = context)
+      when is_integer(domain_id) do
     user_roles = AclLoader.get_roles_and_users(domain_id)
 
     context = Map.put(context, :user_roles, user_roles)
