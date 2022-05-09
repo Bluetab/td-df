@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [4.43.0] 2022-05-09
+
 ### Changed
 
 - [TD-3569] Only admin and service users can manage templates
