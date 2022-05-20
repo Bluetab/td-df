@@ -35,7 +35,7 @@ defmodule TdDfWeb.Authentication do
     %Claims{
       user_id: user_id,
       user_name: user_name,
-      role: role,
+      role: role
     }
   end
 

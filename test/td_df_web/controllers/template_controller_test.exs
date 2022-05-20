@@ -83,6 +83,53 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
       assert values == %{"role_users" => role_name, "processed_users" => [full_name]}
     end
+
+    @tag :admin_authenticated
+    test "renders preprocessed template for multiple domain_ids", %{
+      conn: conn,
+      swagger_schema: schema
+    } do
+      role_name = "test_role"
+
+      %{id: domain_id_1} = CacheHelpers.put_domain()
+      %{id: domain_id_2} = CacheHelpers.put_domain()
+      %{id: user_id_1, full_name: full_name_1} = CacheHelpers.put_user()
+      %{id: user_id_2, full_name: full_name_2} = CacheHelpers.put_user()
+      %{id: user_id_3, full_name: full_name_3} = CacheHelpers.put_user()
+      CacheHelpers.put_acl_role_users(domain_id_1, role_name, [user_id_1, user_id_2])
+      CacheHelpers.put_acl_role_users(domain_id_2, role_name, [user_id_2, user_id_3])
+
+      {:ok, template} =
+        Templates.create_template(%{
+          "name" => "template_name",
+          "label" => "template_label",
+          "scope" => "bg",
+          "content" => [
+            %{
+              "name" => "test-group",
+              "fields" => [
+                %{
+                  "name" => "name1",
+                  "type" => "user",
+                  "values" => %{"role_users" => role_name}
+                }
+              ]
+            }
+          ]
+        })
+
+      domain_ids = "#{domain_id_1},#{domain_id_2}"
+
+      assert %{"data" => data} =
+               conn
+               |> get(Routes.template_path(conn, :show, template.id, domain_ids: domain_ids))
+               |> validate_resp_schema(schema, "TemplateResponse")
+               |> json_response(:ok)
+
+      assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
+      assert %{"role_users" => ^role_name, "processed_users" => processed_users} = values
+      assert Enum.sort(processed_users) == [full_name_1, full_name_2, full_name_3]
+    end
   end
 
   describe "create template" do

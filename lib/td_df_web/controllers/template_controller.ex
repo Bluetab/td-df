@@ -4,8 +4,8 @@ defmodule TdDfWeb.TemplateController do
 
   import Canada, only: [can?: 2]
 
+  alias TdCache.Templates.Preprocessor
   alias TdDf.Templates
-  alias TdDf.Templates.Preprocessor
   alias TdDf.Templates.Template
   alias TdDfWeb.SwaggerDefinitions
 
@@ -66,8 +66,7 @@ defmodule TdDfWeb.TemplateController do
   def show(conn, %{"id" => id} = params) do
     claims = conn.assigns[:current_resource]
 
-    domain_id = Map.get(params, "domain_id")
-    preprocess_params = format_preprocess_params(%{domain_id: domain_id, claims: claims})
+    preprocess_params = format_preprocess_params(params, claims)
 
     template =
       id
@@ -122,11 +121,20 @@ defmodule TdDfWeb.TemplateController do
     end
   end
 
-  defp format_preprocess_params(%{domain_id: nil} = params) do
-    Map.delete(params, :domain_id)
+  defp format_preprocess_params(%{"domain_id" => domain_id}, claims) do
+    %{claims: claims, domain_ids: [String.to_integer(domain_id)]}
   end
 
-  defp format_preprocess_params(%{} = params) do
-    Map.update(params, :domain_id, nil, &String.to_integer/1)
+  defp format_preprocess_params(%{"domain_ids" => domain_ids}, claims) do
+    domain_ids =
+      domain_ids
+      |> String.split(",")
+      |> Enum.map(&String.to_integer/1)
+
+    %{claims: claims, domain_ids: domain_ids}
+  end
+
+  defp format_preprocess_params(_, claims) do
+    %{claims: claims}
   end
 end
