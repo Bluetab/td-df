@@ -1,13 +1,16 @@
 # Changelog
 
-## [Unreleased]
+## [4.44.0] 2022-05-23
+
+### Changed
+
+- [TD-4230] Moved templates preprocessing functionality to `td-cache` and allows for multiple domain_ids
 
 ## [4.43.0] 2022-05-09
 
 ### Changed
 
 - [TD-3569] Only admin and service users can manage templates
-- [TD-4230] Moved templates preprocessing functionality to `td-cache` and allows for multiple domain_ids
 
 ## [4.40.0] 2022-03-14
 
