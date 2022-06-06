@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.45.0] 2022-06-06
+
+### Changed
+
+- Updated dependencies
+
 ## [4.44.0] 2022-05-23
 
 ### Changed
