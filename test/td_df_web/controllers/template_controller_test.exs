@@ -15,7 +15,7 @@ defmodule TdDfWeb.TemplateControllerTest do
   end
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    [conn: put_req_header(conn, "accept", "application/json")]
   end
 
   describe "index" do
@@ -129,6 +129,30 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
       assert %{"role_users" => ^role_name, "processed_users" => processed_users} = values
       assert Enum.sort(processed_users) == [full_name_1, full_name_2, full_name_3]
+    end
+
+    @tag :admin_authenticated
+    test "ignores empty domain_ids parameter", %{conn: conn} do
+      {:ok, [template: template]} = create_template(%{})
+
+      for param <- ["domain_id", "domain_ids"] do
+        assert %{"data" => _} =
+                 conn
+                 |> get(Routes.template_path(conn, :show, template.id, %{param => ""}))
+                 |> json_response(:ok)
+      end
+    end
+
+    @tag :admin_authenticated
+    test "responds with 422 for invalid domain_ids parameter", %{conn: conn} do
+      {:ok, [template: template]} = create_template(%{})
+
+      for param <- ["domain_id", "domain_ids"] do
+        assert %{"errors" => %{"detail" => "Unprocessable Entity"}} =
+                 conn
+                 |> get(Routes.template_path(conn, :show, template.id, %{param => "x"}))
+                 |> json_response(:unprocessable_entity)
+      end
     end
   end
 

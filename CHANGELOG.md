@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- [TD-4896] `GET /api/templates/:id` was failing for empty request variables
+  (`domain_id` or `domain_ids`)
+
 ## [4.45.0] 2022-06-06
 
 ### Changed

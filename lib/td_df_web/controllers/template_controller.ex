@@ -66,14 +66,17 @@ defmodule TdDfWeb.TemplateController do
   def show(conn, %{"id" => id} = params) do
     claims = conn.assigns[:current_resource]
 
-    preprocess_params = format_preprocess_params(params, claims)
+    with {:ok, domain_ids} <- domain_ids(params),
+         %{} = template <- Templates.get_template!(id) do
+      preprocess_params =
+        case domain_ids do
+          [_ | _] -> %{claims: claims, domain_ids: domain_ids}
+          _ -> %{claims: claims}
+        end
 
-    template =
-      id
-      |> Templates.get_template!()
-      |> Preprocessor.preprocess_template(preprocess_params)
-
-    render(conn, "show.json", template: template)
+      template = Preprocessor.preprocess_template(template, preprocess_params)
+      render(conn, "show.json", template: template)
+    end
   end
 
   swagger_path :update do
@@ -121,20 +124,14 @@ defmodule TdDfWeb.TemplateController do
     end
   end
 
-  defp format_preprocess_params(%{"domain_id" => domain_id}, claims) do
-    %{claims: claims, domain_ids: [String.to_integer(domain_id)]}
+  defp domain_ids(%{"domain_id" => id}), do: domain_ids(id)
+  defp domain_ids(%{"domain_ids" => ids}), do: domain_ids(ids)
+
+  defp domain_ids(ids) when is_binary(ids) do
+    {:ok, TdCache.Redix.to_integer_list!(ids)}
+  rescue
+    _ -> {:error, :unprocessable_entity}
   end
 
-  defp format_preprocess_params(%{"domain_ids" => domain_ids}, claims) do
-    domain_ids =
-      domain_ids
-      |> String.split(",")
-      |> Enum.map(&String.to_integer/1)
-
-    %{claims: claims, domain_ids: domain_ids}
-  end
-
-  defp format_preprocess_params(_, claims) do
-    %{claims: claims}
-  end
+  defp domain_ids(_other), do: {:ok, []}
 end
