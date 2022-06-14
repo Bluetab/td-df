@@ -26,4 +26,11 @@ defmodule TdDfWeb.FallbackController do
     |> put_view(TdDfWeb.ErrorView)
     |> render("404.json")
   end
+
+  def call(conn, {:error, :unprocessable_entity}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(TdDfWeb.ErrorView)
+    |> render("422.json")
+  end
 end
