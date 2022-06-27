@@ -85,6 +85,48 @@ defmodule TdDfWeb.TemplateControllerTest do
     end
 
     @tag :admin_authenticated
+    test "renders preprocessed template with role_groups", %{conn: conn, swagger_schema: schema} do
+      role_name = "test_role"
+
+      %{id: domain_id} = CacheHelpers.put_domain()
+      %{id: user_id, full_name: full_name} = CacheHelpers.put_user()
+      %{id: group_id, name: group_name} = CacheHelpers.put_user_group()
+      CacheHelpers.put_acl_role_users_and_groups(domain_id, role_name, [user_id], [group_id])
+
+      {:ok, template} =
+        Templates.create_template(%{
+          "name" => "template_name",
+          "label" => "template_label",
+          "scope" => "bg",
+          "content" => [
+            %{
+              "name" => "test-group",
+              "fields" => [
+                %{
+                  "name" => "name1",
+                  "type" => "user_group",
+                  "values" => %{"role_groups" => role_name}
+                }
+              ]
+            }
+          ]
+        })
+
+      assert %{"data" => data} =
+               conn
+               |> get(Routes.template_path(conn, :show, template.id, domain_id: domain_id))
+               |> validate_resp_schema(schema, "TemplateResponse")
+               |> json_response(:ok)
+
+      assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
+      assert values == %{
+        "role_groups" => role_name,
+        "processed_users" => [full_name],
+        "processed_groups" => [group_name]
+      }
+    end
+
+    @tag :admin_authenticated
     test "renders preprocessed template for multiple domain_ids", %{
       conn: conn,
       swagger_schema: schema
