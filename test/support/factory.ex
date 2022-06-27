@@ -27,4 +27,12 @@ defmodule TdDf.Factory do
       email: sequence("user_email") <> "@example.com"
     }
   end
+
+  def group_factory do
+    %{
+      id: System.unique_integer([:positive]),
+      name: sequence("group_name"),
+      description: sequence("group_description"),
+    }
+  end
 end
