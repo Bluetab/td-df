@@ -1,15 +1,17 @@
 # Changelog
 
+## [4.47.0] 2022-07-04
+
+### Added
+
+- [TD-4412] Tests for preprocessing user_group fields
+
 ## [4.46.0] 2022-06-20
 
 ### Fixed
 
 - [TD-4896] `GET /api/templates/:id` was failing for empty request variables
   (`domain_id` or `domain_ids`)
-
-### Added
-
-- [TD-4412] Tests for preprocessing user_group fields
 
 ## [4.45.0] 2022-06-06
 
