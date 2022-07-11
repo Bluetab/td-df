@@ -32,7 +32,7 @@ defmodule TdDf.Factory do
     %{
       id: System.unique_integer([:positive]),
       name: sequence("group_name"),
-      description: sequence("group_description"),
+      description: sequence("group_description")
     }
   end
 end

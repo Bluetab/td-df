@@ -3,7 +3,7 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-use Mix.Config
+import Config
 
 # Environment
 config :td_df, :env, Mix.env()
@@ -37,7 +37,6 @@ config :phoenix, :json_library, Jason
 config :phoenix_swagger, :json_library, Jason
 
 config :td_df, TdDf.Auth.Guardian,
-  # optional
   allowed_algos: ["HS512"],
   issuer: "tdauth",
   ttl: {1, :hours},
