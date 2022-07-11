@@ -119,11 +119,12 @@ defmodule TdDfWeb.TemplateControllerTest do
                |> json_response(:ok)
 
       assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
+
       assert values == %{
-        "role_groups" => role_name,
-        "processed_users" => [full_name],
-        "processed_groups" => [group_name]
-      }
+               "role_groups" => role_name,
+               "processed_users" => [full_name],
+               "processed_groups" => [group_name]
+             }
     end
 
     @tag :admin_authenticated

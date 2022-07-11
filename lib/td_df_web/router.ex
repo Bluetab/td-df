@@ -7,13 +7,8 @@ defmodule TdDfWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :api_secure do
+  pipeline :api_auth do
     plug TdDf.Auth.Pipeline.Secure
-  end
-
-  pipeline :api_authorized do
-    plug TdDf.Auth.CurrentResource
-    plug Guardian.Plug.LoadResource
   end
 
   scope "/api/swagger" do
@@ -27,7 +22,7 @@ defmodule TdDfWeb.Router do
   end
 
   scope "/api", TdDfWeb do
-    pipe_through [:api, :api_secure, :api_authorized]
+    pipe_through [:api, :api_auth]
 
     resources "/templates", TemplateController, except: [:new, :edit]
   end
