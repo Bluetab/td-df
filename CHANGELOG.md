@@ -4,6 +4,7 @@
 
 ### Changed
 
+- [TD-5011] Force load templates into cache on startup
 - [TD-3614] Support for access token revocation
 
 ## [4.47.0] 2022-07-04

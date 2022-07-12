@@ -57,6 +57,7 @@ defmodule TdDf.Mixfile do
       {:postgrex, "~> 0.16.3"},
       {:gettext, "~> 0.11"},
       {:httpoison, "~> 1.6"},
+      {:quantum, "~> 3.0"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:guardian, "~> 2.0"},
@@ -67,7 +68,7 @@ defmodule TdDf.Mixfile do
       {:ex_json_schema, "~> 0.7.3"},
       {:json_diff, "~> 0.1.0"},
       {:td_cache,
-       git: "https://github.com/Bluetab/td-cache.git", tag: "4.48.0", override: true}
+       git: "https://github.com/Bluetab/td-cache.git", tag: "4.48.1", override: true}
     ]
   end
 
