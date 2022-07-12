@@ -10,7 +10,7 @@ defmodule TdDf.Application do
     children = [
       TdDf.Repo,
       TdDfWeb.Endpoint,
-      TdDf.Cache.TemplateLoader
+      TdDf.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
