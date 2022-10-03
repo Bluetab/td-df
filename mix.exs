@@ -6,7 +6,7 @@ defmodule TdDf.Mixfile do
       app: :td_df,
       version:
         case System.get_env("APP_VERSION") do
-          nil -> "4.48.0-local"
+          nil -> "4.52.0-local"
           v -> v
         end,
       elixir: "~> 1.11",
@@ -67,9 +67,8 @@ defmodule TdDf.Mixfile do
       {:phoenix_swagger, "~> 0.8"},
       {:ex_json_schema, "~> 0.7.3"},
       {:json_diff, "~> 0.1.0"},
-      {:td_cache,
-       git: "https://github.com/Bluetab/td-cache.git", tag: "4.48.1", override: true},
-       {:sobelow, "~> 0.11", only: [:dev, :test]}
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "4.48.1", override: true},
+      {:sobelow, "~> 0.11", only: [:dev, :test]}
     ]
   end
 
