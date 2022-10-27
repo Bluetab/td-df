@@ -7,6 +7,9 @@ config :td_df, TdDfWeb.Endpoint, server: true
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+# Track all Plug compile-time dependencies
+config :phoenix, :plug_init_mode, :runtime
+
 # Configure your database
 config :td_df, TdDf.Repo,
   username: "postgres",

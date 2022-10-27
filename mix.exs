@@ -9,9 +9,9 @@ defmodule TdDf.Mixfile do
           nil -> "4.52.0-local"
           v -> v
         end,
-      elixir: "~> 1.11",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers() ++ [:phoenix_swagger],
+      compilers: [:phoenix] ++ Mix.compilers() ++ [:phoenix_swagger],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -49,13 +49,13 @@ defmodule TdDf.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.0"},
+      {:phoenix, "~> 1.6.0"},
       {:plug_cowboy, "~> 2.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.8"},
       {:jason, "~> 1.0"},
       {:postgrex, "~> 0.16.3"},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.20"},
       {:httpoison, "~> 1.6"},
       {:quantum, "~> 3.0"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
@@ -67,7 +67,7 @@ defmodule TdDf.Mixfile do
       {:phoenix_swagger, "~> 0.8"},
       {:ex_json_schema, "~> 0.7.3"},
       {:json_diff, "~> 0.1.0"},
-      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "4.48.1", override: true},
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "4.54.0"},
       {:sobelow, "~> 0.11", only: [:dev, :test]}
     ]
   end
@@ -82,7 +82,7 @@ defmodule TdDf.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "run priv/repo/seeds.exs", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "run priv/repo/seeds.exs", "test"]
     ]
   end
 end
