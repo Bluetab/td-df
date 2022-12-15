@@ -47,6 +47,15 @@ config :td_df, :phoenix_swagger,
     "priv/static/swagger.json" => [router: TdDfWeb.Router]
   }
 
+config :td_df, TdDf.Scheduler,
+  jobs: [
+    template_loader: [
+      schedule: "@reboot",
+      task: {TdDf.Cache.TemplateLoader, :reload, []},
+      run_strategy: Quantum.RunStrategy.Local
+    ]
+  ]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

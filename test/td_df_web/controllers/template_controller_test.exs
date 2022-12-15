@@ -221,7 +221,8 @@ defmodule TdDfWeb.TemplateControllerTest do
                "content" => [],
                "label" => "some name",
                "name" => "some_name",
-               "scope" => "bg"
+               "scope" => "bg",
+               "subscope" => nil
              }
     end
 
@@ -279,7 +280,8 @@ defmodule TdDfWeb.TemplateControllerTest do
                "content" => [],
                "label" => "some updated name",
                "name" => "some_name",
-               "scope" => "bg"
+               "scope" => "bg",
+               "subscope" => nil
              }
     end
 

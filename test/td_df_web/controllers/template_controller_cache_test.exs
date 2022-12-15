@@ -6,8 +6,20 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   alias TdDf.Templates
   alias TdDf.Templates.Template
 
-  @create_attrs %{content: [], label: "some label", name: "some_name", scope: "s1"}
-  @update_attrs %{content: [], label: "some updated label", name: "some_name", scope: "s2"}
+  @create_attrs %{
+    content: [],
+    label: "some label",
+    name: "some_name",
+    scope: "s1",
+    subscope: "subscope1"
+  }
+  @update_attrs %{
+    content: [],
+    label: "some updated label",
+    name: "some_name",
+    scope: "s2",
+    subscope: "subscope2"
+  }
 
   setup %{conn: conn} do
     [conn: put_req_header(conn, "accept", "application/json")]
@@ -28,6 +40,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
                label: "some label",
                name: "some_name",
                scope: "s1",
+               subscope: "subscope1",
                updated_at: to_string(template.updated_at)
              }
     end
@@ -53,6 +66,7 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
                label: "some updated label",
                name: "some_name",
                scope: "s2",
+               subscope: "subscope2",
                updated_at: to_string(template.updated_at)
              }
     end
