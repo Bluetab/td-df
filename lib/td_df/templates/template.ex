@@ -12,6 +12,7 @@ defmodule TdDf.Templates.Template do
     field(:label, :string)
     field(:name, :string)
     field(:scope, :string)
+    field(:subscope, :string)
 
     timestamps(type: :utc_datetime)
   end
@@ -21,17 +22,17 @@ defmodule TdDf.Templates.Template do
   end
 
   def update_changeset(%__MODULE__{} = struct, %{} = params) do
-    do_changeset(struct, params, [:label, :content, :scope])
+    do_changeset(struct, params, [:label, :content, :scope, :subscope])
   end
 
   defp do_changeset(
          %__MODULE__{} = struct,
          %{} = params,
-         attrs \\ [:label, :name, :content, :scope]
+         attrs \\ [:label, :name, :content, :scope, :subscope]
        ) do
     struct
     |> cast(params, attrs)
-    |> validate_required(attrs)
+    |> validate_required([:label, :name, :content, :scope])
     |> validate_repeated_group_names()
     |> validate_repeated_names()
     |> validate_name_and_types(struct)

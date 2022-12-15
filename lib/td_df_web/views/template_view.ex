@@ -16,7 +16,8 @@ defmodule TdDfWeb.TemplateView do
       label: template.label,
       name: template.name,
       content: template.content,
-      scope: template.scope
+      scope: template.scope,
+      subscope: template.subscope
     }
   end
 

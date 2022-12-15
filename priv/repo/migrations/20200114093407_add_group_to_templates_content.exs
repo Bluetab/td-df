@@ -2,13 +2,14 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
   use Ecto.Migration
 
   import Ecto.Changeset
+  import Ecto.Query
 
   alias TdDf.Repo
   alias TdDf.Templates
   alias TdDf.Templates.Template
 
   def up do
-    Templates.list_templates()
+    list_templates()
     |> Enum.map(&group_content_by_group/1)
     |> Enum.each(fn {template, new_content} ->
       update_template(template, %{content: new_content})
@@ -85,4 +86,17 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
     |> changeset_no_validation(attrs)
     |> Repo.update()
   end
+
+  defp list_templates(params \\ %{}) do
+    template_fields = [:id, :content, :label, :name, :scope, :inserted_at, :updated_at]
+    where_clause = Templates.filter(params, template_fields)
+
+    Repo.all(
+      from(p in Template,
+        where: ^where_clause,
+        select: ^template_fields
+      )
+    )
+  end
+
 end
