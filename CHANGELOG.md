@@ -5,6 +5,7 @@
 ### Added
 
 - [TD-3919] Add subscope to template
+- [TD-5368] Add editable boolean to existing templates content fields
 
 ## [4.54.0] 2022-10-31
 
