@@ -98,5 +98,4 @@ defmodule TdDf.Repo.Migrations.AddGroupToTemplatesContent do
       )
     )
   end
-
 end

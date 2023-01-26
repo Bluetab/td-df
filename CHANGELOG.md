@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- [TD-3805] Hierarchy functionality
+
 ## [4.58.1] 2022-12-27
 
 ### Added

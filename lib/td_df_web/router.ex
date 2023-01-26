@@ -24,6 +24,8 @@ defmodule TdDfWeb.Router do
   scope "/api", TdDfWeb do
     pipe_through [:api, :api_auth]
 
+    resources "/hierarchies", HierarchyController
+
     resources "/templates", TemplateController, except: [:new, :edit]
   end
 

@@ -20,6 +20,7 @@ defmodule TdDf.DataCase do
     quote do
       alias TdDf.Repo
 
+      import Assertions
       import Ecto
       import Ecto.Changeset
       import Ecto.Query

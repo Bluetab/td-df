@@ -49,6 +49,7 @@ defmodule TdDf.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:assertions, "~> 0.10", only: :test},
       {:phoenix, "~> 1.6.0"},
       {:plug_cowboy, "~> 2.1"},
       {:phoenix_ecto, "~> 4.0"},
