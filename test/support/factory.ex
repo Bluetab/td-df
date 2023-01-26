@@ -35,4 +35,25 @@ defmodule TdDf.Factory do
       description: sequence("group_description")
     }
   end
+
+  def hierarchy_factory(attrs) do
+    %TdDf.Hierarchies.Hierarchy{
+      id: System.unique_integer([:positive]),
+      name: sequence("family_"),
+      description: sequence("description_"),
+      nodes: []
+    }
+    |> merge_attributes(attrs)
+  end
+
+  def node_factory(attrs) do
+    %TdDf.Hierarchies.Node{
+      node_id: System.unique_integer([:positive]),
+      hierarchy_id: System.unique_integer([:positive]),
+      parent_id: System.unique_integer([:positive]),
+      name: sequence("node_"),
+      description: sequence("description_")
+    }
+    |> merge_attributes(attrs)
+  end
 end
