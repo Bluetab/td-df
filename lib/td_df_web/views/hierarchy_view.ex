@@ -47,5 +47,6 @@ defmodule TdDfWeb.NodeView do
       :node_id,
       :parent_id
     ])
+    |> Map.put(:key, "#{node.hierarchy_id}_#{node.node_id}")
   end
 end

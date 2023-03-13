@@ -1,6 +1,7 @@
 defmodule TdDf.HierarchiesTest do
   use TdDf.DataCase
 
+  alias TdCache.HierarchyCache
   alias TdDf.Hierarchies
 
   @valid_attrs %{
@@ -40,9 +41,16 @@ defmodule TdDf.HierarchiesTest do
     end
 
     test "create_hierarchy/1 with valid data creates a hierarchy" do
-      assert {:ok, %{} = hierarchy} = Hierarchies.create_hierarchy(@valid_attrs)
-      assert hierarchy.name == "some name"
-      assert hierarchy.nodes == []
+      assert {:ok, %{id: id, nodes: nodes, name: name, updated_at: updated_at} = hierarchy} =
+               Hierarchies.create_hierarchy(@valid_attrs)
+
+      assert ^name = hierarchy.name
+      assert nodes == []
+
+      assert {:ok, %{id: ^id, nodes: ^nodes, name: ^name, updated_at: cache_updated_at}} =
+               HierarchyCache.get(id)
+
+      assert to_string(updated_at) == cache_updated_at
     end
 
     test "create_hierarchy/1 with invalid data returns error changeset" do
@@ -121,6 +129,7 @@ defmodule TdDf.HierarchiesTest do
 
       existing_node = %{hierarchy_id: id, node_id: 1, parent_id: nil}
       assert %{} = Hierarchies.get_hierarchy!(id)
+      assert {:ok, [4, 1, 1]} = HierarchyCache.put(hierarchy)
       assert_raise Ecto.ConstraintError, fn -> insert(:node, existing_node) end
       Hierarchies.delete_hierarchy(hierarchy)
       assert_raise Ecto.NoResultsError, fn -> Hierarchies.get_hierarchy!(id) end
@@ -133,6 +142,8 @@ defmodule TdDf.HierarchiesTest do
                    build(:node, %{hierarchy_id: id, node_id: 1, parent_id: nil})
                  ]
                )
+
+      assert {:ok, nil} = HierarchyCache.get(id)
     end
 
     test "update_hierarchy/2 deletes all its previous nodes before add the new ones" do
@@ -149,6 +160,7 @@ defmodule TdDf.HierarchiesTest do
                Hierarchies.update_hierarchy(hierarchy, Map.put(@update_attrs, "nodes", []))
 
       assert %{nodes: []} = Hierarchies.get_hierarchy!(id)
+      assert {:ok, %{nodes: []}} = HierarchyCache.get(id)
     end
 
     test "update_hierarchy/2 with valid data overwrite the hierarchy" do
