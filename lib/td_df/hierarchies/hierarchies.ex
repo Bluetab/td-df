@@ -6,6 +6,7 @@ defmodule TdDf.Hierarchies do
   import Ecto.Query, warn: false
 
   alias Ecto.Multi
+  alias TdDf.Cache.HierarchyLoader
   alias TdDf.Hierarchies.Hierarchy
   alias TdDf.Hierarchies.Node
   alias TdDf.Repo
@@ -13,6 +14,14 @@ defmodule TdDf.Hierarchies do
   def list_hierarchies do
     Hierarchy
     |> order_by(desc: :updated_at, desc: :id)
+    |> Repo.all()
+  end
+
+  def list_hierarchies_with_nodes do
+    nodes_query = from n in Node, order_by: n.name
+
+    Hierarchy
+    |> preload(nodes: ^nodes_query)
     |> Repo.all()
   end
 
@@ -25,7 +34,9 @@ defmodule TdDf.Hierarchies do
   end
 
   def delete_hierarchy(hierarchy) do
-    Repo.delete(hierarchy)
+    hierarchy
+    |> Repo.delete()
+    |> clean_cache()
   end
 
   def update_hierarchy(%{id: id}, params \\ %{}) do
@@ -66,6 +77,7 @@ defmodule TdDf.Hierarchies do
          hierarchy
          |> Hierarchy.to_map()
          |> Map.put(:nodes, nodes)}
+        |> refresh_cache()
     end
   end
 
@@ -84,4 +96,23 @@ defmodule TdDf.Hierarchies do
       end
     end)
   end
+
+  def refresh_cache({:ok, %{id: id}} = response) do
+    HierarchyLoader.refresh(id)
+    response
+  end
+
+  def refresh_cache(%{id: id} = hierarchy) do
+    HierarchyLoader.refresh(id)
+    hierarchy
+  end
+
+  def refresh_cache(response), do: response
+
+  defp clean_cache({:ok, %{id: id}} = response) do
+    HierarchyLoader.delete(id)
+    response
+  end
+
+  defp clean_cache(response), do: response
 end

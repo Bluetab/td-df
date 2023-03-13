@@ -53,6 +53,11 @@ config :td_df, TdDf.Scheduler,
       schedule: "@reboot",
       task: {TdDf.Cache.TemplateLoader, :reload, []},
       run_strategy: Quantum.RunStrategy.Local
+    ],
+    hierarchy_loader: [
+      schedule: "@reboot",
+      task: {TdDf.Cache.HierarchyLoader, :reload, []},
+      run_strategy: Quantum.RunStrategy.Local
     ]
   ]
 
