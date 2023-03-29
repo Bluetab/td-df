@@ -17,12 +17,52 @@ defmodule TdDf.Hierarchies do
     |> Repo.all()
   end
 
-  def list_hierarchies_with_nodes do
-    nodes_query = from n in Node, order_by: n.name
+  def nodes_with_path do
+    hierarchy_nodes_initial_query =
+      Node
+      |> where([n], is_nil(n.parent_id))
+      |> select([n], %{
+        hierarchy_id: n.hierarchy_id,
+        node_id: n.node_id,
+        parent_id: n.parent_id,
+        path: fragment("'/' || ?", n.name)
+      })
 
+    hierarchy_nodes_recursion_query =
+      Node
+      |> join(:inner, [n], ct in "hierarchy_nodes_cte",
+        on: n.parent_id == ct.node_id and n.hierarchy_id == ct.hierarchy_id
+      )
+      |> select([n, ct], %{
+        hierarchy_id: n.hierarchy_id,
+        node_id: n.node_id,
+        parent_id: n.parent_id,
+        path: fragment("? || '/' || ?", ct.path, n.name)
+      })
+
+    hierarchy_nodes_query =
+      hierarchy_nodes_initial_query
+      |> union_all(^hierarchy_nodes_recursion_query)
+
+    Node
+    |> recursive_ctes(true)
+    |> with_cte("hierarchy_nodes_cte", as: ^hierarchy_nodes_query)
+    |> join(:left, [n], t in "hierarchy_nodes_cte",
+      on: n.node_id == t.node_id and n.hierarchy_id == t.hierarchy_id
+    )
+    |> select_merge([_n, ct], %{path: ct.path})
+  end
+
+  def list_hierarchies_with_nodes do
     Hierarchy
-    |> preload(nodes: ^nodes_query)
+    |> preload(nodes: ^nodes_with_path())
     |> Repo.all()
+  end
+
+  def get_hierarchy_with_nodes!(id) do
+    Hierarchy
+    |> preload(nodes: ^nodes_with_path())
+    |> Repo.get!(id)
   end
 
   def get_hierarchy!(id) do

@@ -73,6 +73,26 @@ defmodule TdDfWeb.HierarchiesControllerTest do
 
       assert nodes <~> result_nodes
     end
+
+    @tag :user_authenticated
+    test "render specific hierarchy with nodes keys", %{
+      conn: conn,
+      hierarchy: hierarchy
+    } do
+      %{id: id, nodes: nodes} = hierarchy
+
+      [%{node_id: node_id_1}, %{node_id: node_id_2}] = nodes
+
+      assert %{"data" => %{"nodes" => response_nodes}} =
+               conn
+               |> get(Routes.hierarchy_path(conn, :show, id))
+               |> json_response(:ok)
+
+      key1 = "#{id}_#{node_id_1}"
+      key2 = "#{id}_#{node_id_2}"
+
+      assert [%{"key" => ^key1}, %{"key" => ^key2}] = response_nodes
+    end
   end
 
   describe "create hierarchy" do

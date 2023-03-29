@@ -27,7 +27,7 @@ defmodule TdDf.Cache.HierarchyLoader do
   defp put_hierarchy(id) do
     {:ok, _} =
       id
-      |> Hierarchies.get_hierarchy!()
+      |> Hierarchies.get_hierarchy_with_nodes!()
       |> add_key()
       |> HierarchyCache.put()
   end

@@ -47,12 +47,17 @@ defmodule TdDf.Factory do
   end
 
   def node_factory(attrs) do
+    name = sequence("node_")
+    hierarchy_id = Map.get(attrs, :hierarchy_id, System.unique_integer([:positive]))
+    node_id = Map.get(attrs, :node_id, System.unique_integer([:positive]))
+
     %TdDf.Hierarchies.Node{
-      node_id: System.unique_integer([:positive]),
-      hierarchy_id: System.unique_integer([:positive]),
+      node_id: node_id,
+      hierarchy_id: hierarchy_id,
       parent_id: System.unique_integer([:positive]),
-      name: sequence("node_"),
-      description: sequence("description_")
+      name: name,
+      description: sequence("description_"),
+      path: "/#{name}"
     }
     |> merge_attributes(attrs)
   end
