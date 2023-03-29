@@ -18,9 +18,9 @@ defmodule TdDf.HierarchiesTest do
   describe "hiearchies" do
     test "list_hiearchies/0 returns all hiearchies ordered by update_at" do
       loaded_hierarchies = [
-        insert(:hierarchy, updated_at: DateTime.utc_now() |> DateTime.add(1)),
-        insert(:hierarchy, updated_at: DateTime.utc_now() |> DateTime.add(2)),
-        insert(:hierarchy, updated_at: DateTime.utc_now() |> DateTime.add(3))
+        insert(:hierarchy),
+        insert(:hierarchy),
+        insert(:hierarchy)
       ]
 
       hierarchies = Hierarchies.list_hierarchies()
@@ -33,6 +33,20 @@ defmodule TdDf.HierarchiesTest do
                Enum.map(hierarchies, & &1.id)
     end
 
+    test "list_hierarchies_with_nodes/0 list hierarchies nodes with correct path" do
+      insert(:hierarchy,
+        nodes: [
+          build(:node, %{name: "parent", node_id: 1, hierarchy_id: nil, parent_id: nil}),
+          build(:node, %{name: "child_1", hierarchy_id: nil, parent_id: 1}),
+          build(:node, %{name: "child_2", hierarchy_id: nil, parent_id: 1})
+        ]
+      )
+
+      [%{nodes: nodes}] = Hierarchies.list_hierarchies_with_nodes()
+
+      assert [%{path: "/parent"}, %{path: "/parent/child_1"}, %{path: "/parent/child_2"}] = nodes
+    end
+
     test "get_hierarchy!/1 returns the hierarchy with nodes for a given id" do
       insert(:hierarchy)
       insert(:hierarchy)
@@ -40,17 +54,29 @@ defmodule TdDf.HierarchiesTest do
       assert %{nodes: []} = ^hierarchy = Hierarchies.get_hierarchy!(id)
     end
 
+    test "get_hierarchy_with_nodes!/1 return the hierarchy nodes with correct path" do
+      %{id: id} =
+        insert(:hierarchy,
+          nodes: [
+            build(:node, %{name: "parent", node_id: 1, hierarchy_id: nil, parent_id: nil}),
+            build(:node, %{name: "child_1", hierarchy_id: nil, parent_id: 1}),
+            build(:node, %{name: "child_2", hierarchy_id: nil, parent_id: 1})
+          ]
+        )
+
+      %{nodes: nodes} = Hierarchies.get_hierarchy_with_nodes!(id)
+
+      assert [%{path: "/parent"}, %{path: "/parent/child_1"}, %{path: "/parent/child_2"}] = nodes
+    end
+
     test "create_hierarchy/1 with valid data creates a hierarchy" do
-      assert {:ok, %{id: id, nodes: nodes, name: name, updated_at: updated_at} = hierarchy} =
+      assert {:ok, %{id: id, nodes: nodes, name: name} = hierarchy} =
                Hierarchies.create_hierarchy(@valid_attrs)
 
       assert ^name = hierarchy.name
       assert nodes == []
 
-      assert {:ok, %{id: ^id, nodes: ^nodes, name: ^name, updated_at: cache_updated_at}} =
-               HierarchyCache.get(id)
-
-      assert to_string(updated_at) == cache_updated_at
+      assert {:ok, %{id: ^id, nodes: ^nodes, name: ^name}} = HierarchyCache.get(id)
     end
 
     test "create_hierarchy/1 with invalid data returns error changeset" do
@@ -129,7 +155,7 @@ defmodule TdDf.HierarchiesTest do
 
       existing_node = %{hierarchy_id: id, node_id: 1, parent_id: nil}
       assert %{} = Hierarchies.get_hierarchy!(id)
-      assert {:ok, [4, 1, 1]} = HierarchyCache.put(hierarchy)
+      assert {:ok, [3, 1, 1]} = HierarchyCache.put(hierarchy)
       assert_raise Ecto.ConstraintError, fn -> insert(:node, existing_node) end
       Hierarchies.delete_hierarchy(hierarchy)
       assert_raise Ecto.NoResultsError, fn -> Hierarchies.get_hierarchy!(id) end

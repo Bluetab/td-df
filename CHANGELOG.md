@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- [TD-5650] Path for hierarchy nodes
+
 ## [5.3.0] 2023-03-13
 
 ### Added

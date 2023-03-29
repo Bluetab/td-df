@@ -13,6 +13,7 @@ defmodule TdDf.Hierarchies.Node do
     field(:parent_id, :integer)
     field(:name, :string)
     field(:description, :string)
+    field(:path, :string, virtual: true)
     belongs_to :hierarchy, Hierarchy
 
     timestamps(type: :utc_datetime_usec, updated_at: false)
