@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- [TD-3916] Migrations for new structure for hierarchy widget 
+
 ## [5.5.0] 2023-04-18
 
 ### Added
