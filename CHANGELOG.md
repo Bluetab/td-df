@@ -5,6 +5,7 @@
 ### Added
 
 - [TD-3916] Migrations for new structure for hierarchy widget 
+- [TD-5770] Add database TSL configuration
 
 ## [5.5.0] 2023-04-18
 
