@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+## Added
+
+- [TD-6059] Support for td-cluster contract
+
 ## [5.10.0] 2023-07-06
 
 ## Changed
@@ -16,7 +22,7 @@
 
 ### Added
 
-- [TD-3916] Migrations for new structure for hierarchy widget 
+- [TD-3916] Migrations for new structure for hierarchy widget
 
 ## [5.5.0] 2023-04-18
 

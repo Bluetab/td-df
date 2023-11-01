@@ -20,7 +20,17 @@ defmodule TdDf.Templates do
     )
   end
 
+  def list_templates_by_scope(scope) do
+    Template
+    |> where(scope: ^scope)
+    |> Repo.all()
+  end
+
   def get_template!(id), do: Repo.get!(Template, id)
+
+  def get_template(id), do: Repo.get(Template, id)
+
+  def get_template_by_name!(name), do: Repo.get_by!(Template, name: name)
 
   def create_template(params \\ %{}) do
     %Template{}
