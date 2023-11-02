@@ -6,10 +6,10 @@ defmodule TdDf.Mixfile do
       app: :td_df,
       version:
         case System.get_env("APP_VERSION") do
-          nil -> "5.10.0-local"
+          nil -> "5.17.0-local"
           v -> v
         end,
-      elixir: "~> 1.12",
+      elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers() ++ [:phoenix_swagger],
       start_permanent: Mix.env() == :prod,
@@ -53,8 +53,8 @@ defmodule TdDf.Mixfile do
       {:phoenix, "~> 1.6.0"},
       {:plug_cowboy, "~> 2.1"},
       {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.8"},
-      {:jason, "~> 1.0"},
+      {:ecto_sql, "~> 3.10"},
+      {:jason, "~> 1.1"},
       {:postgrex, "~> 0.16.3"},
       {:gettext, "~> 0.20"},
       {:httpoison, "~> 1.6"},
@@ -68,7 +68,8 @@ defmodule TdDf.Mixfile do
       {:phoenix_swagger, "~> 0.8"},
       {:ex_json_schema, "~> 0.7.3"},
       {:json_diff, "~> 0.1.0"},
-      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "5.5.0"},
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "5.14.0"},
+      {:td_cluster, git: "https://github.com/Bluetab/td-cluster.git", tag: "5.17.0"},
       {:sobelow, "~> 0.11", only: [:dev, :test]}
     ]
   end

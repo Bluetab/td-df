@@ -56,6 +56,11 @@ defmodule TdDf.TemplatesTest do
       assert Templates.get_template!(template.id) == template
     end
 
+    test "get_template_by_name!/1 returns the template with given name" do
+      template = insert(:template)
+      assert Templates.get_template_by_name!(template.name) == template
+    end
+
     test "create_template/1 with valid data creates a template" do
       assert {:ok, %Template{} = template} = Templates.create_template(@valid_attrs)
       assert template.content == []
