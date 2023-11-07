@@ -208,7 +208,7 @@ defmodule TdDfWeb.TemplateControllerTest do
                |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:created)
 
-      assert %{"id" => id} = data
+      assert %{"id" => id, "inserted_at" => inserted_at, "updated_at" => updated_at} = data
 
       assert %{"data" => data} =
                conn
@@ -222,7 +222,9 @@ defmodule TdDfWeb.TemplateControllerTest do
                "label" => "some name",
                "name" => "some_name",
                "scope" => "bg",
-               "subscope" => nil
+               "subscope" => nil,
+               "inserted_at" => inserted_at,
+               "updated_at" => updated_at
              }
     end
 
@@ -267,7 +269,7 @@ defmodule TdDfWeb.TemplateControllerTest do
                |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
 
-      assert %{"id" => ^id} = data
+      assert %{"id" => ^id, "inserted_at" => inserted_at, "updated_at" => updated_at} = data
 
       assert %{"data" => data} =
                conn
@@ -281,7 +283,9 @@ defmodule TdDfWeb.TemplateControllerTest do
                "label" => "some updated name",
                "name" => "some_name",
                "scope" => "bg",
-               "subscope" => nil
+               "subscope" => nil,
+               "inserted_at" => inserted_at,
+               "updated_at" => updated_at
              }
     end
 

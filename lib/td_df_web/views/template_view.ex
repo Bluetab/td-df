@@ -17,7 +17,9 @@ defmodule TdDfWeb.TemplateView do
       name: template.name,
       content: template.content,
       scope: template.scope,
-      subscope: template.subscope
+      subscope: template.subscope,
+      inserted_at: template.inserted_at,
+      updated_at: template.updated_at
     }
   end
 
