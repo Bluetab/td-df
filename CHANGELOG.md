@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.18.0] 2023-11-13
+
+## Added
+
+- [TD-3062] TemplateView returns updated_at field
+
 ## [5.17.0] 2023-11-02
 
 ## Added
