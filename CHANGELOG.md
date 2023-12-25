@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- [TD-6197] Add migration for "df_description" in bussiness concept templates
+
 ## [5.18.0] 2023-11-13
 
 ## Added
