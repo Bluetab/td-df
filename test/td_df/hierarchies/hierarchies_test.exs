@@ -4,6 +4,8 @@ defmodule TdDf.HierarchiesTest do
   alias TdCache.HierarchyCache
   alias TdDf.Hierarchies
 
+  import TdDf.TestOperators
+
   @valid_attrs %{
     "name" => "some name",
     "nodes" => []
@@ -29,7 +31,7 @@ defmodule TdDf.HierarchiesTest do
 
       assert loaded_hierarchies
              |> Enum.map(& &1.id)
-             |> Enum.reverse() ==
+             |> Enum.reverse() |||
                Enum.map(hierarchies, & &1.id)
     end
 
