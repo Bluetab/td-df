@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.0.0] 2024-01-17
+
+## Added
+
+- [TD-6336] Get test-truedat-eks config on deploy stage
+
+### Changed
+
+- [TD-6197] Add migration for "df_description" in bussiness concept templates
+
 ## [5.18.0] 2023-11-13
 
 ## Added
