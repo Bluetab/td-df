@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- [TD-6499] Migration of template default values with metadata
+
 ## [6.3.0] 2024-03-18
 
 ### Added
