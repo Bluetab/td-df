@@ -1,6 +1,12 @@
 # Changelog
 
-## [6.9.0] 2024-07-26 
+## [Unreleased]
+
+### Added
+
+- [TD-6184] Agent template management
+
+## [6.9.0] 2024-07-26
 
 ### Changed
 

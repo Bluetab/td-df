@@ -230,10 +230,49 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :service_authenticated
     test "can create templates when data is valid", %{conn: conn, swagger_schema: schema} do
-      conn
-      |> post(Routes.template_path(conn, :create), template: @create_attrs)
-      |> validate_resp_schema(schema, "TemplateResponse")
-      |> json_response(:created)
+      assert conn
+             |> post(Routes.template_path(conn, :create), template: @create_attrs)
+             |> validate_resp_schema(schema, "TemplateResponse")
+             |> json_response(:created)
+    end
+
+    @tag :agent_authenticated
+    test "renders template when data is valid for agent user and scope actions", %{
+      conn: conn
+    } do
+      create_attrs = Map.put(@create_attrs, :scope, "actions")
+
+      assert %{"data" => data} =
+               conn
+               |> post(Routes.template_path(conn, :create), template: create_attrs)
+               |> json_response(:created)
+
+      assert %{"id" => id, "inserted_at" => inserted_at, "updated_at" => updated_at} = data
+
+      assert %{"data" => data} =
+               conn
+               |> get(Routes.template_path(conn, :show, id))
+               |> json_response(:ok)
+
+      assert data == %{
+               "id" => id,
+               "content" => [],
+               "label" => "some name",
+               "name" => "some_name",
+               "scope" => "actions",
+               "subscope" => nil,
+               "inserted_at" => inserted_at,
+               "updated_at" => updated_at
+             }
+    end
+
+    @tag :agent_authenticated
+    test "agents cannot create templates with scope different to actions", %{
+      conn: conn
+    } do
+      assert conn
+             |> post(Routes.template_path(conn, :create), template: @create_attrs)
+             |> json_response(:forbidden)
     end
 
     @tag :user_authenticated
@@ -241,10 +280,10 @@ defmodule TdDfWeb.TemplateControllerTest do
       conn: conn,
       swagger_schema: schema
     } do
-      conn
-      |> post(Routes.template_path(conn, :create), template: @create_attrs)
-      |> validate_resp_schema(schema, "TemplateResponse")
-      |> json_response(:forbidden)
+      assert conn
+             |> post(Routes.template_path(conn, :create), template: @create_attrs)
+             |> validate_resp_schema(schema, "TemplateResponse")
+             |> json_response(:forbidden)
     end
 
     @tag :admin_authenticated
@@ -302,16 +341,48 @@ defmodule TdDfWeb.TemplateControllerTest do
                |> json_response(:ok)
     end
 
+    @tag :agent_authenticated
+    @tag memo: true
+    test "update template when user agent and scope actions", %{
+      conn: conn
+    } do
+      %{id: id, name: name} = template = insert(:template, scope: "actions")
+      update_attrs = Map.put(@update_attrs, :scope, "actions")
+
+      assert %{"data" => data} =
+               conn
+               |> put(Routes.template_path(conn, :update, template), template: update_attrs)
+               |> json_response(:ok)
+
+      assert %{"id" => ^id, "inserted_at" => inserted_at, "updated_at" => updated_at} = data
+
+      assert %{"data" => data} =
+               conn
+               |> get(Routes.template_path(conn, :show, id))
+               |> json_response(:ok)
+
+      assert data == %{
+               "id" => id,
+               "content" => [],
+               "label" => "some updated name",
+               "name" => name,
+               "scope" => "actions",
+               "subscope" => nil,
+               "inserted_at" => inserted_at,
+               "updated_at" => updated_at
+             }
+    end
+
     @tag :user_authenticated
     test "can not udate templates even with valid data", %{
       conn: conn,
       swagger_schema: schema,
       template: %Template{id: _id} = template
     } do
-      conn
-      |> put(Routes.template_path(conn, :update, template), template: @update_attrs)
-      |> validate_resp_schema(schema, "TemplateResponse")
-      |> json_response(:forbidden)
+      assert conn
+             |> put(Routes.template_path(conn, :update, template), template: @update_attrs)
+             |> validate_resp_schema(schema, "TemplateResponse")
+             |> json_response(:forbidden)
     end
 
     @tag :admin_authenticated

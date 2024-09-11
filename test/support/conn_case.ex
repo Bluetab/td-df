@@ -48,6 +48,9 @@ defmodule TdDfWeb.ConnCase do
       tags[:service_authenticated] ->
         authenticate_as("service")
 
+      tags[:agent_authenticated] ->
+        authenticate_as("agent")
+
       tags[:user_authenticated] ->
         authenticate_as("user")
 
