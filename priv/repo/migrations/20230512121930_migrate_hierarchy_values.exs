@@ -29,6 +29,12 @@ defmodule TdDf.Repo.Migrations.MigrateHierarchyValues do
     end)
   end
 
+  defp update_content(content) do
+    Enum.map(content, fn %{"fields" => fields} = group ->
+      Map.put(group, "fields", update_fields(fields))
+    end)
+  end
+
   defp update_fields(%{id: id, content: content}) do
     content = update_content(content)
 
@@ -36,12 +42,6 @@ defmodule TdDf.Repo.Migrations.MigrateHierarchyValues do
     |> where([t], t.id == ^id)
     |> update([t], set: [content: ^content])
     |> Repo.update_all([])
-  end
-
-  defp update_content(content) do
-    Enum.map(content, fn %{"fields" => fields} = group ->
-      Map.put(group, "fields", update_fields(fields))
-    end)
   end
 
   defp update_fields(fields) do

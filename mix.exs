@@ -9,9 +9,9 @@ defmodule TdDf.Mixfile do
           nil -> "6.12.0-local"
           v -> v
         end,
-      elixir: "~> 1.14",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix] ++ Mix.compilers() ++ [:phoenix_swagger],
+      compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -49,28 +49,24 @@ defmodule TdDf.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:assertions, "~> 0.10", only: :test},
-      {:phoenix, "~> 1.6.0"},
-      {:plug_cowboy, "~> 2.1"},
-      {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.10"},
-      {:jason, "~> 1.1"},
-      {:postgrex, "~> 0.16.3"},
-      {:gettext, "~> 0.20"},
-      {:httpoison, "~> 1.6"},
-      {:quantum, "~> 3.0"},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
-      {:guardian, "~> 2.0"},
+      {:phoenix, "~> 1.7.18"},
+      {:phoenix_ecto, "~> 4.6.3"},
+      {:phoenix_view, "~> 2.0"},
+      {:plug_cowboy, "~> 2.7"},
+      {:ecto_sql, "~> 3.12.1"},
+      {:postgrex, "~> 0.19.3"},
+      {:jason, "~> 1.4.4"},
+      {:quantum, "~> 3.5.3"},
+      {:guardian, "~> 2.3.2"},
       {:canada, "~> 2.0"},
-      {:ex_machina, "~> 2.3", only: :test},
-      {:corsica, "~> 1.0"},
-      {:phoenix_swagger, git: "https://github.com/Bluetab/phx_swagger.git", tag: "6.0.0"},
-      {:ex_json_schema, "~> 0.7.3"},
-      {:json_diff, "~> 0.1.0"},
-      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "6.9.1"},
-      {:td_cluster, git: "https://github.com/Bluetab/td-cluster.git", tag: "5.17.0"},
-      {:sobelow, "~> 0.11", only: [:dev, :test]}
+      {:credo, "~> 1.7.11", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4.5", only: :dev, runtime: false},
+      {:ex_machina, "~> 2.8", only: :test},
+      {:assertions, "~> 0.20.1", only: :test},
+      {:sobelow, "~> 0.13", only: [:dev, :test]},
+      {:corsica, "~> 2.1.3"},
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "7.0.0"},
+      {:td_cluster, git: "https://github.com/Bluetab/td-cluster.git", tag: "7.0.0"}
     ]
   end
 

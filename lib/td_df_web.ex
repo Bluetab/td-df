@@ -21,7 +21,6 @@ defmodule TdDfWeb do
     quote do
       use Phoenix.Controller, namespace: TdDfWeb
       import Plug.Conn
-      import TdDfWeb.Gettext
       alias TdDfWeb.Router.Helpers, as: Routes
     end
   end
@@ -37,7 +36,6 @@ defmodule TdDfWeb do
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
       import TdDfWeb.ErrorHelpers
-      import TdDfWeb.Gettext
       alias TdDfWeb.Router.Helpers, as: Routes
     end
   end
@@ -53,7 +51,6 @@ defmodule TdDfWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import TdDfWeb.Gettext
     end
   end
 
