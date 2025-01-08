@@ -37,18 +37,12 @@ config :logger, :console,
 
 # Configuration for Phoenix
 config :phoenix, :json_library, Jason
-config :phoenix_swagger, :json_library, Jason
 
 config :td_df, TdDf.Auth.Guardian,
   allowed_algos: ["HS512"],
   issuer: "tdauth",
   ttl: {1, :hours},
   secret_key: "SuperSecretTruedat"
-
-config :td_df, :phoenix_swagger,
-  swagger_files: %{
-    "priv/static/swagger.json" => [router: TdDfWeb.Router]
-  }
 
 config :td_df, TdDf.Scheduler,
   jobs: [

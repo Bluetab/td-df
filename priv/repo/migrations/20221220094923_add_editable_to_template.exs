@@ -1,6 +1,5 @@
 defmodule TdDf.Repo.Migrations.AddEditableToTemplate do
   use Ecto.Migration
-  import Ecto.Query
 
   alias TdDf.Repo
 
@@ -24,17 +23,17 @@ defmodule TdDf.Repo.Migrations.AddEditableToTemplate do
   defp update_editable(%{content: content} = template, operation) do
     content
     |> Enum.map(fn group ->
-      update_group_content(content, group, operation)
+      update_group_content(group, operation)
     end)
     |> update_template_content(template)
     |> Map.take([:id, :name, :content, :label, :scope, :subscope, :inserted_at, :updated_at])
   end
 
-  def update_group_content(content, %{"fields" => fields} = group, :put) do
+  def update_group_content(%{"fields" => fields} = group, :put) do
     %{group | "fields" => Enum.map(fields, &Map.put(&1, "editable", true))}
   end
 
-  def update_group_content(content, %{"fields" => fields} = group, :drop) do
+  def update_group_content(%{"fields" => fields} = group, :drop) do
     %{group | "fields" => Enum.map(fields, &Map.drop(&1, ["editable"]))}
   end
 

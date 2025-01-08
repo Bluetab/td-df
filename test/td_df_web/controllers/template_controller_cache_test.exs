@@ -1,6 +1,5 @@
 defmodule TdDfWeb.TemplateControllerCacheTest do
   use TdDfWeb.ConnCase
-  use PhoenixSwagger.SchemaTest, "priv/static/swagger.json"
 
   alias TdCache.TemplateCache
   alias TdDf.Templates

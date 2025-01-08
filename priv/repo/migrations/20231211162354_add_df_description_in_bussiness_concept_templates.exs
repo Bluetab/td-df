@@ -7,7 +7,7 @@ defmodule TdDf.Repo.Migrations.AddDfDescriptionInBussinessConceptTemplates do
   @desc_group "            "
 
   def down do
-    templates = get_templates_with_new_group
+    templates = get_templates_with_new_group()
     Enum.map(templates, &remove_field_template/1)
   end
 
@@ -16,7 +16,7 @@ defmodule TdDf.Repo.Migrations.AddDfDescriptionInBussinessConceptTemplates do
     Enum.map(templates, &add_field_template/1)
   end
 
-  defp get_templates_with_new_group() do
+  defp get_templates_with_new_group do
     "templates"
     |> get_templates()
     |> Enum.filter(fn template ->
@@ -28,7 +28,7 @@ defmodule TdDf.Repo.Migrations.AddDfDescriptionInBussinessConceptTemplates do
     end)
   end
 
-  defp get_templates_without_new_group() do
+  defp get_templates_without_new_group do
     processed = get_templates_with_new_group()
 
     "templates"

@@ -1,6 +1,5 @@
 defmodule TdDfWeb.TemplateControllerTest do
   use TdDfWeb.ConnCase
-  use PhoenixSwagger.SchemaTest, "priv/static/swagger.json"
 
   alias TdDf.Templates
   alias TdDf.Templates.Template
@@ -20,9 +19,9 @@ defmodule TdDfWeb.TemplateControllerTest do
 
   describe "index" do
     @tag :user_authenticated
-    test "lists all templates", %{conn: conn, swagger_schema: schema} do
+    test "lists all templates", %{conn: conn} do
       conn = get(conn, Routes.template_path(conn, :index))
-      validate_resp_schema(conn, schema, "TemplatesResponse")
+
       assert [_ | _] = templates = json_response(conn, 200)["data"]
 
       assert Enum.any?(
@@ -32,14 +31,13 @@ defmodule TdDfWeb.TemplateControllerTest do
     end
 
     @tag :user_authenticated
-    test "lists all templates filtered by scope", %{conn: conn, swagger_schema: schema} do
+    test "lists all templates filtered by scope", %{conn: conn} do
       insert(:template, scope: "bg")
       insert(:template, scope: "dd")
 
       assert %{"data" => data} =
                conn
                |> get(Routes.template_path(conn, :index), scope: "bg")
-               |> validate_resp_schema(schema, "TemplatesResponse")
                |> json_response(:ok)
 
       assert length(data) == 1
@@ -48,7 +46,7 @@ defmodule TdDfWeb.TemplateControllerTest do
 
   describe "show" do
     @tag :admin_authenticated
-    test "renders preprocessed template", %{conn: conn, swagger_schema: schema} do
+    test "renders preprocessed template", %{conn: conn} do
       role_name = "test_role"
 
       %{id: domain_id} = CacheHelpers.put_domain()
@@ -77,7 +75,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert %{"data" => data} =
                conn
                |> get(Routes.template_path(conn, :show, template.id, domain_id: domain_id))
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
 
       assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
@@ -85,7 +82,7 @@ defmodule TdDfWeb.TemplateControllerTest do
     end
 
     @tag :admin_authenticated
-    test "renders preprocessed template with role_groups", %{conn: conn, swagger_schema: schema} do
+    test "renders preprocessed template with role_groups", %{conn: conn} do
       role_name = "test_role"
 
       %{id: domain_id} = CacheHelpers.put_domain()
@@ -115,7 +112,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert %{"data" => data} =
                conn
                |> get(Routes.template_path(conn, :show, template.id, domain_id: domain_id))
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
 
       assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
@@ -129,8 +125,7 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :admin_authenticated
     test "renders preprocessed template for multiple domain_ids", %{
-      conn: conn,
-      swagger_schema: schema
+      conn: conn
     } do
       role_name = "test_role"
 
@@ -166,7 +161,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert %{"data" => data} =
                conn
                |> get(Routes.template_path(conn, :show, template.id, domain_ids: domain_ids))
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
 
       assert %{"content" => [%{"fields" => [%{"values" => values}]}]} = data
@@ -201,11 +195,10 @@ defmodule TdDfWeb.TemplateControllerTest do
 
   describe "create template" do
     @tag :admin_authenticated
-    test "renders template when data is valid", %{conn: conn, swagger_schema: schema} do
+    test "renders template when data is valid", %{conn: conn} do
       assert %{"data" => data} =
                conn
                |> post(Routes.template_path(conn, :create), template: @create_attrs)
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:created)
 
       assert %{"id" => id, "inserted_at" => inserted_at, "updated_at" => updated_at} = data
@@ -213,7 +206,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert %{"data" => data} =
                conn
                |> get(Routes.template_path(conn, :show, id))
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
 
       assert data == %{
@@ -229,10 +221,9 @@ defmodule TdDfWeb.TemplateControllerTest do
     end
 
     @tag :service_authenticated
-    test "can create templates when data is valid", %{conn: conn, swagger_schema: schema} do
+    test "can create templates when data is valid", %{conn: conn} do
       assert conn
              |> post(Routes.template_path(conn, :create), template: @create_attrs)
-             |> validate_resp_schema(schema, "TemplateResponse")
              |> json_response(:created)
     end
 
@@ -277,12 +268,10 @@ defmodule TdDfWeb.TemplateControllerTest do
 
     @tag :user_authenticated
     test "can not create new templates even with valid data", %{
-      conn: conn,
-      swagger_schema: schema
+      conn: conn
     } do
       assert conn
              |> post(Routes.template_path(conn, :create), template: @create_attrs)
-             |> validate_resp_schema(schema, "TemplateResponse")
              |> json_response(:forbidden)
     end
 
@@ -299,13 +288,11 @@ defmodule TdDfWeb.TemplateControllerTest do
     @tag :admin_authenticated
     test "renders template when data is valid", %{
       conn: conn,
-      swagger_schema: schema,
       template: %Template{id: id} = template
     } do
       assert %{"data" => data} =
                conn
                |> put(Routes.template_path(conn, :update, template), template: @update_attrs)
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
 
       assert %{"id" => ^id, "inserted_at" => inserted_at, "updated_at" => updated_at} = data
@@ -313,7 +300,6 @@ defmodule TdDfWeb.TemplateControllerTest do
       assert %{"data" => data} =
                conn
                |> get(Routes.template_path(conn, :show, id))
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
 
       assert data == %{
@@ -331,13 +317,11 @@ defmodule TdDfWeb.TemplateControllerTest do
     @tag :service_authenticated
     test "can update templates when data is valid", %{
       conn: conn,
-      swagger_schema: schema,
       template: %Template{id: id} = template
     } do
       assert %{"data" => %{"id" => ^id}} =
                conn
                |> put(Routes.template_path(conn, :update, template), template: @update_attrs)
-               |> validate_resp_schema(schema, "TemplateResponse")
                |> json_response(:ok)
     end
 
@@ -376,12 +360,10 @@ defmodule TdDfWeb.TemplateControllerTest do
     @tag :user_authenticated
     test "can not udate templates even with valid data", %{
       conn: conn,
-      swagger_schema: schema,
       template: %Template{id: _id} = template
     } do
       assert conn
              |> put(Routes.template_path(conn, :update, template), template: @update_attrs)
-             |> validate_resp_schema(schema, "TemplateResponse")
              |> json_response(:forbidden)
     end
 
