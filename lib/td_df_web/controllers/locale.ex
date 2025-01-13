@@ -13,8 +13,6 @@ defmodule TdDfWeb.Locale do
         conn
 
       locale ->
-        Gettext.put_locale(TdDfWeb.Gettext, locale)
-
         conn
         |> fetch_session
         |> put_session(:locale, locale)
