@@ -4,8 +4,44 @@ defmodule TdDfWeb.TemplateControllerTest do
   alias TdDf.Templates
   alias TdDf.Templates.Template
 
-  @create_attrs %{content: [], label: "some name", name: "some_name", scope: "bg"}
-  @update_attrs %{content: [], label: "some updated name", name: "some_name", scope: "bg"}
+  @create_attrs %{
+    content: [
+      %{
+        "name" => "some_group",
+        "fields" => [
+          %{
+            "name" => "some_field",
+            "label" => "some label",
+            "widget" => "some_widget",
+            "type" => "some_type",
+            "cardinality" => "?"
+          }
+        ]
+      }
+    ],
+    label: "some name",
+    name: "some_name",
+    scope: "bg"
+  }
+  @update_attrs %{
+    content: [
+      %{
+        "name" => "some_updated_group",
+        "fields" => [
+          %{
+            "name" => "some_field",
+            "label" => "some label",
+            "widget" => "some_widget",
+            "type" => "some_type",
+            "cardinality" => "?"
+          }
+        ]
+      }
+    ],
+    label: "some updated name",
+    name: "some_name",
+    scope: "bg"
+  }
   @invalid_attrs %{content: nil, label: nil, name: nil}
 
   def fixture(:template) do
@@ -64,8 +100,11 @@ defmodule TdDfWeb.TemplateControllerTest do
               "fields" => [
                 %{
                   "name" => "name1",
+                  "label" => "label1",
+                  "widget" => "widget1",
                   "type" => "user",
-                  "values" => %{"role_users" => role_name}
+                  "values" => %{"role_users" => role_name},
+                  "cardinality" => "?"
                 }
               ]
             }
@@ -101,8 +140,11 @@ defmodule TdDfWeb.TemplateControllerTest do
               "fields" => [
                 %{
                   "name" => "name1",
+                  "label" => "label1",
+                  "widget" => "widget1",
                   "type" => "user_group",
-                  "values" => %{"role_groups" => role_name}
+                  "values" => %{"role_groups" => role_name},
+                  "cardinality" => "?"
                 }
               ]
             }
@@ -148,8 +190,11 @@ defmodule TdDfWeb.TemplateControllerTest do
               "fields" => [
                 %{
                   "name" => "name1",
+                  "label" => "label1",
+                  "widget" => "widget1",
                   "type" => "user",
-                  "values" => %{"role_users" => role_name}
+                  "values" => %{"role_users" => role_name},
+                  "cardinality" => "?"
                 }
               ]
             }
@@ -210,7 +255,20 @@ defmodule TdDfWeb.TemplateControllerTest do
 
       assert data == %{
                "id" => id,
-               "content" => [],
+               "content" => [
+                 %{
+                   "name" => "some_group",
+                   "fields" => [
+                     %{
+                       "name" => "some_field",
+                       "label" => "some label",
+                       "widget" => "some_widget",
+                       "type" => "some_type",
+                       "cardinality" => "?"
+                     }
+                   ]
+                 }
+               ],
                "label" => "some name",
                "name" => "some_name",
                "scope" => "bg",
@@ -247,7 +305,20 @@ defmodule TdDfWeb.TemplateControllerTest do
 
       assert data == %{
                "id" => id,
-               "content" => [],
+               "content" => [
+                 %{
+                   "name" => "some_group",
+                   "fields" => [
+                     %{
+                       "name" => "some_field",
+                       "label" => "some label",
+                       "widget" => "some_widget",
+                       "type" => "some_type",
+                       "cardinality" => "?"
+                     }
+                   ]
+                 }
+               ],
                "label" => "some name",
                "name" => "some_name",
                "scope" => "actions",
@@ -304,7 +375,20 @@ defmodule TdDfWeb.TemplateControllerTest do
 
       assert data == %{
                "id" => id,
-               "content" => [],
+               "content" => [
+                 %{
+                   "name" => "some_updated_group",
+                   "fields" => [
+                     %{
+                       "name" => "some_field",
+                       "label" => "some label",
+                       "widget" => "some_widget",
+                       "type" => "some_type",
+                       "cardinality" => "?"
+                     }
+                   ]
+                 }
+               ],
                "label" => "some updated name",
                "name" => "some_name",
                "scope" => "bg",
@@ -347,7 +431,20 @@ defmodule TdDfWeb.TemplateControllerTest do
 
       assert data == %{
                "id" => id,
-               "content" => [],
+               "content" => [
+                 %{
+                   "name" => "some_updated_group",
+                   "fields" => [
+                     %{
+                       "name" => "some_field",
+                       "label" => "some label",
+                       "widget" => "some_widget",
+                       "type" => "some_type",
+                       "cardinality" => "?"
+                     }
+                   ]
+                 }
+               ],
                "label" => "some updated name",
                "name" => name,
                "scope" => "actions",
