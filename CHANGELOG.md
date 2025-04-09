@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unrealeased]
+
+### Added
+
+- [TD-5800] Add validations for mandatory fields in templates
+
 ## [7.4.0] 2025-04-09
 
 ### Changed
