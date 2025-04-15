@@ -1,10 +1,14 @@
 # Changelog
 
-## [Unrealeased]
+## [Unreleased]
 
 ### Added
 
 - [TD-5800] Add validations for mandatory fields in templates
+
+### Fixed
+
+- [TD-7226] Enhance SSL configuration handling in production
 
 ## [7.4.0] 2025-04-09
 
