@@ -6,14 +6,40 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
   alias TdDf.Templates.Template
 
   @create_attrs %{
-    content: [],
+    content: [
+      %{
+        "name" => "some_group",
+        "fields" => [
+          %{
+            "name" => "some_field",
+            "label" => "some label",
+            "widget" => "some_widget",
+            "type" => "some_type",
+            "cardinality" => "?"
+          }
+        ]
+      }
+    ],
     label: "some label",
     name: "some_name",
     scope: "s1",
     subscope: "subscope1"
   }
   @update_attrs %{
-    content: [],
+    content: [
+      %{
+        "name" => "some_updated_group",
+        "fields" => [
+          %{
+            "name" => "some_field",
+            "label" => "some label",
+            "widget" => "some_widget",
+            "type" => "some_type",
+            "cardinality" => "?"
+          }
+        ]
+      }
+    ],
     label: "some updated label",
     name: "some_name",
     scope: "s2",
@@ -35,7 +61,20 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
 
       assert template_cache == %{
                id: id,
-               content: [],
+               content: [
+                 %{
+                   "name" => "some_group",
+                   "fields" => [
+                     %{
+                       "name" => "some_field",
+                       "label" => "some label",
+                       "widget" => "some_widget",
+                       "type" => "some_type",
+                       "cardinality" => "?"
+                     }
+                   ]
+                 }
+               ],
                label: "some label",
                name: "some_name",
                scope: "s1",
@@ -61,7 +100,20 @@ defmodule TdDfWeb.TemplateControllerCacheTest do
 
       assert template_cache == %{
                id: id,
-               content: [],
+               content: [
+                 %{
+                   "name" => "some_updated_group",
+                   "fields" => [
+                     %{
+                       "name" => "some_field",
+                       "label" => "some label",
+                       "widget" => "some_widget",
+                       "type" => "some_type",
+                       "cardinality" => "?"
+                     }
+                   ]
+                 }
+               ],
                label: "some updated label",
                name: "some_name",
                scope: "s2",
