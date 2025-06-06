@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Fix
+
+- [TD-7285] Fix default secret section for configuration template
+
 ## [7.5.0] 2025-04-30
 
 ### Added
