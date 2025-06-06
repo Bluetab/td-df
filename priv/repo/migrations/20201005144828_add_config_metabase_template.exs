@@ -52,7 +52,7 @@ defmodule TdDf.Repo.Migrations.AddConfigMetabaseTemplate do
             "widget" => "password"
           }
         ],
-        "is_secret" => false,
+        "is_secret" => true,
         "name" => "EMBEDDING SECRET KEY"
       }
     ],
