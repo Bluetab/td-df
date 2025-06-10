@@ -12,7 +12,6 @@ defmodule TdDf.Templates.Template do
     :repeated_names,
     :name_and_types,
     :subscribable,
-    :group_names,
     :field_names,
     :field_label,
     :widget,
@@ -132,19 +131,6 @@ defmodule TdDf.Templates.Template do
 
       [field | _] ->
         add_error(changeset, :content, "invalid.subscribable", name: Map.get(field, "name"))
-    end
-  end
-
-  defp validate(%{valid?: true} = changeset, :group_names, _) do
-    changeset
-    |> get_field(:content)
-    |> Enum.filter(&empty_or_nil?(Map.get(&1, "name")))
-    |> case do
-      [] ->
-        changeset
-
-      [field | _] ->
-        add_error(changeset, :content, "invalid.group.name", name: Map.get(field, "name"))
     end
   end
 

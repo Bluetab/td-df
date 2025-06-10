@@ -156,44 +156,30 @@ defmodule TdDf.TemplatesTest do
       assert errors[:content] == {"repeated.group", [name: "group1"]}
     end
 
-    test "create_template/1 with empty group name in content returns error changeset" do
-      content = [
-        %{
-          "name" => "",
-          "fields" => [
-            %{
-              "name" => "f1",
-              "label" => "labelf1",
-              "widget" => "widget1",
-              "type" => "type1",
-              "cardinality" => "?"
-            }
-          ]
-        }
-      ]
+    for name_value <- [nil, ""] do
+      @tag name_value: name_value
+      test "create_template/1 with type #{if is_nil(name_value), do: "nil", else: "empty string"} group name in content",
+           %{
+             name_value: name_value
+           } do
+        content = [
+          %{
+            "name" => name_value,
+            "fields" => [
+              %{
+                "name" => "f1",
+                "label" => "labelf1",
+                "widget" => "widget1",
+                "type" => "type1",
+                "cardinality" => "?"
+              }
+            ]
+          }
+        ]
 
-      attrs = Map.put(@valid_attrs, :content, content)
-      assert {:error, %Ecto.Changeset{errors: errors}} = Templates.create_template(attrs)
-      assert errors[:content] == {"invalid.group.name", [{:name, ""}]}
-
-      content = [
-        %{
-          "name" => nil,
-          "fields" => [
-            %{
-              "name" => "f1",
-              "label" => "labelf1",
-              "widget" => "widget1",
-              "type" => "type1",
-              "cardinality" => "?"
-            }
-          ]
-        }
-      ]
-
-      attrs = Map.put(@valid_attrs, :content, content)
-      assert {:error, %Ecto.Changeset{errors: errors}} = Templates.create_template(attrs)
-      assert errors[:content] == {"invalid.group.name", [{:name, nil}]}
+        attrs = Map.put(@valid_attrs, :content, content)
+        assert {:ok, %Template{}} = Templates.create_template(attrs)
+      end
     end
 
     test "create_template/1 with no field in content returns error changeset" do
