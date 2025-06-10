@@ -1,8 +1,14 @@
 # Changelog
 
+## [7.5.2] 2025-06-10
+
+### Changed
+
+- [TD-7311] Remove group name validation
+
 ## [7.5.1] 2025-06-06
 
-### Fix
+### Fixed
 
 - [TD-7285] Fix default secret section for configuration template
 
