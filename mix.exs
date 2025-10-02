@@ -65,7 +65,7 @@ defmodule TdDf.Mixfile do
       {:assertions, "~> 0.20.1", only: :test},
       {:sobelow, "~> 0.13", only: [:dev, :test]},
       {:corsica, "~> 2.1.3"},
-      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "7.4.0"},
+      {:td_cache, git: "https://github.com/Bluetab/td-cache.git", tag: "7.11.1"},
       {:td_cluster, git: "https://github.com/Bluetab/td-cluster.git", tag: "7.4.0"}
     ]
   end
