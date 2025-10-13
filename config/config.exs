@@ -58,6 +58,15 @@ config :td_df, TdDf.Scheduler,
     ]
   ]
 
+config :td_cache, :audit,
+  service: "td_df",
+  stream: "audit:events"
+
+config :td_cache, :event_stream,
+  consumer_id: "default",
+  consumer_group: "df",
+  streams: []
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
