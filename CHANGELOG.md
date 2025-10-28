@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- [TD-7340] Validations for dynamic table template field
+
 ## [7.11.0] 2025-06-30
 
 ### Changed
