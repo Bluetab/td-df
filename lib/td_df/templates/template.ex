@@ -8,7 +8,6 @@ defmodule TdDf.Templates.Template do
   alias TdDf.Templates
 
   @validations [
-    :repeated_group_names,
     :repeated_names,
     :name_and_types,
     :subscribable,
@@ -28,8 +27,14 @@ defmodule TdDf.Templates.Template do
     :fixed_list,
     :key_value_list,
     :conditional_visibility,
-    :mandatory_depending
+    :mandatory_depending,
+    :dynamic_table_content
   ]
+
+  @dynamic_table_validations @validations --
+                               [:repeated_names, :dynamic_table_content, :field_label]
+
+  @table_types ~w(table dynamic_table)
 
   schema "templates" do
     field(:content, {:array, :map})
@@ -54,18 +59,26 @@ defmodule TdDf.Templates.Template do
          %{} = params,
          attrs \\ [:label, :name, :content, :scope, :subscope]
        ) do
-    changeset =
-      struct
-      |> cast(params, attrs)
-      |> validate_required([:label, :name, :content, :scope])
-      |> unique_constraint(:name)
+    struct
+    |> cast(params, attrs)
+    |> validate_required([:label, :name, :content, :scope])
+    |> unique_constraint(:name)
+    |> validate(:invalid_fields)
+    |> validate(:repeated_group_names)
+    |> then(fn
+      %{valid?: true} = changeset ->
+        content = get_field(changeset, :content, []) || []
+        content_fields = flatten_content_fields(content)
+        run_validations(changeset, content_fields)
 
-    Enum.reduce(@validations, changeset, fn validation, changeset ->
-      validate(changeset, validation, struct)
+      changeset ->
+        changeset
     end)
   end
 
-  defp validate(%{valid?: true} = changeset, :repeated_group_names, _) do
+  defp validate(_changeset, _validation, _content_fields \\ [])
+
+  defp validate(%{valid?: true} = changeset, :repeated_group_names, _content_fields) do
     changeset
     |> get_field(:content)
     |> Enum.frequencies_by(&Map.get(&1, "name"))
@@ -77,35 +90,39 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :repeated_names, _) do
+  defp validate(%{valid?: true} = changeset, :invalid_fields, _content_fields) do
     content = get_field(changeset, :content)
 
     if Enum.any?(content, &match?(%{"fields" => nil}, &1)) do
       add_error(changeset, :content, "invalid_group.no_fields")
     else
       changeset
-      |> flatten_content_fields()
-      |> Enum.frequencies_by(&Map.get(&1, "name"))
-      |> Enum.max_by(fn {_, count} -> count end, fn -> {:none, 0} end)
-      |> case do
-        {:none, 0} ->
-          add_error(changeset, :content, "invalid_group.no_fields")
-
-        {name, count} when count > 1 ->
-          add_error(changeset, :content, "repeated.field", name: name)
-
-        _ ->
-          changeset
-      end
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :name_and_types, %{id: id}) do
+  defp validate(%{valid?: true} = changeset, :repeated_names, content_fields) do
+    content_fields
+    |> Enum.frequencies_by(&Map.get(&1, "name"))
+    |> Enum.max_by(fn {_, count} -> count end, fn -> {:none, 0} end)
+    |> case do
+      {:none, 0} ->
+        add_error(changeset, :content, "invalid_group.no_fields")
+
+      {name, count} when count > 1 ->
+        add_error(changeset, :content, "repeated.field", name: name)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp validate(%{valid?: true} = changeset, :name_and_types, content_fields) do
+    id = get_field(changeset, :id)
+
     templates =
       Enum.filter(Templates.list_templates(), fn template -> Map.get(template, :id) != id end)
 
-    changeset
-    |> flatten_content_fields()
+    content_fields
     |> Enum.filter(fn field -> Map.has_key?(field, "name") && Map.has_key?(field, "type") end)
     |> Enum.into(Map.new(), fn field -> {Map.get(field, "name"), Map.get(field, "type")} end)
     |> validate_content(templates)
@@ -120,9 +137,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :subscribable, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :subscribable, content_fields) do
+    content_fields
     |> Enum.filter(&Map.get(&1, "subscribable"))
     |> Enum.reject(&fixed_values/1)
     |> case do
@@ -134,9 +150,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :field_names, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :field_names, content_fields) do
+    content_fields
     |> Enum.filter(&empty_or_nil?(Map.get(&1, "name")))
     |> case do
       [] ->
@@ -147,9 +162,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :field_label, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :field_label, content_fields) do
+    content_fields
     |> Enum.filter(&empty_or_nil?(Map.get(&1, "label")))
     |> case do
       [] ->
@@ -160,9 +174,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :widget, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :widget, content_fields) do
+    content_fields
     |> Enum.filter(&empty_or_nil?(Map.get(&1, "widget")))
     |> case do
       [] ->
@@ -173,9 +186,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :type, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :type, content_fields) do
+    content_fields
     |> Enum.filter(&empty_or_nil?(Map.get(&1, "type")))
     |> case do
       [] ->
@@ -186,9 +198,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :cardinality, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :cardinality, content_fields) do
+    content_fields
     |> Enum.filter(&empty_or_nil?(Map.get(&1, "cardinality")))
     |> case do
       [] ->
@@ -199,9 +210,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :user_roles, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :user_roles, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "type") === "user" &&
           empty_or_nil?(Map.get(&1, "values")["role_users"]))
@@ -217,9 +227,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :group_roles, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :group_roles, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "type") === "user_group" &&
           empty_or_nil?(Map.get(&1, "values")["role_groups"]))
@@ -235,9 +244,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :type_hierarchy, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :type_hierarchy, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "type") === "hierarchy" && empty_or_nil?(Map.get(&1, "values")["hierarchy"]))
     )
@@ -252,11 +260,11 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :type_table, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :type_table, content_fields) do
+    content_fields
     |> Enum.filter(
-      &(Map.get(&1, "type") === "table" && empty_or_nil?(Map.get(&1, "values")["table_columns"]))
+      &(Map.get(&1, "type") in @table_types &&
+          empty_or_nil?(Map.get(&1, "values")["table_columns"]))
     )
     |> case do
       [] ->
@@ -269,9 +277,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :dropdown_string_value, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :dropdown_string_value, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "widget") in ["dropdown", "radio", "checkout"] &&
           Map.get(&1, "type") === "string" && empty_or_nil?(Map.get(&1, "values")))
@@ -285,9 +292,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :depending_domain, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :depending_domain, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "widget") in ["dropdown", "radio", "checkout"] &&
           Map.get(&1, "type") === "string" && Map.get(&1, "values")["domain"] === %{})
@@ -303,9 +309,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :depending_domain_list, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :depending_domain_list, content_fields) do
+    content_fields
     |> Enum.filter(fn field ->
       Map.get(field, "widget") in ["dropdown", "radio", "checkout"] &&
         Map.get(field, "type") === "string" &&
@@ -325,9 +330,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :depending_field, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :depending_field, content_fields) do
+    content_fields
     |> Enum.filter(fn field ->
       Map.get(field, "widget") in ["dropdown", "radio", "checkout"] &&
         Map.get(field, "type") === "string" &&
@@ -347,9 +351,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :fixed_list, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :fixed_list, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "widget") in ["dropdown", "radio", "checkout"] &&
           Map.get(&1, "type") === "string" && Map.get(&1, "values")["fixed"] === [])
@@ -363,9 +366,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :key_value_list, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :key_value_list, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "widget") in ["dropdown", "radio", "checkout"] &&
           Map.get(&1, "type") === "string" && Map.get(&1, "values")["fixed_tuple"] === [])
@@ -381,9 +383,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :conditional_visibility, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :conditional_visibility, content_fields) do
+    content_fields
     |> Enum.filter(&(Map.get(&1, "depends") && empty_or_nil?(Map.get(&1, "depends")["to_be"])))
     |> case do
       [] ->
@@ -396,9 +397,8 @@ defmodule TdDf.Templates.Template do
     end
   end
 
-  defp validate(%{valid?: true} = changeset, :mandatory_depending, _) do
-    changeset
-    |> flatten_content_fields()
+  defp validate(%{valid?: true} = changeset, :mandatory_depending, content_fields) do
+    content_fields
     |> Enum.filter(
       &(Map.get(&1, "mandatory") && empty_or_nil?(Map.get(&1, "mandatory")["to_be"]))
     )
@@ -413,12 +413,25 @@ defmodule TdDf.Templates.Template do
     end
   end
 
+  defp validate(%{valid?: true} = changeset, :dynamic_table_content, content_fields) do
+    content_fields
+    |> Enum.filter(&(Map.get(&1, "type") === "dynamic_table"))
+    |> Enum.reduce(
+      changeset,
+      fn field, changeset ->
+        fields = get_in(field, ["values", "table_columns"])
+
+        changeset
+        |> validate(:repeated_names, content_fields ++ fields)
+        |> run_validations(fields, @dynamic_table_validations)
+      end
+    )
+  end
+
   defp validate(changeset, _, _), do: changeset
 
-  defp flatten_content_fields(changeset) do
-    changeset
-    |> get_field(:content)
-    |> Enum.flat_map(&Map.get(&1, "fields"))
+  defp flatten_content_fields(content) do
+    Enum.flat_map(content, &Map.get(&1, "fields"))
   end
 
   defp validate_content(content, templates) do
@@ -455,4 +468,14 @@ defmodule TdDf.Templates.Template do
   defp empty_or_nil?(value) do
     value in [nil, "", [], %{}]
   end
+
+  defp run_validations(_changeset, _fields, _validations \\ @validations)
+
+  defp run_validations(%{valid?: true} = changeset, fields, validations) do
+    Enum.reduce(validations, changeset, fn validation, changeset ->
+      validate(changeset, validation, fields)
+    end)
+  end
+
+  defp run_validations(changeset, _fields, _validations), do: changeset
 end
