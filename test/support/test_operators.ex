@@ -17,6 +17,14 @@ defmodule TdDf.TestOperators do
     Enum.sort_by(list, &Map.get(&1, "id"))
   end
 
+  defp sorted([%{node_id: _} | _] = list) do
+    Enum.sort_by(list, & &1.node_id)
+  end
+
+  defp sorted([%{"node_id" => _} | _] = list) do
+    Enum.sort_by(list, &Map.get(&1, "node_id"))
+  end
+
   defp sorted([%Node{} | _] = list) do
     Enum.sort_by(list, &{&1.updated_at, &1.id})
   end
