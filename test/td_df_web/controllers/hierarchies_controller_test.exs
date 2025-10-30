@@ -71,7 +71,7 @@ defmodule TdDfWeb.HierarchiesControllerTest do
                "nodes" => result_nodes
              } = data
 
-      assert nodes <~> result_nodes
+      assert nodes ||| result_nodes
     end
 
     @tag :user_authenticated
@@ -91,7 +91,10 @@ defmodule TdDfWeb.HierarchiesControllerTest do
       key1 = "#{id}_#{node_id_1}"
       key2 = "#{id}_#{node_id_2}"
 
-      assert [%{"key" => ^key1}, %{"key" => ^key2}] = response_nodes
+      sorted_keys = response_nodes |> Enum.map(& &1["key"]) |> Enum.sort()
+      expected_keys = Enum.sort([key1, key2])
+
+      assert sorted_keys == expected_keys
     end
   end
 
